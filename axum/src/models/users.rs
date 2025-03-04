@@ -22,8 +22,7 @@ pub struct SignUpPayload {
     pub pass: String,
 
     #[validate(length(min = 2))]
-    pub username: String,
-    pub role: String,
+    pub username: String
 }
 
 
@@ -39,7 +38,6 @@ pub struct UserUpdate {
     pub username: Option<String>,
     pub email: Option<String>,
     pub pass: Option<String>,
-    pub role: Option<String>,
     pub verified: Option<bool>,
 }
 
@@ -51,7 +49,6 @@ pub struct User {
     pub username: String,
     pub email: String,
     pub pass: String,
-    pub role: String,
     pub verified: bool,
 }
 

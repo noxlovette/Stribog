@@ -31,7 +31,6 @@ pub async fn signup(
         name,
         username,
         email,
-        role,
         pass,
     } = payload;
 
@@ -41,13 +40,12 @@ pub async fn signup(
 
     sqlx::query!(
         r#"
-            INSERT INTO users (name, username, email, role, pass, verified, id)
-            VALUES ($1, $2, $3, $4, $5, false, $6)
+            INSERT INTO users (name, username, email, pass, verified, id)
+            VALUES ($1, $2, $3, $4, false, $5)
         "#,
         name,
         username,
         email,
-        role,
         hashed_password,
         id
     )
@@ -82,7 +80,7 @@ pub async fn authorize(
     let user = sqlx::query_as!(
         User,
         r#"
-        SELECT username, email, role, id, name, pass, verified
+        SELECT username, email, id, name, pass, verified
         FROM users
         WHERE username = $1
         "#,
@@ -113,7 +111,7 @@ pub async fn refresh(
     let user = sqlx::query_as!(
         User,
         r#"
-        SELECT username, email, role, id, name, pass, verified 
+        SELECT username, email, id, name, pass, verified 
         FROM users
         WHERE id = $1
         "#,

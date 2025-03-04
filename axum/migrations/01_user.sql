@@ -5,7 +5,6 @@ CREATE TABLE users (
     username VARCHAR NOT NULL,
     email VARCHAR NOT NULL,
     pass VARCHAR NOT NULL,
-    role VARCHAR NOT NULL,
     verified BOOLEAN NOT NULL DEFAULT false,
     joined TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CONSTRAINT user_username_key UNIQUE (username),

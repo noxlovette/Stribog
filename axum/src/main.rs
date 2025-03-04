@@ -96,7 +96,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Public routes with rate limiting
     let public_routes = Router::new()
         .nest("/cdn", stribog::routes::external::spark::public_routes())
-        // .layer(GovernorLayer { config: governor_conf })
+        .layer(GovernorLayer { config: governor_conf })
         .layer(
             CorsLayer::new()
                 .allow_origin(public_origins)

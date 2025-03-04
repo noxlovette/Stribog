@@ -12,5 +12,9 @@ pub fn forge_routes() -> Router<AppState> {
                 .patch(forge::update_forge)
                 .delete(forge::delete_forge),
         )
+        .route(
+            "/{forge_id}/access",
+            get(forge::list_forge_access).post(forge::add_forge_access).delete(forge::delete_forge_access)
+        )
 }
  

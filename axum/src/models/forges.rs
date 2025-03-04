@@ -30,3 +30,43 @@ pub struct ForgeUpdate {
     pub title: Option<String>,
     pub description: Option<String>,
 }
+
+// Define access roles as an enum
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum ForgeAccessRole {
+    Viewer,
+    Editor,
+    Admin,
+}
+
+impl ToString for ForgeAccessRole {
+    fn to_string(&self) -> String {
+        match self {
+            ForgeAccessRole::Viewer => "viewer".to_string(),
+            ForgeAccessRole::Editor => "editor".to_string(),
+            ForgeAccessRole::Admin => "admin".to_string(),
+        }
+    }
+}
+
+// Model for creating forge access
+#[derive(Deserialize)]
+pub struct ForgeAccessCreateBody {
+    pub user_id: String,
+    pub access_role: ForgeAccessRole,
+}
+
+// Model for returning forge access details
+#[derive(Serialize, Deserialize)]
+pub struct ForgeAccessBody {
+    pub id: String,
+    pub forge_id: String,
+    pub user_id: String,
+    pub user_name: String,
+    pub user_email: String,
+    pub access_role: String,
+    pub added_by: String,
+    pub created_at: OffsetDateTime,
+    pub updated_at: OffsetDateTime,
+}

@@ -24,7 +24,14 @@ CREATE TRIGGER update_sparks_modtime
 BEFORE UPDATE ON sparks
 FOR EACH ROW EXECUTE FUNCTION update_modified_column();
 
+-- Update triggers function to maintain updated_at column
+CREATE TRIGGER update_forge_access_modtime
+BEFORE UPDATE ON forge_access
+FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+
 -- Create indexes for performance
 CREATE INDEX idx_forges_owner ON forges(owner_id);
 CREATE INDEX idx_api_keys_forge ON api_keys(forge_id);
 CREATE INDEX idx_sparks_forge ON sparks(forge_id);
+CREATE INDEX idx_forge_access_forge ON forge_access(forge_id);
+CREATE INDEX idx_forge_access_user ON forge_access(user_id);
