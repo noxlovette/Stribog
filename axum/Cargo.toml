@@ -1,5 +1,5 @@
 [package]
-name = "axum"
+name = "stribog"
 version = "0.1.0"
 edition = "2021"
 
@@ -38,3 +38,4 @@ dotenvy = "0.15"
 nanoid = "0.4.0"
 time = "0.3.37"
 uuid = { version = "1.11.0", features = ["serde", "v4", "v7"] }
+tower_governor = "0.6.0"

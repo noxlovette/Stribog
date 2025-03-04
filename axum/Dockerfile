@@ -7,11 +7,11 @@ RUN mkdir src && \
     cargo fetch
 COPY src src/
 RUN cargo build --release --locked && \
-    strip target/release/rust
+    strip target/release/stribog
 
 FROM debian:bookworm-slim
 WORKDIR /app
 RUN groupadd -r appuser && useradd -r -g appuser appuser
-COPY --from=builder /usr/src/app/target/release/rust ./app
+COPY --from=builder /usr/src/app/target/release/stribog ./app
 USER appuser
 CMD ["./app"]
