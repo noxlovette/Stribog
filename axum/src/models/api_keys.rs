@@ -21,8 +21,7 @@ pub struct KeyBody {
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct KeyCreateBody {
-    pub title: String,
-    pub description: Option<String>
+    pub title: String
 }
 
 #[derive(Deserialize, Debug)]

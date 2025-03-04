@@ -25,6 +25,7 @@ pub async fn signup(
         eprintln!("{:?}", e);
         APIError::InvalidCredentials
     })?;
+    
 
     let SignUpPayload {
         name,

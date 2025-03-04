@@ -6,7 +6,7 @@ use super::error::APIError;
 
 pub async fn fetch_spark(
     State(state): State<AppState>,
-    Path(id): Path<String>,
+    Path(spark_id): Path<String>,
     claims: Claims,
 ) -> Result<Json<SparkBody>, APIError> {
     let spark = sqlx::query_as!(
@@ -15,7 +15,7 @@ pub async fn fetch_spark(
         SELECT * FROM sparks
         WHERE id = $1 AND owner_id = $2
         "#,
-        id,
+        spark_id,
         claims.sub
     )
     .fetch_one(&state.db)
@@ -72,13 +72,13 @@ pub async fn create_spark(
 pub async fn delete_spark(
     State(state): State<AppState>,
     claims: Claims,
-    Path(id): Path<String>
+    Path(spark_id): Path<String>
 ) -> Result<StatusCode, APIError> {
     let _forge = sqlx::query!(
         r#"
-        DELETE FROM forges WHERE id = $1 AND owner_id = $2
+        DELETE FROM sparks WHERE id = $1 AND owner_id = $2
          "#,
-        id,
+         spark_id,
         claims.sub,
     )
     .execute(&state.db)

@@ -5,9 +5,9 @@ use axum::Router;
 
 pub fn spark_routes() -> Router<AppState> {
     Router::new()
-        .route("/", get(spark::list_spark).post(spark::create_spark))
+        .route("/{forge_id}", get(spark::list_spark).post(spark::create_spark))
         .route(
-            "/{spark_id}",
+            "/s/{spark_id}",
             get(spark::fetch_spark)
                 .patch(spark::update_spark)
                 .delete(spark::delete_spark),

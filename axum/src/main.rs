@@ -74,10 +74,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     
     // Internal routes with API key authentication
     let internal_routes = Router::new()
-        .nest("/lesson", stribog::routes::internal::spark_routes::spark_routes())
+        .nest("/spark", stribog::routes::internal::spark_routes::spark_routes())
         .nest("/forge", stribog::routes::internal::forge_routes::forge_routes())
         .nest("/user", stribog::routes::internal::user_routes::user_routes())
         .nest("/auth", stribog::routes::internal::auth_routes::auth_routes())
+        .nest("/key", stribog::routes::internal::key_routes::key_routes())
         .layer(axum::middleware::from_fn(validate_api_key))
         .layer(
             CorsLayer::new()
@@ -95,7 +96,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Public routes with rate limiting
     let public_routes = Router::new()
         .nest("/cdn", stribog::routes::external::spark::public_routes())
-        .layer(GovernorLayer { config: governor_conf })
+        // .layer(GovernorLayer { config: governor_conf })
         .layer(
             CorsLayer::new()
                 .allow_origin(public_origins)
