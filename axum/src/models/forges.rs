@@ -17,12 +17,6 @@ pub struct ForgeBody {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct ForgeCreateResponse {
-    pub id: String,
-}
-
-
-#[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct ForgeCreateBody {
     pub title: String,

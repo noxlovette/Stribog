@@ -6,7 +6,7 @@ use super::error::APIError;
 
 pub async fn fetch_forge(
     State(state): State<AppState>,
-    Path(id): Path<String>,
+    Path(forge_id): Path<String>,
     claims: Claims,
 ) -> Result<Json<ForgeBody>, APIError> {
     let forge = sqlx::query_as!(
@@ -15,7 +15,7 @@ pub async fn fetch_forge(
         SELECT * FROM forges
         WHERE id = $1 AND owner_id = $2
         "#,
-        id,
+        forge_id,
         claims.sub
     )
     .fetch_one(&state.db)
@@ -69,13 +69,13 @@ pub async fn create_forge(
 pub async fn delete_forge(
     State(state): State<AppState>,
     claims: Claims,
-    Path(id): Path<String>
+    Path(forge_id): Path<String>
 ) -> Result<StatusCode, APIError> {
     let _forge = sqlx::query!(
         r#"
         DELETE FROM forges WHERE id = $1 AND owner_id = $2
          "#,
-        id,
+        forge_id,
         claims.sub,
     )
     .execute(&state.db)
@@ -86,7 +86,7 @@ pub async fn delete_forge(
 
 pub async fn update_forge(
     State(state): State<AppState>,
-    Path(id): Path<String>,
+    Path(forge_id): Path<String>,
     claims: Claims,
     Json(payload): Json<ForgeUpdate>,
 ) -> Result<StatusCode, APIError> {
@@ -100,7 +100,7 @@ pub async fn update_forge(
          "#,
         payload.title,
         payload.description,
-        id,
+        forge_id,
         claims.sub
     )
     .execute(&state.db)

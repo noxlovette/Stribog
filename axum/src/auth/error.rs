@@ -50,6 +50,7 @@ pub enum AuthError {
     AuthenticationFailed,
     #[error("Conflict: {0}")]
     Conflict(String),
+
 }
 
 impl IntoResponse for AuthError {
