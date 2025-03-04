@@ -11,7 +11,7 @@ pub struct SparkBody {
     pub title: String,
     pub markdown: String,
     pub forge_id: String,
-    pub created_by: String,
+    pub owner_id: String,
     #[serde_as(as = "Rfc3339")]
     pub created_at: OffsetDateTime,
     #[serde_as(as = "Rfc3339")]

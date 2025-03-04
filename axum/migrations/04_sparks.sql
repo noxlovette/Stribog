@@ -4,7 +4,7 @@ CREATE TABLE sparks (
     forge_id VARCHAR(21) NOT NULL REFERENCES forges(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
     markdown TEXT NOT NULL,
-    created_by TEXT NOT NULL REFERENCES users(id),
+    owner_id TEXT NOT NULL REFERENCES users(id),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
