@@ -1,0 +1,61 @@
+name: stribog-dev
+
+services:
+  svelte:
+    build:
+      context: ./svelte
+      dockerfile: Dockerfile.dev
+    container_name: svelte-fl-dev
+    ports:
+      - "5173:3000"
+    volumes:
+      - ./svelte/src:/app/src
+    env_file:
+      - ./svelte/.env
+    depends_on:
+      - axum
+
+  axum:
+    build:
+      context: ./axum
+      dockerfile: Dockerfile.dev
+    container_name: axum-fl-dev
+    ports:
+      - "8000:3000"
+    volumes:
+      - ./axum:/app
+      - cargo-cache:/usr/local/cargo/registry
+      - cargo-target:/app/target
+    env_file:
+      - ./axum/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres
+    container_name: pg-fl-dev
+    restart: always
+    user: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=pg-fl-dev
+      - POSTGRES_PASSWORD=changeme
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  cargo-cache:
+    name: cargo-cache-fl-dev
+  cargo-target:
+    name: cargo-target-fl-dev
+  db-data:
+    name: db-fl-dev
+  uploads:
+    name: uploads-fl-dev
