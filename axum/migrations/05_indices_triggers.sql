@@ -27,4 +27,4 @@ FOR EACH ROW EXECUTE FUNCTION update_modified_column();
 -- Create indexes for performance
 CREATE INDEX idx_forges_owner ON forges(owner_id);
 CREATE INDEX idx_api_keys_forge ON api_keys(forge_id);
-CREATE INDEX idx_sparks_forge ON pages(forge_id);
+CREATE INDEX idx_sparks_forge ON sparks(forge_id);
