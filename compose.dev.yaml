@@ -5,7 +5,7 @@ services:
     build:
       context: ./svelte
       dockerfile: Dockerfile.dev
-    container_name: svelte-fl-dev
+    container_name: svelte-stribog-dev
     ports:
       - "5173:3000"
     volumes:
@@ -19,7 +19,7 @@ services:
     build:
       context: ./axum
       dockerfile: Dockerfile.dev
-    container_name: axum-fl-dev
+    container_name: axum-stribog-dev
     ports:
       - "8000:3000"
     volumes:
@@ -34,16 +34,16 @@ services:
 
   postgres:
     image: postgres
-    container_name: pg-fl-dev
+    container_name: pg-stribog-dev
     restart: always
     user: postgres
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=pg-fl-dev
+      - POSTGRES_DB=pg-stribog-dev
       - POSTGRES_PASSWORD=changeme
     ports:
-      - "5433:5432"
+      - "5432:5432"
     healthcheck:
       test: ["CMD", "pg_isready"]
       interval: 10s
@@ -52,10 +52,10 @@ services:
 
 volumes:
   cargo-cache:
-    name: cargo-cache-fl-dev
+    name: cargo-cache-stribog-dev
   cargo-target:
-    name: cargo-target-fl-dev
+    name: cargo-target-stribog-dev
   db-data:
-    name: db-fl-dev
+    name: db-stribog-dev
   uploads:
-    name: uploads-fl-dev
+    name: uploads-stribog-dev
