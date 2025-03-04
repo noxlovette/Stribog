@@ -4,3 +4,36 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+# Primary Crates
+axum = { version = "0.8.1", features = ["macros"] }
+axum-extra = { version = "0.10.0", features = ["typed-header", "cookie"] }
+sqlx = { version = "0.8.2", features = [
+    "runtime-tokio",
+    "tls-rustls-ring",
+    "postgres",
+    "time",
+    "uuid",
+    "chrono",
+] }
+tokio = { version = "1", features = ["full"] }
+
+# Secondary Crates
+serde = { version = "1", features = ["derive"] }
+serde_json = "1.0"
+serde_with = { version = "2.0.0", features = ["time_0_3"] }
+jsonwebtoken = { version = "9.3.0", features = ["use_pem"] }
+log = "0.4"
+hyper = "1.5.2"
+argon2 = "0.5.3"
+
+# Auxiliary Crates
+thiserror = "2.0.9"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tower-http = { version = "0.6.2", features = ["full"] }
+tower = { version = "0.5.2", features = ["full"] }
+anyhow = "1.0.95"
+validator = { version = "0.19.0", features = ["derive"] }
+dotenvy = "0.15"
+nanoid = "0.4.0"
+time = "0.3.37"
