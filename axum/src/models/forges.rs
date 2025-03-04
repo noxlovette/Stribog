@@ -8,7 +8,7 @@ use time::OffsetDateTime;
 pub struct ForgeBody {
     pub id: String,
     pub title: String,
-    pub description: String,
+    pub description: Option<String>,
     pub owner_id: String,
     #[serde_as(as = "Rfc3339")]
     pub created_at: OffsetDateTime,
@@ -26,8 +26,7 @@ pub struct ForgeCreateResponse {
 #[serde(rename_all = "camelCase")]
 pub struct ForgeCreateBody {
     pub title: String,
-    pub description: Option<String>,
-    pub markdown: String,
+    pub description: Option<String>
 }
 
 #[derive(Deserialize, Debug)]
