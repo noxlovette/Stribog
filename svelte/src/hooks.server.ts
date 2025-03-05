@@ -4,7 +4,7 @@ import type { Handle, HandleFetch } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
 import { tokenConfig } from '$lib/server/token';
 
-const PROTECTED_PATHS = new Set(['']);
+const PROTECTED_PATHS = new Set(['/u/dashboard']);
 
 function isProtectedPath(path: string): boolean {
 	return (
@@ -14,16 +14,18 @@ function isProtectedPath(path: string): boolean {
 }
 
 export const handle: Handle = async ({ event, resolve }) => {
+	console.log('handle');
 	const path = event.url.pathname;
 
-	if (path === '/') {
-		const user = await getUserFromToken(event, tokenConfig);
-		if (user) {
-			throw redirect(303, '/u/dashboard');
-		}
-	}
+	// if (path === '/') {
+	// 	const user = await getUserFromToken(event, tokenConfig);
+	// 	if (user) {
+	// 		throw redirect(303, '/u/dashboard');
+	// 	}
+	// }
 
 	if (!isProtectedPath(path)) {
+		console.log('started');
 		return resolve(event);
 	}
 
