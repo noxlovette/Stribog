@@ -2,6 +2,7 @@ import { env } from '$env/dynamic/private';
 import { getUserFromToken } from '@noxlovette/svarog';
 import type { Handle, HandleFetch } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
+import { tokenConfig } from '$lib/server/token';
 
 const PROTECTED_PATHS = new Set(['']);
 
@@ -14,16 +15,11 @@ function isProtectedPath(path: string): boolean {
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const path = event.url.pathname;
-	const role = event.params.role;
 
 	if (path === '/') {
-		const user = await getUserFromToken(event);
+		const user = await getUserFromToken(event, tokenConfig);
 		if (user) {
-			if (user.role === 'student') {
-				throw redirect(303, '/s/dashboard');
-			} else if (user.role === 'teacher') {
-				throw redirect(303, '/t/dashboard');
-			}
+			throw redirect(303, '/u/dashboard');
 		}
 	}
 
@@ -31,19 +27,9 @@ export const handle: Handle = async ({ event, resolve }) => {
 		return resolve(event);
 	}
 
-	const user = await getUserFromToken(event);
+	const user = await getUserFromToken(event, tokenConfig);
 	if (!user) {
 		throw redirect(302, '/auth/login');
-	}
-
-	const isTeacherRoute = role === 't';
-	const isStudentRoute = role === 's';
-
-	if (isTeacherRoute && user.role !== 'teacher') {
-		throw redirect(303, '/unauthorised');
-	}
-	if (isStudentRoute && user.role !== 'student') {
-		throw redirect(303, '/unauthorised');
 	}
 
 	const response = await resolve(event);

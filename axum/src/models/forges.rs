@@ -52,6 +52,7 @@ impl ToString for ForgeAccessRole {
 
 // Model for creating forge access
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ForgeAccessCreateBody {
     pub user_id: String,
     pub access_role: ForgeAccessRole,
@@ -59,6 +60,7 @@ pub struct ForgeAccessCreateBody {
 
 // Model for returning forge access details
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ForgeAccessBody {
     pub id: String,
     pub forge_id: String,

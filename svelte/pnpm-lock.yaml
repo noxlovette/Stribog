@@ -9,8 +9,11 @@ importers:
   .:
     dependencies:
       '@noxlovette/svarog':
-        specifier: ^0.0.3
-        version: 0.0.3(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.22.1)(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1)))(svelte@5.22.1)(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1))
+        specifier: ^0.0.5
+        version: 0.0.5(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.22.1)(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1)))(svelte@5.22.1)(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1))
+      lucide-svelte:
+        specifier: ^0.477.0
+        version: 0.477.0(svelte@5.22.1)
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.7
@@ -325,8 +328,8 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@noxlovette/svarog@0.0.3':
-    resolution: {integrity: sha512-2FsbLDm24e/v8kGjqL4q0HZtvX/5Li7aSGMpKYJeFI/RKiyrr7U5Goos4pbZrgktSqAo4bt8/9m67e3a6s+UVg==}
+  '@noxlovette/svarog@0.0.5':
+    resolution: {integrity: sha512-fqOxpL9cpFGH2cMEKbxDR/T8gAHqQvroYysUF01n9Km3MNM5Jm/OIv1nGQQIwyIw/7tZPMs3+BEHCUQzJWuM9w==}
     peerDependencies:
       svelte: ^5.0.0
 
@@ -1205,6 +1208,11 @@ packages:
   lowlight@3.3.0:
     resolution: {integrity: sha512-0JNhgFoPvP6U6lE/UdVsSq99tn6DhjjpAj5MxG49ewd2mOBVtwWYIT8ClyABhq198aXXODMU6Ox8DrGy/CpTZQ==}
 
+  lucide-svelte@0.477.0:
+    resolution: {integrity: sha512-w/zj6/CXTtTizIeo8SuWGYu0u45CJ7cD2AtNzIObVHZrWXNgaIIX/2cI25wybjSmYHIi4pub2TLv/kNPKiB3ww==}
+    peerDependencies:
+      svelte: ^3 || ^4 || ^5.0.0-next.42
+
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
 
@@ -1679,6 +1687,9 @@ packages:
     resolution: {integrity: sha512-b9DQGnfrZc+km4u3j6qkEY87pYe23yfgBT03CkeBlYST+Wzij7ut1o0BSoQ+UmiyAO1nPh9DMJJCoGDdUOrunw==}
     engines: {node: '>=18'}
 
+  tailwindcss@4.0.10:
+    resolution: {integrity: sha512-Z8U/6E2BWSdDkt3IWPiphoV+8V6aNzRmu2SriSbuhm6i3QIcY3TdUJzUP5NX8M8MZuIl+v4/77Rer8u4YSrSsg==}
+
   tailwindcss@4.0.9:
     resolution: {integrity: sha512-12laZu+fv1ONDRoNR9ipTOpUD7RN9essRVkX36sjxuRUInpN7hIiHN4lBd/SIFjbISvnXzp8h/hXzmU8SQQYhw==}
 
@@ -2009,7 +2020,7 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
-  '@noxlovette/svarog@0.0.3(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.22.1)(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1)))(svelte@5.22.1)(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1))':
+  '@noxlovette/svarog@0.0.5(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.22.1)(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1)))(svelte@5.22.1)(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1))':
     dependencies:
       '@sveltejs/kit': 2.18.0(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.22.1)(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1)))(svelte@5.22.1)(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1))
       gray-matter: 4.0.3
@@ -2030,6 +2041,7 @@ snapshots:
       remark-rehype: 11.1.1
       remark-toc: 9.0.0
       svelte: 5.22.1
+      tailwindcss: 4.0.10
       unified: 11.0.5
       unist-util-visit: 5.0.0
     transitivePeerDependencies:
@@ -2912,6 +2924,10 @@ snapshots:
       devlop: 1.1.0
       highlight.js: 11.11.1
 
+  lucide-svelte@0.477.0(svelte@5.22.1):
+    dependencies:
+      svelte: 5.22.1
+
   magic-string@0.30.17:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
@@ -3615,6 +3631,8 @@ snapshots:
       locate-character: 3.0.0
       magic-string: 0.30.17
       zimmerframe: 1.1.2
+
+  tailwindcss@4.0.10: {}
 
   tailwindcss@4.0.9: {}
 
