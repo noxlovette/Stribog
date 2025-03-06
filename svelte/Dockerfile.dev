@@ -1,0 +1,21 @@
+# syntax=docker/dockerfile:1
+
+FROM node:23-slim
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+WORKDIR /app
+
+COPY pnpm-lock.yaml package.json ./
+
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+RUN pnpm add -g nodemon chokidar
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["pnpm", "run", "dev"]

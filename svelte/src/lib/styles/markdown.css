@@ -1,0 +1,94 @@
+@layer components {
+	.markdown {
+		@apply max-w-prose;
+
+		> *:first-child {
+			@apply mt-0;
+		}
+		/* Headings with better visual hierarchy and consistent spacing */
+		h1,
+		h2,
+		h3 {
+			@apply font-semibold tracking-tight;
+		}
+
+		h1 {
+			@apply mt-8 mb-4 text-4xl font-bold text-slate-900 dark:text-slate-50;
+		}
+
+		h2 {
+			@apply mt-6 mb-3 text-2xl font-semibold text-slate-800 dark:text-slate-100;
+		}
+
+		h3 {
+			@apply mt-4 mb-2 text-xl font-medium text-slate-700 dark:text-slate-200;
+		}
+
+		/* Improved paragraph spacing and readability */
+		p {
+			@apply mb-4 leading-relaxed text-slate-700 dark:text-slate-300;
+		}
+
+		/* Enhanced lists with better spacing and bullets */
+		ul,
+		ol {
+			@apply my-2 ml-6 list-decimal space-y-2;
+		}
+
+		li {
+			@apply list-disc text-slate-700 dark:text-slate-300;
+		}
+
+		/* Modern link styling with hover effects */
+		a {
+			@apply text-sky-600 underline decoration-2 underline-offset-2 transition-colors duration-200 hover:text-sky-700 hover:decoration-sky-700 dark:text-sky-400 dark:hover:text-sky-300 dark:hover:decoration-sky-300;
+		}
+
+		/* Prettier blockquotes */
+		blockquote {
+			@apply my-4 rounded-r-lg border-l-4 border-sky-400 bg-slate-50 py-2 pl-4 text-slate-700 italic dark:border-sky-600 dark:bg-slate-800/50 dark:text-slate-300;
+		}
+
+		/* Code blocks with better contrast and syntax highlighting support */
+		pre {
+			@apply my-6 overflow-x-auto rounded-lg bg-slate-900 p-4 text-slate-100 dark:bg-slate-950 dark:text-slate-50;
+		}
+
+		code {
+			@apply rounded bg-slate-100 px-1.5 py-0.5 font-mono text-sm text-slate-900 dark:bg-slate-800 dark:text-slate-50;
+		}
+
+		/* Thematic break with style */
+		hr {
+			@apply my-8 w-full border-t-2 border-slate-200 dark:border-slate-700;
+		}
+
+		/* Modern table design */
+		table {
+			@apply my-6 w-full border-collapse;
+		}
+
+		th {
+			@apply border-b-2 border-slate-300 bg-slate-100 px-4 py-2 text-left font-medium text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-50;
+		}
+
+		td {
+			@apply border-b border-slate-200 px-4 py-2 text-slate-700 dark:border-slate-700 dark:text-slate-300;
+		}
+
+		/* Additional useful elements */
+		img {
+			@apply my-6 h-auto max-w-full rounded-lg;
+		}
+
+		/* Task lists for GitHub-style markdown */
+		input[type='checkbox'] {
+			@apply mr-2 accent-sky-500 dark:accent-sky-400;
+		}
+
+		/* Smooth transitions for dark mode */
+		* {
+			@apply transition-colors duration-200;
+		}
+	}
+}

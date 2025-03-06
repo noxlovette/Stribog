@@ -8,8 +8,10 @@
 		<div class="flex items-center justify-between">
 			<!-- Logo -->
 			<div class="flex items-center space-x-2">
-				<a href="/" class="text-2xl font-bold tracking-tight transition hover:text-blue-400"
-					>Stribog</a
+				<a
+					href="/"
+					class="font-ponomar text-2xl font-bold tracking-tight transition hover:text-blue-400"
+					>Стрибог</a
 				>
 			</div>
 
@@ -18,13 +20,13 @@
 				<a
 					href="/"
 					class="transition hover:text-blue-400 {page.url.pathname === '/' ? 'text-blue-400' : ''}"
-					>Home</a
+					>В Избу</a
 				>
 				<a
 					href="/forges"
 					class="transition hover:text-blue-400 {page.url.pathname.startsWith('/forges')
 						? 'text-blue-400'
-						: ''}">Forges</a
+						: ''}">Кузни</a
 				>
 
 				{#if $user && $user.username}
@@ -50,17 +52,15 @@
 						<div
 							class="invisible absolute right-0 z-50 mt-2 w-48 rounded bg-gray-700 py-1 opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:opacity-100"
 						>
-							<a href="/account" class="block px-4 py-2 text-sm hover:bg-gray-600"
-								>Account Settings</a
-							>
+							<a href="/account" class="block px-4 py-2 text-sm hover:bg-gray-600">Установки</a>
 							<a href="/forges/new" class="block px-4 py-2 text-sm hover:bg-gray-600"
-								>Create New Forge</a
+								>Открыть новую Кузню</a
 							>
 							<button
 								onclick={() => notification.set({ message: 'not implemented', type: 'info' })}
 								class="block w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-gray-600"
 							>
-								Logout
+								Покинуть Деревню
 							</button>
 						</div>
 					</div>
