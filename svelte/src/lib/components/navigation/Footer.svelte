@@ -1,17 +1,17 @@
 <footer
-	class="my-2 w-11/12 items-baseline rounded-lg shadow-md ring ring-slate-200 md:w-full dark:ring-slate-900"
+	class="my-2 w-11/12 items-baseline rounded-lg shadow-md ring ring-zinc-200 md:w-full dark:ring-zinc-900"
 >
 	<div class="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3">
 		<div class="flex flex-col gap-1 text-sm">
 			<p class="flex items-center">© 2025 Danila Volkov</p>
-			<div class="flex gap-3 text-slate-500">
+			<div class="flex gap-3 text-zinc-500">
 				<a href="/paperwork/privacy" class="hover:text-cocoa-500 transition-colors">Privacy</a>
 				<a href="/paperwork/terms" class="hover:text-cocoa-500 transition-colors">Terms</a>
 				<a href="/contact" class="hover:text-cocoa-500 transition-colors">Contact</a>
 			</div>
 		</div>
 		<div class="flex items-center gap-4">
-			<div class="flex gap-3 text-slate-500">
+			<div class="flex gap-3 text-zinc-500">
 				<a
 					href="https://github.com/noxlovette"
 					aria-label="GitHub"

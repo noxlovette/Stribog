@@ -13,20 +13,20 @@
 		}
 
 		h1 {
-			@apply mt-8 mb-4 text-4xl font-bold text-slate-900 dark:text-slate-50;
+			@apply mt-8 mb-4 text-4xl font-bold text-zinc-900 dark:text-zinc-50;
 		}
 
 		h2 {
-			@apply mt-6 mb-3 text-2xl font-semibold text-slate-800 dark:text-slate-100;
+			@apply mt-6 mb-3 text-2xl font-semibold text-zinc-800 dark:text-zinc-100;
 		}
 
 		h3 {
-			@apply mt-4 mb-2 text-xl font-medium text-slate-700 dark:text-slate-200;
+			@apply mt-4 mb-2 text-xl font-medium text-zinc-700 dark:text-zinc-200;
 		}
 
 		/* Improved paragraph spacing and readability */
 		p {
-			@apply mb-4 leading-relaxed text-slate-700 dark:text-slate-300;
+			@apply mb-4 leading-relaxed text-zinc-700 dark:text-zinc-300;
 		}
 
 		/* Enhanced lists with better spacing and bullets */
@@ -36,31 +36,31 @@
 		}
 
 		li {
-			@apply list-disc text-slate-700 dark:text-slate-300;
+			@apply list-disc text-zinc-700 dark:text-zinc-300;
 		}
 
 		/* Modern link styling with hover effects */
 		a {
-			@apply text-sky-600 underline decoration-2 underline-offset-2 transition-colors duration-200 hover:text-sky-700 hover:decoration-sky-700 dark:text-sky-400 dark:hover:text-sky-300 dark:hover:decoration-sky-300;
+			@apply text-indigo-600 underline decoration-2 underline-offset-2 transition-colors duration-200 hover:text-indigo-700 hover:decoration-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 dark:hover:decoration-indigo-300;
 		}
 
 		/* Prettier blockquotes */
 		blockquote {
-			@apply my-4 rounded-r-lg border-l-4 border-sky-400 bg-slate-50 py-2 pl-4 text-slate-700 italic dark:border-sky-600 dark:bg-slate-800/50 dark:text-slate-300;
+			@apply my-4 rounded-r-lg border-l-4 border-indigo-400 bg-zinc-50 py-2 pl-4 text-zinc-700 italic dark:border-indigo-600 dark:bg-zinc-800/50 dark:text-zinc-300;
 		}
 
 		/* Code blocks with better contrast and syntax highlighting support */
 		pre {
-			@apply my-6 overflow-x-auto rounded-lg bg-slate-900 p-4 text-slate-100 dark:bg-slate-950 dark:text-slate-50;
+			@apply my-6 overflow-x-auto rounded-lg bg-zinc-900 p-4 text-zinc-100 dark:bg-zinc-950 dark:text-zinc-50;
 		}
 
 		code {
-			@apply rounded bg-slate-100 px-1.5 py-0.5 font-mono text-sm text-slate-900 dark:bg-slate-800 dark:text-slate-50;
+			@apply rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-sm text-zinc-900 dark:bg-zinc-800 dark:text-zinc-50;
 		}
 
 		/* Thematic break with style */
 		hr {
-			@apply my-8 w-full border-t-2 border-slate-200 dark:border-slate-700;
+			@apply my-8 w-full border-t-2 border-zinc-200 dark:border-zinc-700;
 		}
 
 		/* Modern table design */
@@ -69,11 +69,11 @@
 		}
 
 		th {
-			@apply border-b-2 border-slate-300 bg-slate-100 px-4 py-2 text-left font-medium text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-50;
+			@apply border-b-2 border-zinc-300 bg-zinc-100 px-4 py-2 text-left font-medium text-zinc-900 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50;
 		}
 
 		td {
-			@apply border-b border-slate-200 px-4 py-2 text-slate-700 dark:border-slate-700 dark:text-slate-300;
+			@apply border-b border-zinc-200 px-4 py-2 text-zinc-700 dark:border-zinc-700 dark:text-zinc-300;
 		}
 
 		/* Additional useful elements */
@@ -83,7 +83,7 @@
 
 		/* Task lists for GitHub-style markdown */
 		input[type='checkbox'] {
-			@apply mr-2 accent-sky-500 dark:accent-sky-400;
+			@apply mr-2 accent-indigo-500 dark:accent-indigo-400;
 		}
 
 		/* Smooth transitions for dark mode */

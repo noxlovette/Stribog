@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT 1 AS exists FROM forges\n        WHERE id = $1 AND (\n            owner_id = $2\n            OR EXISTS (\n                SELECT 1 FROM forge_access \n                WHERE forge_id = $1 AND user_id = $2\n    )\n        )\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "exists",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "63bd3e5a26b765fc169b314a69b1fb6fb493c32427e6e2cf08d9c07e8fea8069"
+}

@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE sparks\n        SET\n            title = COALESCE($1, title),\n            markdown = COALESCE($2, markdown)\n        WHERE id = $3 AND (\n            owner_id = $4\n            OR EXISTS (\n                SELECT 1 FROM forges f\n                WHERE f.id = sparks.forge_id AND f.owner_id = $4\n            )\n            OR EXISTS (\n                SELECT 1 FROM forge_access fa\n                WHERE fa.forge_id = sparks.forge_id \n                AND fa.user_id = $4 \n                AND fa.access_role IN ('admin', 'editor')\n            )\n        )\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "6fee64fa2d3af175dbf7ae1f3dcb57a65f965befe06b3c9c1e3bb69886520e83"
+}

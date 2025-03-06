@@ -3,7 +3,7 @@
 	import { notification, user } from '$lib/stores';
 </script>
 
-<header class="bg-gray-800 text-white shadow-lg">
+<header class="my-2 w-11/12 items-baseline rounded-lg shadow-md ring ring-zinc-200 md:w-full dark:ring-zinc-900">
 	<div class="container mx-auto px-4 py-3">
 		<div class="flex items-center justify-between">
 			<!-- Logo -->
@@ -18,13 +18,13 @@
 			<!-- Desktop Navigation -->
 			<nav class="hidden items-center space-x-6 md:flex">
 				<a
-					href="/"
-					class="transition hover:text-blue-400 {page.url.pathname === '/' ? 'text-blue-400' : ''}"
+					href="/u/dashboard"
+					class="transition hover:text-blue-400 {page.url.pathname === '/u/dashboard' ? 'text-blue-400' : ''}"
 					>В Избу</a
 				>
 				<a
-					href="/forges"
-					class="transition hover:text-blue-400 {page.url.pathname.startsWith('/forges')
+					href="/u/forges"
+					class="transition hover:text-blue-400 {page.url.pathname.startsWith('/u/forges')
 						? 'text-blue-400'
 						: ''}">Кузни</a
 				>

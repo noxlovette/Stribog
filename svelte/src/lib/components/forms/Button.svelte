@@ -73,22 +73,22 @@
 	const variantClasses = {
 		primary:
 			customColors ||
-			'from-sky-500 to-sky-600 text-sky-50 dark:from-slate-800 dark:to-slate-900 dark:text-sky-100 hover:to-sky-700 focus:ring-sky-500 ring-slate-200 dark:ring-slate-800 dark:hover:ring-slate-700 dark:hover:to-slate-950 bg-gradient-to-br',
+			'from-indigo-500 to-indigo-600 text-indigo-50 dark:from-zinc-800 dark:to-zinc-900 dark:text-indigo-100 hover:to-indigo-700 focus:ring-indigo-500 ring-zinc-200 dark:ring-zinc-800 dark:hover:ring-zinc-700 dark:hover:to-zinc-950 bg-gradient-to-br',
 		secondary:
 			customColors ||
-			'text-slate-700 from-slate-50 to-slate-100 hover:to-slate-200 ring-slate-300 bg-gradient-to-bl',
+			'text-zinc-700 from-zinc-50 to-zinc-100 hover:to-zinc-200 ring-zinc-300 bg-gradient-to-bl',
 		danger:
 			customColors ||
 			'from-red-500 to-red-600 text-white hover:from-red-500 hover:to-red-700 dark:from-red-500 dark:to-red-600 dark:hover:from-red-500 dark:hover:to-red-700 focus:ring-red-400 bg-gradient-to-br',
 		ghost:
 			customColors ||
-			'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 ring-transparent',
+			'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 ring-transparent',
 		link:
 			customColors ||
-			'text-sky-600 dark:text-sky-400 underline hover:text-sky-700 dark:hover:text-sky-300 p-0 ring-transparent',
+			'text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-700 dark:hover:text-indigo-300 p-0 ring-transparent',
 		outline:
 			customColors ||
-			'text-slate-700 dark:text-slate-300 ring-1 ring-slate-300 dark:ring-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'
+			'text-zinc-700 dark:text-zinc-300 ring-1 ring-zinc-300 dark:ring-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800'
 	};
 
 	const shapeClasses = $derived(rounded ? 'rounded-full' : 'rounded-lg');
@@ -149,19 +149,19 @@
 {/if}
 
 {#if showConfirmDialog}
-	<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4">
-		<div class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl dark:bg-slate-900">
-			<h3 class="text-xl font-semibold text-slate-800 dark:text-slate-200">
+	<div class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4">
+		<div class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl dark:bg-zinc-900">
+			<h3 class="text-xl font-semibold text-zinc-800 dark:text-zinc-200">
 				{confirmTitle || 'Confirm'}
 			</h3>
-			<p class="mt-2 text-slate-600 dark:text-slate-400">
+			<p class="mt-2 text-zinc-600 dark:text-zinc-400">
 				Are you sure you want to {'delete ' + confirmText || 'continue'}? This action cannot be
 				undone.
 			</p>
 			<div class="mt-6 flex justify-end gap-3">
 				<button
 					type="button"
-					class="rounded-lg bg-gradient-to-bl from-slate-50 to-slate-100 px-3 py-2 text-center text-slate-700 ring ring-slate-300 transition-colors hover:to-slate-200"
+					class="rounded-lg bg-gradient-to-bl from-zinc-50 to-zinc-100 px-3 py-2 text-center text-zinc-700 ring ring-zinc-300 transition-colors hover:to-zinc-200"
 					onclick={() => (showConfirmDialog = false)}
 				>
 					Cancel

@@ -16,7 +16,7 @@
 	} = $props();
 
 	const styling =
-		'mt-2 w-full rounded-md p-3 text-lg shadow-sm dark:border-slate-700 dark:bg-slate-950';
+		'mt-2 w-full rounded-md p-3 text-lg shadow-sm dark:border-zinc-700 dark:bg-zinc-950';
 </script>
 
 <Label>{labelName}</Label>
@@ -25,7 +25,7 @@
 		{name}
 		type="text"
 		bind:value
-		class="{styling} focus:border-sky-500 focus:ring-sky-500"
+		class="{styling} focus:border-indigo-500 focus:ring-indigo-500"
 		{placeholder}
 	/>
 {:else if type === 'textarea'}
@@ -33,7 +33,7 @@
 		{name}
 		rows="5"
 		bind:value
-		class="{styling} focus:border-sky-500 focus:ring-sky-500"
+		class="{styling} focus:border-indigo-500 focus:ring-indigo-500"
 		{placeholder}
 	></textarea>
 {:else if type === 'number'}
@@ -42,7 +42,7 @@
 		{placeholder}
 		{name}
 		bind:value
-		class="{styling} focus:border-sky-500 focus:ring-sky-500"
+		class="{styling} focus:border-indigo-500 focus:ring-indigo-500"
 	/>
 {:else if type === 'password'}
 	<input
@@ -50,7 +50,7 @@
 		{placeholder}
 		{name}
 		bind:value
-		class="{styling} focus:border-sky-500 focus:ring-sky-500"
+		class="{styling} focus:border-indigo-500 focus:ring-indigo-500"
 	/>
 {:else if type === 'email'}
 	<input
@@ -58,6 +58,6 @@
 		{placeholder}
 		{name}
 		bind:value
-		class="{styling} focus:border-sky-500 focus:ring-sky-500"
+		class="{styling} focus:border-indigo-500 focus:ring-indigo-500"
 	/>
 {/if}

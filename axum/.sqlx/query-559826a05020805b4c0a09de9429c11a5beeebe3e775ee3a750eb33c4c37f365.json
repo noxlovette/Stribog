@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO forge_access (id, forge_id, user_id, access_role, added_by)\n        VALUES ($1, $2, $3, $4, $5)\n        ON CONFLICT (forge_id, user_id) DO UPDATE\n        SET access_role = $4, added_by = $5, updated_at = NOW()\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Varchar"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "559826a05020805b4c0a09de9429c11a5beeebe3e775ee3a750eb33c4c37f365"
+}

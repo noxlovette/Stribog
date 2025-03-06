@@ -6,7 +6,7 @@ import {
 	ValidateAccess,
 	validateRequired
 } from '@noxlovette/svarog';
-import type { AuthResponse, Profile, User } from '$lib/types';
+import type { AuthResponse, User } from '$lib/types';
 import { fail, type Actions } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { tokenConfig } from '$lib/server/token';
@@ -19,35 +19,37 @@ export const actions: Actions = {
 			const pass = data.get('password') as string;
 			const turnstileToken = data.get('cf-turnstile-response') as string;
 
-			const turnstileTokenError = validateRequired(turnstileToken);
-			if (turnstileTokenError) {
-				return fail(400, {
-					message: turnstileTokenError
-				});
-			}
+			// const turnstileTokenError = validateRequired(turnstileToken);
+			// if (turnstileTokenError) {
+			// 	return fail(400, {
+			// 		message: turnstileTokenError
+			// 	});
+			// }
 
-			const usernameError = validateRequired(username);
+			const validateUsername = validateRequired('username');
+			const validatePass = validateRequired('password');
 
+			const usernameError = validateUsername(username);
+			const passError = validatePass(pass);
 			if (usernameError) {
 				return fail(400, {
 					message: usernameError
 				});
 			}
 
-			const passError = validateRequired(pass);
 			if (passError) {
 				return fail(400, {
 					message: passError
 				});
 			}
 
-			const turnstileResponse = await turnstileVerify(turnstileToken, env.CLOUDFLARE_SECRET);
+			// const turnstileResponse = await turnstileVerify(turnstileToken, env.CLOUDFLARE_SECRET);
 
-			if (!turnstileResponse.ok) {
-				return fail(400, {
-					message: 'Turnstile verification failed'
-				});
-			}
+			// if (!turnstileResponse.ok) {
+			// 	return fail(400, {
+			// 		message: 'Turnstile verification failed'
+			// 	});
+			// }
 
 			// Login API call with typed response handling
 			const response = await fetch('/axum/auth/signin', {
@@ -57,6 +59,7 @@ export const actions: Actions = {
 
 			const authResult = await handleApiResponse<AuthResponse>(response);
 
+			console.log(authResult);
 			if (!isSuccessResponse(authResult)) {
 				return fail(authResult.status, { message: authResult.message });
 			}
@@ -71,11 +74,11 @@ export const actions: Actions = {
 
 			// Validate the access token
 			const { accessToken } = authResult.data;
+			console.log(tokenConfig);
 			const user = (await ValidateAccess(
 				accessToken,
-				tokenConfig.alg,
 				tokenConfig.spki,
-				tokenConfig.audience,
+				tokenConfig.alg,
 				tokenConfig.issuer
 			)) as User;
 
@@ -85,19 +88,10 @@ export const actions: Actions = {
 				});
 			}
 
-			// Fetch user profile with typed response handling
-			const profileResponse = await fetch('/axum/profile');
-			const profileResult = await handleApiResponse<Profile>(profileResponse);
-
-			if (!isSuccessResponse(profileResult)) {
-				return fail(profileResult.status, { message: profileResult.message });
-			}
-
 			return {
 				success: true,
 				message: 'Login successful',
-				user,
-				profile: profileResult.data
+				user
 			};
 		} catch (error) {
 			console.error('Signin error:', error);
