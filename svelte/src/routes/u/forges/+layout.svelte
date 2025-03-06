@@ -6,7 +6,7 @@
     <div class="w-full flex justify-between">
         {#if data.forges}
         <div
-            class="grid grid-cols-1 gap-5 py-5 px-5 border-x-2 border-dashed min-w-max md:w-1/5 bg-stripes"
+            class="grid grid-cols-1 gap-5 p-5 border-x-2 border-dashed min-w-max md:w-1/5 bg-stripes"
         >
             {#each data.forges as forge}
                 <ForgeCard {forge} />

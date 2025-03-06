@@ -43,6 +43,7 @@
 	},
 	"dependencies": {
 		"@noxlovette/svarog": "^0.0.5",
+		"jose": "^6.0.8",
 		"lucide-svelte": "^0.477.0"
 	}
 }

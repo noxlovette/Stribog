@@ -3,8 +3,8 @@
 	import { notification, user } from '$lib/stores';
 </script>
 
-<header class="my-2 w-11/12 items-baseline rounded-lg shadow-md ring ring-zinc-200 md:w-full dark:ring-zinc-900">
-	<div class="container mx-auto px-4 py-3">
+<header class="my-2 w-11/12 items-baseline rounded-lg shadow-md ring ring-zinc-200 md:w-full dark:ring-zinc-900 ">
+	<div class="container mx-auto px-4 py-3 max-w-7xl">
 		<div class="flex items-center justify-between">
 			<!-- Logo -->
 			<div class="flex items-center space-x-2">
