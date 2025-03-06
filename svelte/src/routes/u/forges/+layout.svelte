@@ -1,17 +1,22 @@
 <script lang="ts">
-    import {ForgeCard} from "$lib/components"
+    import {ForgeCard, H1} from "$lib/components"
     const {data, children} = $props();
     
     </script>
-    <div class="w-full flex justify-between">
+    <div class="w-full flex flex-row">
+        <div class="p-5 space-y-5">
+        <H1>
+            Кузни
+        </H1>
         {#if data.forges}
         <div
-            class="grid grid-cols-1 gap-5 p-5 border-x-2 border-dashed min-w-max md:w-1/5 bg-stripes"
+            class="grid grid-cols-1 gap-5 min-w-max bg-stripes"
         >
             {#each data.forges as forge}
                 <ForgeCard {forge} />
             {/each}
         </div>
         {/if}
+    </div>
     {@render children()}
     </div>
