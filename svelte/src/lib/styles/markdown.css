@@ -41,17 +41,17 @@
 
 		/* Modern link styling with hover effects */
 		a {
-			@apply text-indigo-600 underline decoration-2 underline-offset-2 transition-colors duration-200 hover:text-indigo-700 hover:decoration-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 dark:hover:decoration-indigo-300;
+			@apply text-teal-600 underline decoration-2 underline-offset-2 transition-colors duration-200 hover:text-teal-700 hover:decoration-teal-700 dark:text-teal-400 dark:hover:text-teal-300 dark:hover:decoration-teal-300;
 		}
 
 		/* Prettier blockquotes */
 		blockquote {
-			@apply my-4 rounded-r-lg border-l-4 border-indigo-400 bg-zinc-50 py-2 pl-4 text-zinc-700 italic dark:border-indigo-600 dark:bg-zinc-800/50 dark:text-zinc-300;
+			@apply my-4 rounded-r-lg border-l-4 border-teal-400 bg-zinc-50 py-2 pl-4 text-zinc-700 italic dark:border-teal-600 dark:bg-zinc-800/50 dark:text-zinc-300;
 		}
 
 		/* Code blocks with better contrast and syntax highlighting support */
 		pre {
-			@apply my-6 overflow-x-auto rounded-lg bg-zinc-900 p-4 text-zinc-100 dark:bg-zinc-950 dark:text-zinc-50;
+			@apply my-6 overflow-x-auto rounded-sm bg-zinc-900 p-4 text-zinc-100 dark:bg-zinc-950 dark:text-zinc-50;
 		}
 
 		code {
@@ -78,12 +78,12 @@
 
 		/* Additional useful elements */
 		img {
-			@apply my-6 h-auto max-w-full rounded-lg;
+			@apply my-6 h-auto max-w-full rounded-sm;
 		}
 
 		/* Task lists for GitHub-style markdown */
 		input[type='checkbox'] {
-			@apply mr-2 accent-indigo-500 dark:accent-indigo-400;
+			@apply mr-2 accent-teal-500 dark:accent-teal-400;
 		}
 
 		/* Smooth transitions for dark mode */

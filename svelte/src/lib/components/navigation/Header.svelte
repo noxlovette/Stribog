@@ -1,38 +1,38 @@
 <script>
 	import { page } from '$app/state';
 	import { notification, user } from '$lib/stores';
+	import { Anvil, Home } from 'lucide-svelte';
+	import { Button } from '../forms';
 </script>
 
-<header class="my-2 w-11/12 items-baseline rounded-lg shadow-md ring ring-zinc-200 md:w-full dark:ring-zinc-900 ">
-	<div class="container mx-auto px-4 py-3 max-w-7xl">
+<header class="my-1 w-11/12 items-baseline md:w-full py-2 px-4 border-b border-zinc-200">
+
 		<div class="flex items-center justify-between">
 			<!-- Logo -->
-			<div class="flex items-center space-x-2">
+			<div class="flex items-center space-x-2 text-teal-600">
 				<a
 					href="/"
-					class="font-ponomar text-2xl font-bold tracking-tight transition hover:text-indigo-400"
-					>Стрибог</a
+					class="text-2xl font-teko font-bold tracking-tight transition hover:text-teal-400"
+					>Stribog</a
 				>
+
+				
 			</div>
 
 			<!-- Desktop Navigation -->
-			<nav class="hidden items-center space-x-6 md:flex">
-				<a
-					href="/u/dashboard"
-					class="transition hover:text-indigo-400 {page.url.pathname === '/u/dashboard' ? 'text-indigo-400' : ''}"
-					>Изба</a
-				>
-				<a
-					href="/u/forges"
-					class="transition hover:text-indigo-400 {page.url.pathname.startsWith('/u/forges')
-						? 'text-indigo-400'
-						: ''}">Кузни</a
-				>
+			<nav class="hidden items-center space-x-3 md:flex">
 
+				<Button Icon={Home} variant="ghost" href="/u/dashboard"
+				styling={page.url.pathname === '/u/dashboard' ? 'bg-teal-50' : ''}
+				>Izba</Button>
+				<Button Icon={Anvil} variant="ghost" href="/u/forges"
+				styling={page.url.pathname === '/u/forges' ? 'bg-teal-50' : ''}
+				>Forges</Button>
+				
 				{#if $user && $user.username}
 					<!-- User is logged in -->
 					<div class="group relative">
-						<button class="flex items-center space-x-1 transition hover:text-indigo-400">
+						<button class="flex items-center space-x-1 transition hover:text-teal-400">
 							<span>{$user.username}</span>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -50,15 +50,15 @@
 							</svg>
 						</button>
 						<div
-							class="invisible absolute right-0 z-50 mt-2 w-48 rounded bg-neutral-700 py-1 opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:opacity-100"
+							class="invisible absolute right-0 z-50 mt-2 w-48 rounded bg-neutral-50 py-1 opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:opacity-100"
 						>
-							<a href="/account" class="block px-4 py-2 text-sm hover:bg-neutral-600">Установки</a>
-							<a href="/forges/new" class="block px-4 py-2 text-sm hover:bg-neutral-600"
+							<a href="/account" class="block px-4 py-2 text-sm hover:bg-neutral-100">Установки</a>
+							<a href="/forges/new" class="block px-4 py-2 text-sm hover:bg-neutral-100"
 								>Открыть новую Кузню</a
 							>
 							<button
 								onclick={() => notification.set({ message: 'not implemented', type: 'info' })}
-								class="block w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-neutral-600"
+								class="block w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-neutral-100"
 							>
 								Покинуть Деревню
 							</button>
@@ -68,15 +68,15 @@
 					<!-- User is not logged in -->
 					<a
 						href="/login"
-						class="transition hover:text-indigo-400 {page.url.pathname === '/login'
-							? 'text-indigo-400'
+						class="transition hover:text-teal-400 {page.url.pathname === '/login'
+							? 'text-teal-400'
 							: ''}">Login</a
 					>
 					<a
 						href="/signup"
-						class="rounded bg-indigo-600 px-4 py-2 transition hover:bg-indigo-700 {page.url.pathname ===
+						class="rounded bg-teal-600 px-4 py-2 transition hover:bg-teal-700 {page.url.pathname ===
 						'/signup'
-							? 'bg-indigo-700'
+							? 'bg-teal-700'
 							: ''}"
 					>
 						Sign Up
@@ -84,5 +84,5 @@
 				{/if}
 			</nav>
 		</div>
-	</div>
+
 </header>

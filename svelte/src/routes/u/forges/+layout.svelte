@@ -6,7 +6,7 @@
     <div class="grid grid-cols-4">
         <div class="p-5 space-y-5">
         <H1>
-            Кузни
+            Forges
         </H1>
         {#if data.forges}
         <div

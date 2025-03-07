@@ -12,12 +12,12 @@
 	class="flex w-11/12 max-w-md flex-col items-center justify-center space-y-6 rounded-xl bg-white p-9 shadow-md dark:bg-zinc-900"
 >
 	<div class="text-center">
-		<h2 class="text-3xl font-bold text-indigo-600 dark:text-zinc-200">Welcome back</h2>
+		<h2 class="text-3xl font-bold text-teal-600 dark:text-zinc-200">Welcome back</h2>
 		<p class="mt-2 text-sm text-zinc-600">
 			Don't have an account?
 			<a
 				href="/auth/signup"
-				class="font-medium text-indigo-500 hover:text-indigo-400 dark:text-zinc-50 dark:hover:text-zinc-200"
+				class="font-medium text-teal-500 hover:text-teal-400 dark:text-zinc-50 dark:hover:text-zinc-200"
 				>Sign up</a
 			>
 		</p>

@@ -13,7 +13,7 @@
       : spark.markdown)
   </script>
   
-  <div class="flex flex-col p-5 bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700">
+  <div class="flex flex-col p-5 bg-white dark:bg-neutral-800 rounded-sm shadow-sm border border-neutral-200 dark:border-neutral-700">
     <div class="flex justify-between items-start">
       <h3 class="text-xl font-medium text-neutral-900 dark:text-white">{spark.title}</h3>
       <div class="flex space-x-2">

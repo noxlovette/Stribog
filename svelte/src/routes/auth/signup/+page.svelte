@@ -13,10 +13,10 @@
 	class="flex w-11/12 max-w-md flex-col items-center justify-center space-y-6 rounded-xl bg-white p-9 shadow-md dark:bg-zinc-900"
 >
 	<div class="text-center">
-		<h2 class="text-3xl font-bold text-indigo-600 dark:text-zinc-100">Create Account</h2>
+		<h2 class="text-3xl font-bold text-teal-600 dark:text-zinc-100">Create Account</h2>
 		<p class="mt-2 text-sm text-zinc-600">
 			Already have an account?
-			<a href="/auth/login" class="font-medium text-indigo-500 hover:text-indigo-400 dark:text-zinc-100"
+			<a href="/auth/login" class="font-medium text-teal-500 hover:text-teal-400 dark:text-zinc-100"
 				>Sign in</a
 			>
 		</p>
@@ -40,7 +40,7 @@
 					type="text"
 					name="name"
 					required
-					class="w-full rounded-lg border border-zinc-200 px-4 py-2 transition duration-200 focus:ring focus:ring-indigo-500 focus:outline-none disabled:text-zinc-500
+					class="w-full rounded-sm border border-zinc-200 px-4 py-2 transition duration-200 focus:ring focus:ring-teal-500 focus:outline-none disabled:text-zinc-500
             dark:border-zinc-800 dark:bg-zinc-950 dark:focus:border-zinc-800 dark:focus:ring
                    dark:focus:ring-zinc-700 dark:focus:outline-none"
 				/>
@@ -52,7 +52,7 @@
 					type="text"
 					name="username"
 					required
-					class="w-full rounded-lg border border-zinc-200 px-4 py-2 transition duration-200 focus:ring focus:ring-indigo-500 focus:outline-none disabled:text-zinc-500
+					class="w-full rounded-sm border border-zinc-200 px-4 py-2 transition duration-200 focus:ring focus:ring-teal-500 focus:outline-none disabled:text-zinc-500
             dark:border-zinc-800 dark:bg-zinc-950 dark:focus:border-zinc-800 dark:focus:ring
                    dark:focus:ring-zinc-700 dark:focus:outline-none"
 				/>
@@ -63,7 +63,7 @@
 				<select
 					name="role"
 					required
-					class="w-full rounded-lg border border-zinc-200 px-4 py-2 transition duration-200 focus:ring focus:ring-indigo-500 focus:outline-none disabled:text-zinc-500
+					class="w-full rounded-sm border border-zinc-200 px-4 py-2 transition duration-200 focus:ring focus:ring-teal-500 focus:outline-none disabled:text-zinc-500
             dark:border-zinc-800 dark:bg-zinc-950 dark:focus:border-zinc-800 dark:focus:ring
                    dark:focus:ring-zinc-700 dark:focus:outline-none"
 				>
@@ -79,7 +79,7 @@
 					type="email"
 					name="email"
 					required
-					class="w-full rounded-lg border border-zinc-200 px-4 py-2 transition duration-200 focus:ring focus:ring-indigo-500 focus:outline-none disabled:text-zinc-500
+					class="w-full rounded-sm border border-zinc-200 px-4 py-2 transition duration-200 focus:ring focus:ring-teal-500 focus:outline-none disabled:text-zinc-500
             dark:border-zinc-800 dark:bg-zinc-950 dark:focus:border-zinc-800 dark:focus:ring
                    dark:focus:ring-zinc-700 dark:focus:outline-none"
 				/>
@@ -92,7 +92,7 @@
 					name="password"
 					bind:value={password}
 					required
-					class="w-full rounded-lg border border-zinc-200 px-4 py-2 transition duration-200 focus:ring focus:ring-indigo-500 focus:outline-none disabled:text-zinc-500
+					class="w-full rounded-sm border border-zinc-200 px-4 py-2 transition duration-200 focus:ring focus:ring-teal-500 focus:outline-none disabled:text-zinc-500
             dark:border-zinc-800 dark:bg-zinc-950 dark:focus:border-zinc-800 dark:focus:ring
                    dark:focus:ring-zinc-700 dark:focus:outline-none"
 				/>
@@ -107,7 +107,7 @@
 					name="confirmPassword"
 					bind:value={confirmPassword}
 					required
-					class="w-full rounded-lg border border-zinc-200 px-4 py-2 transition duration-200 focus:ring focus:ring-indigo-500 focus:outline-none disabled:text-zinc-500
+					class="w-full rounded-sm border border-zinc-200 px-4 py-2 transition duration-200 focus:ring focus:ring-teal-500 focus:outline-none disabled:text-zinc-500
             dark:border-zinc-800 dark:bg-zinc-950 dark:focus:border-zinc-800 dark:focus:ring
                    dark:focus:ring-zinc-700 dark:focus:outline-none"
 				/>

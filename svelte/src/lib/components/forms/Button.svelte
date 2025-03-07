@@ -68,12 +68,12 @@
 	};
 
 	const baseClasses =
-		'flex items-center justify-center rounded-lg ring transition-all focus:ring focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50';
+		'flex items-center justify-center rounded-sm ring transition-all focus:ring focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50';
 
 	const variantClasses = {
 		primary:
 			customColors ||
-			'from-indigo-500 to-indigo-600 text-indigo-50 dark:from-zinc-800 dark:to-zinc-900 dark:text-indigo-100 hover:to-indigo-700 focus:ring-indigo-500 ring-zinc-200 dark:ring-zinc-800 dark:hover:ring-zinc-700 dark:hover:to-zinc-950 bg-gradient-to-br',
+			'from-teal-500 to-teal-600 text-teal-50 dark:from-zinc-800 dark:to-zinc-900 dark:text-teal-100 hover:to-teal-700 focus:ring-teal-500 ring-zinc-200 dark:ring-zinc-800 dark:hover:ring-zinc-700 dark:hover:to-zinc-950 bg-gradient-to-br',
 		secondary:
 			customColors ||
 			'text-zinc-700 from-zinc-50 to-zinc-100 hover:to-zinc-200 ring-zinc-300 bg-gradient-to-bl',
@@ -85,13 +85,13 @@
 			'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 ring-transparent',
 		link:
 			customColors ||
-			'text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-700 dark:hover:text-indigo-300 p-0 ring-transparent',
+			'text-teal-600 dark:text-teal-400 underline hover:text-teal-700 dark:hover:text-teal-300 p-0 ring-transparent',
 		outline:
 			customColors ||
 			'text-zinc-700 dark:text-zinc-300 ring-1 ring-zinc-300 dark:ring-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800'
 	};
 
-	const shapeClasses = $derived(rounded ? 'rounded-full' : 'rounded-lg');
+	const shapeClasses = $derived(rounded ? 'rounded-full' : 'rounded-sm');
 	const widthClasses = $derived(fullWidth ? 'w-full' : '');
 
 	const allClasses = $derived(
@@ -161,14 +161,14 @@
 			<div class="mt-6 flex justify-end gap-3">
 				<button
 					type="button"
-					class="rounded-lg bg-gradient-to-bl from-zinc-50 to-zinc-100 px-3 py-2 text-center text-zinc-700 ring ring-zinc-300 transition-colors hover:to-zinc-200"
+					class="rounded-sm bg-gradient-to-bl from-zinc-50 to-zinc-100 px-3 py-2 text-center text-zinc-700 ring ring-zinc-300 transition-colors hover:to-zinc-200"
 					onclick={() => (showConfirmDialog = false)}
 				>
 					Cancel
 				</button>
 				<button
 					type="submit"
-					class="rounded-lg bg-gradient-to-br from-red-500 to-red-600 px-3 py-2 text-center text-white ring transition-colors hover:from-red-500 hover:to-red-700 focus:ring focus:ring-red-400 focus:ring-offset-2 focus:outline-none dark:from-red-500 dark:to-red-600 dark:hover:from-red-500 dark:hover:to-red-700"
+					class="rounded-sm bg-gradient-to-br from-red-500 to-red-600 px-3 py-2 text-center text-white ring transition-colors hover:from-red-500 hover:to-red-700 focus:ring focus:ring-red-400 focus:ring-offset-2 focus:outline-none dark:from-red-500 dark:to-red-600 dark:hover:from-red-500 dark:hover:to-red-700"
 					{formaction}
 				>
 					Confirm

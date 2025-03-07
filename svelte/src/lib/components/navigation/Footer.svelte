@@ -1,7 +1,7 @@
 <footer
-	class="my-2 w-11/12 items-baseline rounded-lg shadow-md ring ring-zinc-200 md:w-full dark:ring-zinc-900"
+	class="my-2 w-11/12 flex items-end md:w-full justify-between px-4 py-3 border-t border-zinc-200"
 >
-	<div class="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3">
+
 		<div class="flex flex-col gap-1 text-sm">
 			<p class="flex items-center">© 2025 Danila Volkov</p>
 			<div class="flex gap-3 text-zinc-500">
@@ -50,5 +50,5 @@
 				</a>
 			</div>
 		</div>
-	</div>
+
 </footer>

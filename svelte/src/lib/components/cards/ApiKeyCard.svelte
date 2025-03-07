@@ -13,7 +13,7 @@
   
   </script>
   
-  <div class="flex flex-col p-4 bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700">
+  <div class="flex flex-col p-4 bg-white dark:bg-neutral-800 rounded-sm shadow-sm border border-neutral-200 dark:border-neutral-700">
     <div class="flex justify-between items-start">
       <div>
         <h3 class="text-lg font-medium text-neutral-900 dark:text-white">{apiKey.title}</h3>

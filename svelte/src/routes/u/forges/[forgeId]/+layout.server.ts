@@ -1,7 +1,8 @@
 import type { LayoutServerLoad } from './$types';
 import type { Forge, Spark, Collaborator, ApiKey } from '$lib/types';
 
-export const load: LayoutServerLoad = async ({ fetch, params }) => {
+export const load: LayoutServerLoad = async ({ fetch, params, depends }) => {
+	depends('forge:general');
 	const forgeId = params.forgeId;
 	const endpoints = {
 		forge: `/axum/forge/${forgeId}`,
