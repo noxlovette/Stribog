@@ -7,10 +7,12 @@ export interface Forge {
 	updatedAt: string;
 }
 
-export interface ForgeAccess {
+export interface Collaborator {
 	id: string;
 	forgeId: string;
 	userId: string;
+	userName: string;
+	userEmail: string;
 	accessRole: string;
 	addedBy: string;
 	createdAt: string;

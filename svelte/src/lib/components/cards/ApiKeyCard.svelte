@@ -1,9 +1,10 @@
 <script lang="ts">
     import { Button } from '$lib/components';
+	import type { ApiKey } from '$lib/types';
     import { formatDate } from '@noxlovette/svarog';
 	import { Activity, Copy, Delete } from 'lucide-svelte';
 
-    const {apiKey} = $props();
+    const {apiKey} : {apiKey: ApiKey} = $props();
   
     function handleCopy() {
       navigator.clipboard.writeText(apiKey.id);
@@ -26,20 +27,20 @@
       </div>
     </div>
     <div class="mt-2 flex items-center">
-      <span class={`inline-block w-2 h-2 rounded-full ${apiKey.is_active ? 'bg-green-500' : 'bg-red-500'} mr-2`}></span>
-      <span class="text-sm text-neutral-600 dark:text-neutral-300">{apiKey.is_active ? 'Active' : 'Inactive'}</span>
+      <span class={`inline-block w-2 h-2 rounded-full ${apiKey.isActive ? 'bg-green-500' : 'bg-red-500'} mr-2`}></span>
+      <span class="text-sm text-neutral-600 dark:text-neutral-300">{apiKey.isActive ? 'Active' : 'Inactive'}</span>
     </div>
     <div class="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
-      <div>Created: {formatDate(apiKey.created_at)}</div>
-      {#if apiKey.last_used_at}
-        <div>Last used: {formatDate(apiKey.last_used_at)}</div>
+      <div>Created: {formatDate(apiKey.createdAt)}</div>
+      {#if apiKey.lastUsedAt}
+        <div>Last used: {formatDate(apiKey.lastUsedAt)}</div>
       {:else}
         <div>Never used</div>
       {/if}
     </div>
     <div class="mt-4 flex justify-between">
       <Button Icon={Activity} variant="outline" size="sm" >
-        {apiKey.is_active ? 'Deactivate' : 'Activate'}
+        {apiKey.isActive ? 'Deactivate' : 'Activate'}
       </Button>
       <Button Icon={Delete} variant="danger" size="sm" >Delete</Button>
     </div>

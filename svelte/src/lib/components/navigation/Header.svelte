@@ -20,7 +20,7 @@
 				<a
 					href="/u/dashboard"
 					class="transition hover:text-indigo-400 {page.url.pathname === '/u/dashboard' ? 'text-indigo-400' : ''}"
-					>В Избу</a
+					>Изба</a
 				>
 				<a
 					href="/u/forges"
