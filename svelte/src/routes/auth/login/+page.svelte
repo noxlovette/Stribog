@@ -3,8 +3,8 @@
 	import { goto } from '$app/navigation';
 
 	import { Input, Turnstile, Button } from '$lib/components';
-	import { setProfile, setUser, initialUser, initialProfile, notification } from '$lib/stores';
-	import { enhanceForm } from '@noxlovette/svarog';
+	import { setUser, initialUser, notification } from '$lib/stores';
+	import { enhanceForm } from '$lib/utils';
 	import { DoorOpen } from 'lucide-svelte';
 </script>
 
@@ -35,7 +35,7 @@
 						const { user = initialUser } = result.data;
 						setUser(user);
 						localStorage.setItem('user', JSON.stringify(user));
-						notification.set({ message: 'Ставим Самовар...', type: 'success' });
+						notification.set({ message: 'Samovar on the way...', type: 'success' });
 						await goto("/u/dashboard");
 					}
 				}

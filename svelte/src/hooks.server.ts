@@ -22,13 +22,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 	// 		throw redirect(303, '/u/dashboard');
 	// 	}
 	// }
-	console.log('checking user');
 
 	if (!isProtectedPath(path)) {
-		console.log('public path');
 		return resolve(event);
 	}
 	const user = await getUserFromToken(event, tokenConfig);
+	console.log(user);
 	if (!user) {
 		throw redirect(302, '/auth/login');
 	}

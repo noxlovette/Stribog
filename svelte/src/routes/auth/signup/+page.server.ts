@@ -67,6 +67,7 @@ export const actions: Actions = {
 		const result = await handleApiResponse<SignupResponse>(response);
 
 		if (!isSuccessResponse(result)) {
+			console.log(result);
 			return fail(result.status, { message: result.message });
 		}
 

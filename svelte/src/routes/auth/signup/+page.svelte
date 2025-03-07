@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { Turnstile, Button } from '$lib/components';
 	import { DoorOpen } from 'lucide-svelte';
-	import { enhanceForm } from '@noxlovette/svarog';
+	import { enhanceForm } from '$lib/utils';
 
 	let password = $state('');
 	let confirmPassword = $state('');
@@ -29,8 +29,7 @@
 			messages: {
 				redirect: 'Welcome on board',
 				defaultError: 'Signup Failed'
-			},
-			navigate: true
+			}
 		})}
 	>
 		<div class="space-y-4">
@@ -56,21 +55,6 @@
             dark:border-zinc-800 dark:bg-zinc-950 dark:focus:border-zinc-800 dark:focus:ring
                    dark:focus:ring-zinc-700 dark:focus:outline-none"
 				/>
-			</div>
-
-			<div>
-				<label for="role" class="block text-sm font-medium text-zinc-700">Role</label>
-				<select
-					name="role"
-					required
-					class="w-full rounded-sm border border-zinc-200 px-4 py-2 transition duration-200 focus:ring focus:ring-teal-500 focus:outline-none disabled:text-zinc-500
-            dark:border-zinc-800 dark:bg-zinc-950 dark:focus:border-zinc-800 dark:focus:ring
-                   dark:focus:ring-zinc-700 dark:focus:outline-none"
-				>
-					<option value="">Select a role</option>
-					<option value="teacher">Teacher</option>
-					<option value="student">Student</option>
-				</select>
 			</div>
 
 			<div>

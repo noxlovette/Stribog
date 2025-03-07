@@ -59,7 +59,6 @@ export const actions: Actions = {
 
 			const authResult = await handleApiResponse<AuthResponse>(response);
 
-			console.log(authResult);
 			if (!isSuccessResponse(authResult)) {
 				return fail(authResult.status, { message: authResult.message });
 			}
@@ -74,7 +73,6 @@ export const actions: Actions = {
 
 			// Validate the access token
 			const { accessToken } = authResult.data;
-			console.log(tokenConfig);
 			const user = (await ValidateAccess(
 				accessToken,
 				tokenConfig.spki,

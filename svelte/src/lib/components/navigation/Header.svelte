@@ -1,6 +1,6 @@
 <script>
 	import { page } from '$app/state';
-	import { notification, user } from '$lib/stores';
+	import { initialUser, notification, user } from '$lib/stores';
 	import { Anvil, Home } from 'lucide-svelte';
 	import { Button } from '../forms';
 </script>
@@ -52,30 +52,34 @@
 						<div
 							class="invisible absolute right-0 z-50 mt-2 w-48 rounded bg-neutral-50 py-1 opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:opacity-100"
 						>
-							<a href="/account" class="block px-4 py-2 text-sm hover:bg-neutral-100">Установки</a>
+							<a href="/account" class="block px-4 py-2 text-sm hover:bg-neutral-100">Settings</a>
 							<a href="/forges/new" class="block px-4 py-2 text-sm hover:bg-neutral-100"
-								>Открыть новую Кузню</a
-							>
+								>Open New Forge</a
+							>``
 							<button
-								onclick={() => notification.set({ message: 'not implemented', type: 'info' })}
+								onclick={() => {
+									fetch("/auth/logout", {method: "POST"});
+									user.set(initialUser);
+									localStorage.clear()
+									}}
 								class="block w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-neutral-100"
 							>
-								Покинуть Деревню
+								Leave the Village
 							</button>
 						</div>
 					</div>
 				{:else}
 					<!-- User is not logged in -->
 					<a
-						href="/login"
-						class="transition hover:text-teal-400 {page.url.pathname === '/login'
+						href="/auth/login"
+						class="transition hover:text-teal-400 {page.url.pathname === '/auth/login'
 							? 'text-teal-400'
 							: ''}">Login</a
 					>
 					<a
-						href="/signup"
+						href="/auth/signup"
 						class="rounded bg-teal-600 px-4 py-2 transition hover:bg-teal-700 {page.url.pathname ===
-						'/signup'
+						'/auth/signup'
 							? 'bg-teal-700'
 							: ''}"
 					>
