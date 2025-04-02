@@ -22,6 +22,5 @@ export const GET: RequestHandler = async ({ cookies, fetch, locals }) => {
 
 	const { accessToken } = (await response.json()) as AuthResponse;
 
-	// Return the response
 	return json({ success: true, accessToken });
 };

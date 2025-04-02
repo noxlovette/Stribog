@@ -55,7 +55,7 @@
 							<a href="/account" class="block px-4 py-2 text-sm hover:bg-neutral-100">Settings</a>
 							<a href="/forges/new" class="block px-4 py-2 text-sm hover:bg-neutral-100"
 								>Open New Forge</a
-							>``
+							>
 							<button
 								onclick={() => {
 									fetch("/auth/logout", {method: "POST"});
