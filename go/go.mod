@@ -1,4 +1,4 @@
-module stribog/backend
+module stribog
 
 go 1.24.1
 

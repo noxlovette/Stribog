@@ -6,37 +6,24 @@ import (
 	"log"
 	"os"
 
-	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/joho/godotenv"
+	"stribog/config"
 )
 
-func getEnvVar(key string) string {
-	err := godotenv.Load(".env")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	v, ok := os.LookupEnv(key)
-	if !ok {
-		log.Default().Fatalf("env variable %v not set", key)
-	}
-	return v
-}
 func main() {
-	dbpool, err := pgxpool.New(context.Background(), getEnvVar("DATABASE_URL"))
+	ctx := context.Background()
+
+	appState, err := config.InitAppState(ctx)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
+		log.Fatalf("Failed to initialize application: %v", err)
 		os.Exit(1)
 	}
-	defer dbpool.Close()
+	defer appState.DB.Close()
 
-	var forge string
-	err = dbpool.QueryRow(context.Background(), "SELECT id FROM forges").Scan(&forge)
+	fmt.Println("Database connected successfully!")
+	var scan string
+	err = appState.DB.QueryRow(ctx, "SELECT id FROM forges").Scan(&scan)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
-		os.Exit(1)
+		log.Fatalf("blabla %v", err)
 	}
-
-	fmt.Println(forge)
+	fmt.Println(scan)
 }

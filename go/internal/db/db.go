@@ -2,23 +2,27 @@ package db
 
 import (
 	"context"
+	"fmt"
+
+	"stribog/internal/tools"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type DB struct {
-	Pool *pgxpool.Pool
+type Pool struct {
+	*pgxpool.Pool
 }
 
-func New(connString string) (*DB, error) {
-	pool, err := pgxpool.New(context.Background(), connString)
+func Init(ctx context.Context) (*Pool, error) {
+	dbpool, err := pgxpool.New(ctx, tools.GetEnvVar("DATABASE_URL"))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unable to create connection pool: %v", err)
 	}
 
-	return &DB{Pool: pool}, nil
-}
+	if err := dbpool.Ping(ctx); err != nil {
+		dbpool.Close()
+		return nil, fmt.Errorf("unable to ping database: %v", err)
+	}
 
-func (db *DB) Close() {
-	db.Pool.Close()
+	return &Pool{Pool: dbpool}, nil
 }
