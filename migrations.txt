@@ -1,0 +1,89 @@
+-- Add migration script here
+CREATE TABLE users (
+    id VARCHAR(21) PRIMARY KEY,
+    name VARCHAR NOT NULL CHECK (LENGTH(name) >= 3),
+    username VARCHAR NOT NULL,
+    email VARCHAR NOT NULL,
+    pass VARCHAR NOT NULL,
+    verified BOOLEAN NOT NULL DEFAULT false,
+    joined TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT user_username_key UNIQUE (username),
+    CONSTRAINT user_email_key UNIQUE (email),
+    CONSTRAINT email_format CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')
+);-- Add migration script here
+CREATE TABLE forges (
+    id VARCHAR(21) PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    owner_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Create a new table for forge access permissions
+CREATE TABLE forge_access (
+    id VARCHAR(21) PRIMARY KEY,
+    forge_id VARCHAR(21) NOT NULL REFERENCES forges(id) ON DELETE CASCADE,
+    user_id VARCHAR(21) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    access_role VARCHAR(50) NOT NULL DEFAULT 'viewer', -- e.g., 'viewer', 'editor', 'admin'
+    added_by VARCHAR(21) NOT NULL REFERENCES users(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT unique_forge_user UNIQUE (forge_id, user_id)
+);
+
+-- Add migration script here
+CREATE TABLE api_keys (
+    id VARCHAR(21) PRIMARY KEY,
+    forge_id TEXT NOT NULL REFERENCES forges(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    last_used_at TIMESTAMPTZ
+);-- Add migration script here
+CREATE TABLE sparks (
+    id VARCHAR(21) PRIMARY KEY,
+    forge_id VARCHAR(21) NOT NULL REFERENCES forges(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    markdown TEXT NOT NULL,
+    owner_id TEXT NOT NULL REFERENCES users(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+-- Add migration script here
+CREATE OR REPLACE FUNCTION update_modified_column()
+
+-- TRIGGER CREATE
+RETURNS TRIGGER AS $$
+BEGIN
+   NEW.updated_at = NOW();
+   RETURN NEW;
+END;
+$$ LANGUAGE 'plpgsql';
+
+-- USERS UPDATE
+CREATE TRIGGER update_users_modtime
+BEFORE UPDATE ON users
+FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+
+-- FORGES UPDATE
+CREATE TRIGGER update_forges_modtime
+BEFORE UPDATE ON forges
+FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+
+-- SPARKS UPDATE
+CREATE TRIGGER update_sparks_modtime
+BEFORE UPDATE ON sparks
+FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+
+-- Update triggers function to maintain updated_at column
+CREATE TRIGGER update_forge_access_modtime
+BEFORE UPDATE ON forge_access
+FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+
+-- Create indexes for performance
+CREATE INDEX idx_forges_owner ON forges(owner_id);
+CREATE INDEX idx_api_keys_forge ON api_keys(forge_id);
+CREATE INDEX idx_sparks_forge ON sparks(forge_id);
+CREATE INDEX idx_forge_access_forge ON forge_access(forge_id);
+CREATE INDEX idx_forge_access_user ON forge_access(user_id);
