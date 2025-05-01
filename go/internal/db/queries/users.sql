@@ -2,7 +2,7 @@
 SELECT email, name FROM users WHERE id = $1;
 
 -- name: GetUserByEmail :one
-SELECT email, name FROM users WHERE email = $1;
+SELECT email, name, password_hash FROM users WHERE email = $1;
 
 -- name: ListUsers :many
 SELECT email, name FROM users ORDER BY created_at DESC

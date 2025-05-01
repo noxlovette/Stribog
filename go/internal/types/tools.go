@@ -8,3 +8,10 @@ func ToPgText(s string) pgtype.Text {
 	}
 	return pgtype.Text{String: s, Valid: true}
 }
+
+func PgTextToString(t pgtype.Text) string {
+	if t.Valid {
+		return t.String
+	}
+	return ""
+}

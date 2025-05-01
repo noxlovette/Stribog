@@ -24,6 +24,7 @@ func main() {
 
 	r := gin.Default()
 	r.POST("/signup", userHandler.Signup)
+	r.POST("/login", userHandler.Login)
 
 	r.Run(":8080")
 }

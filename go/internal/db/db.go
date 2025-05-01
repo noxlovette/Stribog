@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"stribog/internal/tools"
-
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -14,8 +12,8 @@ type Pool struct {
 	*pgxpool.Pool
 }
 
-func Init(ctx context.Context) (*Pool, error) {
-	dbpool, err := pgxpool.New(ctx, tools.GetEnvVar("DATABASE_URL"))
+func InitDB(ctx context.Context, dbDSN string) (*Pool, error) {
+	dbpool, err := pgxpool.New(ctx, dbDSN)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create connection pool: %w", err)
 	}
