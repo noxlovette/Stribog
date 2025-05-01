@@ -1,4 +1,4 @@
-package crud
+package services
 
 import (
 	"context"
@@ -6,9 +6,8 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
-	"stribog/internal/models"
-
 	"stribog/internal/db"
+	"stribog/internal/models"
 )
 
 var (
@@ -25,13 +24,14 @@ func NewForgeService(db *db.Pool) *ForgeService {
 	return &ForgeService{db: db}
 }
 
-func (s *ForgeService) Create(ctx context.Context, forge *models.Forge) error {
+func (fs *ForgeService) Create(ctx context.Context, forge *models.Forge) error {
 	if forge.Title == "" || forge.OwnerID == "" {
 		return ErrInvalidForge
 	}
 
-	tx, err := s.db.Begin(ctx)
+	tx, err := fs.db.Begin(ctx)
 	if err != nil {
+
 		return err
 	}
 	defer tx.Rollback(ctx)
@@ -51,14 +51,13 @@ func (s *ForgeService) Create(ctx context.Context, forge *models.Forge) error {
 	).Scan(&forge.CreatedAt, &forge.UpdatedAt)
 
 	if err != nil {
-		// Check for unique constraint violations or other errors
 		return err
 	}
 
 	return tx.Commit(ctx)
 }
 
-func (s *ForgeService) GetByID(ctx context.Context, id string) (*models.Forge, error) {
+func (fs *ForgeService) GetByID(ctx context.Context, id string) (*models.Forge, error) {
 	query := `
 		SELECT id, title, description, owner_id, created_at, updated_at
 		FROM forges
@@ -66,7 +65,7 @@ func (s *ForgeService) GetByID(ctx context.Context, id string) (*models.Forge, e
 	`
 
 	forge := &models.Forge{}
-	err := s.db.QueryRow(ctx, query, id).Scan(
+	err := fs.db.QueryRow(ctx, query, id).Scan(
 		&forge.ID,
 		&forge.Title,
 		&forge.Description,
@@ -85,7 +84,7 @@ func (s *ForgeService) GetByID(ctx context.Context, id string) (*models.Forge, e
 	return forge, nil
 }
 
-func (s *ForgeService) GetByOwnerID(ctx context.Context, ownerID string) ([]*models.Forge, error) {
+func (fs *ForgeService) GetByOwnerID(ctx context.Context, ownerID string) ([]models.Forge, error) {
 	query := `
 		SELECT id, title, description, owner_id, created_at, updated_at
 		FROM forges
@@ -93,15 +92,15 @@ func (s *ForgeService) GetByOwnerID(ctx context.Context, ownerID string) ([]*mod
 		ORDER BY updated_at DESC
 	`
 
-	rows, err := s.db.Query(ctx, query, ownerID)
+	rows, err := fs.db.Query(ctx, query, ownerID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var forges []*models.Forge
+	var forges []models.Forge
 	for rows.Next() {
-		forge := &models.Forge{}
+		forge := models.Forge{}
 		err := rows.Scan(
 			&forge.ID,
 			&forge.Title,
@@ -123,25 +122,16 @@ func (s *ForgeService) GetByOwnerID(ctx context.Context, ownerID string) ([]*mod
 	return forges, nil
 }
 
-func (s *ForgeService) Update(ctx context.Context, forge *models.Forge) error {
-	_, err := s.GetByID(ctx, forge.ID)
-	if err != nil {
-		return err
-	}
-
-	tx, err := s.db.Begin(ctx)
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback(ctx)
-
+func (fs *ForgeService) Update(ctx context.Context, forge models.Forge) error {
 	query := `
 		UPDATE forges
-		SET title = $1, description = $2
+		SET title = COALESCE($1, title),
+		    description = COALESCE($2, description)
 		WHERE id = $3
 		RETURNING updated_at
-	`
-	err = tx.QueryRow(
+`
+
+	err := fs.db.QueryRow(
 		ctx,
 		query,
 		forge.Title,
@@ -153,34 +143,23 @@ func (s *ForgeService) Update(ctx context.Context, forge *models.Forge) error {
 		return err
 	}
 
-	return tx.Commit(ctx)
+	return nil
 }
 
-func (s *ForgeService) Delete(ctx context.Context, id string) error {
-	tx, err := s.db.Begin(ctx)
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback(ctx)
-
+func (fs *ForgeService) Delete(ctx context.Context, id string) error {
 	query := `DELETE FROM forges WHERE id = $1`
-	commandTag, err := tx.Exec(ctx, query, id)
+	_, err := fs.db.Exec(ctx, query, id)
 	if err != nil {
 		return err
 	}
-
-	if commandTag.RowsAffected() == 0 {
-		return ErrForgeNotFound
-	}
-
-	return tx.Commit(ctx)
+	return nil
 }
 
-func (s *ForgeService) Count(ctx context.Context) (int, error) {
+func (fs *ForgeService) Count(ctx context.Context) (int, error) {
 	var count int
 	query := `SELECT COUNT(*) FROM forges`
 
-	err := s.db.QueryRow(ctx, query).Scan(&count)
+	err := fs.db.QueryRow(ctx, query).Scan(&count)
 	if err != nil {
 		return 0, err
 	}
@@ -188,7 +167,7 @@ func (s *ForgeService) Count(ctx context.Context) (int, error) {
 	return count, nil
 }
 
-func (s *ForgeService) Search(ctx context.Context, term string, limit, offset int) ([]*models.Forge, error) {
+func (fs *ForgeService) Search(ctx context.Context, term string, limit, offset int) ([]*models.Forge, error) {
 	query := `
 		SELECT id, title, description, owner_id, created_at, updated_at
 		FROM forges
@@ -198,7 +177,7 @@ func (s *ForgeService) Search(ctx context.Context, term string, limit, offset in
 	`
 
 	searchTerm := "%" + term + "%"
-	rows, err := s.db.Query(ctx, query, searchTerm, limit, offset)
+	rows, err := fs.db.Query(ctx, query, searchTerm, limit, offset)
 	if err != nil {
 		return nil, err
 	}

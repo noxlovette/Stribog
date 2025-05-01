@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"stribog/internal/tools"
 
@@ -16,13 +17,11 @@ type Pool struct {
 func Init(ctx context.Context) (*Pool, error) {
 	dbpool, err := pgxpool.New(ctx, tools.GetEnvVar("DATABASE_URL"))
 	if err != nil {
-		return nil, fmt.Errorf("unable to create connection pool: %v", err)
+		return nil, fmt.Errorf("unable to create connection pool: %w", err)
 	}
 
-	if err := dbpool.Ping(ctx); err != nil {
-		dbpool.Close()
-		return nil, fmt.Errorf("unable to ping database: %v", err)
-	}
+	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
+	defer cancel()
 
 	return &Pool{Pool: dbpool}, nil
 }
