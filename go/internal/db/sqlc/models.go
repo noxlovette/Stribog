@@ -8,6 +8,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -55,7 +56,7 @@ func (ns NullAccessRole) Value() (driver.Value, error) {
 }
 
 type ApiKey struct {
-	ID         pgtype.UUID
+	ID         uuid.UUID
 	ForgeID    string
 	Title      string
 	IsActive   bool
@@ -67,17 +68,17 @@ type Forge struct {
 	ID          string
 	Title       string
 	Description pgtype.Text
-	OwnerID     pgtype.UUID
+	OwnerID     uuid.UUID
 	CreatedAt   pgtype.Timestamptz
 	UpdatedAt   pgtype.Timestamptz
 }
 
 type ForgeAccess struct {
-	ID         pgtype.UUID
+	ID         uuid.UUID
 	ForgeID    string
-	UserID     pgtype.UUID
+	UserID     uuid.UUID
 	AccessRole AccessRole
-	AddedBy    pgtype.UUID
+	AddedBy    uuid.UUID
 	CreatedAt  pgtype.Timestamptz
 	UpdatedAt  pgtype.Timestamptz
 	RevokedAt  pgtype.Timestamptz
@@ -88,13 +89,13 @@ type Spark struct {
 	ForgeID   string
 	Title     string
 	Markdown  string
-	OwnerID   pgtype.UUID
+	OwnerID   uuid.UUID
 	CreatedAt pgtype.Timestamptz
 	UpdatedAt pgtype.Timestamptz
 }
 
 type User struct {
-	ID           pgtype.UUID
+	ID           uuid.UUID
 	Email        string
 	PasswordHash string
 	Name         pgtype.Text

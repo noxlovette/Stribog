@@ -1,8 +1,8 @@
-package models
+package types
 
 import "time"
 
-type Forge struct {
+type WebForge struct {
 	ID          string    `json:"id"`
 	Title       string    `json:"title"`
 	Description string    `json:"description,omitempty"`

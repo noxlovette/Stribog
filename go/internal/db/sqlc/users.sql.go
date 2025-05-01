@@ -8,93 +8,97 @@ package db
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const createUser = `-- name: CreateUser :exec
-INSERT INTO users (id, email, password_hash, name, is_active)
-VALUES ($1, $2, $3, $4, $5)
+const checkEmailExists = `-- name: CheckEmailExists :one
+SELECT EXISTS (SELECT 1 FROM users WHERE email = $1) AS exists
+`
+
+func (q *Queries) CheckEmailExists(ctx context.Context, email string) (bool, error) {
+	row := q.db.QueryRow(ctx, checkEmailExists, email)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
+const createUser = `-- name: CreateUser :one
+INSERT INTO users (email, password_hash, name)
+VALUES ($1, $2, $3)
+RETURNING id
 `
 
 type CreateUserParams struct {
-	ID           pgtype.UUID
 	Email        string
 	PasswordHash string
 	Name         pgtype.Text
-	IsActive     bool
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
-	_, err := q.db.Exec(ctx, createUser,
-		arg.ID,
-		arg.Email,
-		arg.PasswordHash,
-		arg.Name,
-		arg.IsActive,
-	)
-	return err
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, createUser, arg.Email, arg.PasswordHash, arg.Name)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, email, password_hash, name, created_at, updated_at, is_active FROM users WHERE email = $1
+SELECT email, name FROM users WHERE email = $1
 `
 
-func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
+type GetUserByEmailRow struct {
+	Email string
+	Name  pgtype.Text
+}
+
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error) {
 	row := q.db.QueryRow(ctx, getUserByEmail, email)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Email,
-		&i.PasswordHash,
-		&i.Name,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.IsActive,
-	)
+	var i GetUserByEmailRow
+	err := row.Scan(&i.Email, &i.Name)
 	return i, err
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, email, password_hash, name, created_at, updated_at, is_active FROM users WHERE id = $1
+SELECT email, name FROM users WHERE id = $1
 `
 
-func (q *Queries) GetUserByID(ctx context.Context, id pgtype.UUID) (User, error) {
+type GetUserByIDRow struct {
+	Email string
+	Name  pgtype.Text
+}
+
+func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error) {
 	row := q.db.QueryRow(ctx, getUserByID, id)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Email,
-		&i.PasswordHash,
-		&i.Name,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.IsActive,
-	)
+	var i GetUserByIDRow
+	err := row.Scan(&i.Email, &i.Name)
 	return i, err
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT id, email, password_hash, name, created_at, updated_at, is_active FROM users ORDER BY created_at DESC
+SELECT email, name FROM users ORDER BY created_at DESC
+LIMIT $1 OFFSET $2
 `
 
-func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
-	rows, err := q.db.Query(ctx, listUsers)
+type ListUsersParams struct {
+	Limit  int32
+	Offset int32
+}
+
+type ListUsersRow struct {
+	Email string
+	Name  pgtype.Text
+}
+
+func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUsersRow, error) {
+	rows, err := q.db.Query(ctx, listUsers, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []User
+	var items []ListUsersRow
 	for rows.Next() {
-		var i User
-		if err := rows.Scan(
-			&i.ID,
-			&i.Email,
-			&i.PasswordHash,
-			&i.Name,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.IsActive,
-		); err != nil {
+		var i ListUsersRow
+		if err := rows.Scan(&i.Email, &i.Name); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

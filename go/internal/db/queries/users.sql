@@ -1,12 +1,17 @@
 -- name: GetUserByID :one
-SELECT * FROM users WHERE id = $1;
+SELECT email, name FROM users WHERE id = $1;
 
 -- name: GetUserByEmail :one
-SELECT * FROM users WHERE email = $1;
+SELECT email, name FROM users WHERE email = $1;
 
 -- name: ListUsers :many
-SELECT * FROM users ORDER BY created_at DESC;
+SELECT email, name FROM users ORDER BY created_at DESC
+LIMIT $1 OFFSET $2;
 
--- name: CreateUser :exec
-INSERT INTO users (id, email, password_hash, name, is_active)
-VALUES ($1, $2, $3, $4, $5);
+-- name: CheckEmailExists :one
+SELECT EXISTS (SELECT 1 FROM users WHERE email = $1) AS exists;
+
+-- name: CreateUser :one
+INSERT INTO users (email, password_hash, name)
+VALUES ($1, $2, $3)
+RETURNING id;
