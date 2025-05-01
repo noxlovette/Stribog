@@ -19,10 +19,10 @@ var (
 )
 
 type UserService struct {
-	queries *db.Queries
+	queries db.Querier
 }
 
-func NewUserService(queries *db.Queries) *UserService {
+func NewUserService(queries db.Querier) *UserService {
 	return &UserService{queries}
 }
 
@@ -59,7 +59,7 @@ func (s *UserService) RegisterUser(ctx context.Context, req types.SignupRequest)
 func (s *UserService) Login(ctx context.Context, req types.LoginRequest) (types.WebUser, error) {
 	user, err := s.queries.GetUserByEmail(ctx, req.Email)
 	if err != nil {
-		return types.WebUser{}, fmt.Errorf("getting user by email: %w", err)
+		return types.WebUser{}, ErrEmailNotFound
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password)); err != nil {
