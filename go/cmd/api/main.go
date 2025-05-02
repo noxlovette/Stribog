@@ -6,6 +6,7 @@ import (
 	"stribog/config"
 	db "stribog/internal/db/sqlc"
 	"stribog/internal/handlers"
+	"stribog/internal/middleware"
 	"stribog/internal/services"
 
 	"github.com/gin-gonic/gin"
@@ -24,8 +25,16 @@ func main() {
 	userHandler := handlers.NewUserHandler(userService)
 
 	r := gin.Default()
+
+	// Public auth routes
 	r.POST("/signup", userHandler.Signup)
 	r.POST("/login", userHandler.Login)
+	r.POST("/refresh", userHandler.Refresh)
+
+	// Protected routes
+	authRoutes := r.Group("/auth")
+	authRoutes.Use(middleware.AuthMiddleware(state.TokenService))
+	authRoutes.GET("/me", userHandler.Me)
 
 	r.Run(":8080")
 }

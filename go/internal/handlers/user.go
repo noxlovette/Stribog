@@ -46,7 +46,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := h.Service.Login(c.Request.Context(), req)
+	tokens, err := h.Service.Login(c.Request.Context(), req)
 	if err != nil {
 		switch err {
 		case services.ErrEmailNotFound:
@@ -59,7 +59,31 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("accessToken", token, 3600*24, "/", "", false, true)
+	c.SetCookie("access_token", tokens.AccessToken, 3600, "/", "", false, true)
+	c.SetCookie("refresh_token", tokens.RefreshToken, 3600*24*7, "/", "", false, true)
 
 	c.JSON(http.StatusOK, gin.H{"message": "login successful"})
+}
+
+func (h *UserHandler) Refresh(c *gin.Context) {
+	refreshToken, err := c.Cookie("refresh_token")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "missing refresh token"})
+		return
+	}
+
+	accessToken, err := h.Service.Refresh(c.Request.Context(), refreshToken)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "refresh failed"})
+		return
+	}
+
+	c.SetCookie("access_token", accessToken, 3600, "/", "", false, true)
+
+	c.JSON(http.StatusOK, gin.H{"message": "refreshed"})
+}
+
+func (h *UserHandler) Me(c *gin.Context) {
+	userID, _ := c.Get("userID")
+	c.JSON(http.StatusOK, gin.H{"user_id": userID})
 }

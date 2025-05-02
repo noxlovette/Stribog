@@ -7,6 +7,7 @@ import (
 	"stribog/internal/auth"
 	db "stribog/internal/db/sqlc"
 	types "stribog/internal/types"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -18,6 +19,7 @@ var (
 	ErrEmailTaken           = errors.New("email already in use")
 	ErrAuthenticationFailed = errors.New("authentication failed")
 	ErrEmailNotFound        = errors.New("email not found")
+	ErrInvalidRefreshToken  = errors.New("invalid refresh token")
 )
 
 type UserService struct {
@@ -30,6 +32,11 @@ func NewUserService(q db.Querier, tokens auth.TokenService) *UserService {
 		querier: q,
 		tokens:  tokens,
 	}
+}
+
+type TokenPair struct {
+	AccessToken  string
+	RefreshToken string
 }
 
 func (s *UserService) RegisterUser(ctx context.Context, req types.SignupRequest) (uuid.UUID, error) {
@@ -62,20 +69,45 @@ func (s *UserService) RegisterUser(ctx context.Context, req types.SignupRequest)
 	return id, nil
 }
 
-func (s *UserService) Login(ctx context.Context, req types.LoginRequest) (string, error) {
+func (s *UserService) Login(ctx context.Context, req types.LoginRequest) (*TokenPair, error) {
 	user, err := s.querier.GetUserByEmail(ctx, req.Email)
 	if err != nil {
-		return "", ErrEmailNotFound
+		return nil, ErrEmailNotFound
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password)); err != nil {
-		return "", ErrAuthenticationFailed
+		return nil, ErrAuthenticationFailed
 	}
 
-	token, err := s.tokens.GenerateToken(user.ID.String(), time.Hour*24)
+	accessToken, err := s.tokens.GenerateToken(user.ID.String(), time.Hour)
+	if err != nil {
+		return nil, err
+	}
+
+	refreshToken, err := s.tokens.GenerateToken("refresh:"+user.ID.String(), time.Hour*24*30)
+	if err != nil {
+		return nil, err
+	}
+
+	return &TokenPair{AccessToken: accessToken, RefreshToken: refreshToken}, nil
+}
+
+func (s *UserService) Refresh(ctx context.Context, refreshToken string) (string, error) {
+	userID, err := s.tokens.ParseToken(refreshToken)
+	if err != nil {
+		return "", ErrInvalidRefreshToken
+	}
+
+	if !strings.HasPrefix(userID, "refresh:") {
+		return "", ErrInvalidRefreshToken
+	}
+
+	realUserID := strings.TrimPrefix(userID, "refresh:")
+
+	accessToken, err := s.tokens.GenerateToken(realUserID, time.Hour)
 	if err != nil {
 		return "", err
 	}
 
-	return token, nil
+	return accessToken, nil
 }
