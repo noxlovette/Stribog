@@ -4,8 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"stribog/internal/auth"
 	db "stribog/internal/db/sqlc"
 	types "stribog/internal/types"
+	"time"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -19,11 +21,15 @@ var (
 )
 
 type UserService struct {
-	queries db.Querier
+	querier db.Querier
+	tokens  auth.TokenService
 }
 
-func NewUserService(queries db.Querier) *UserService {
-	return &UserService{queries}
+func NewUserService(q db.Querier, tokens auth.TokenService) *UserService {
+	return &UserService{
+		querier: q,
+		tokens:  tokens,
+	}
 }
 
 func (s *UserService) RegisterUser(ctx context.Context, req types.SignupRequest) (uuid.UUID, error) {
@@ -31,7 +37,7 @@ func (s *UserService) RegisterUser(ctx context.Context, req types.SignupRequest)
 		return uuid.Nil, ErrPasswordTooShort
 	}
 
-	exists, err := s.queries.CheckEmailExists(ctx, req.Email)
+	exists, err := s.querier.CheckEmailExists(ctx, req.Email)
 	if err != nil {
 		return uuid.Nil, fmt.Errorf("checking email existence: %w", err)
 	}
@@ -44,7 +50,7 @@ func (s *UserService) RegisterUser(ctx context.Context, req types.SignupRequest)
 		return uuid.Nil, fmt.Errorf("hashing password: %w", err)
 	}
 
-	id, err := s.queries.CreateUser(ctx, db.CreateUserParams{
+	id, err := s.querier.CreateUser(ctx, db.CreateUserParams{
 		Name:         types.ToPgText(req.Name),
 		Email:        req.Email,
 		PasswordHash: string(hash),
@@ -56,18 +62,20 @@ func (s *UserService) RegisterUser(ctx context.Context, req types.SignupRequest)
 	return id, nil
 }
 
-func (s *UserService) Login(ctx context.Context, req types.LoginRequest) (types.WebUser, error) {
-	user, err := s.queries.GetUserByEmail(ctx, req.Email)
+func (s *UserService) Login(ctx context.Context, req types.LoginRequest) (string, error) {
+	user, err := s.querier.GetUserByEmail(ctx, req.Email)
 	if err != nil {
-		return types.WebUser{}, ErrEmailNotFound
+		return "", ErrEmailNotFound
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password)); err != nil {
-		return types.WebUser{}, ErrAuthenticationFailed
+		return "", ErrAuthenticationFailed
 	}
 
-	return types.WebUser{
-		Email: user.Email,
-		Name:  types.PgTextToString(user.Name),
-	}, nil
+	token, err := s.tokens.GenerateToken(user.ID.String(), time.Hour*24)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }

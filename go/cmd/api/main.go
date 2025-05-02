@@ -18,8 +18,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	queries := db.New(state.DB.Pool)
-	userService := services.NewUserService(queries)
+	querier := db.New(state.DB.Pool)
+	userService := services.NewUserService(querier, state.TokenService)
+
 	userHandler := handlers.NewUserHandler(userService)
 
 	r := gin.Default()

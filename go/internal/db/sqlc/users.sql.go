@@ -43,10 +43,11 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (uuid.UU
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT email, name, password_hash FROM users WHERE email = $1
+SELECT id, email, name, password_hash FROM users WHERE email = $1
 `
 
 type GetUserByEmailRow struct {
+	ID           uuid.UUID
 	Email        string
 	Name         pgtype.Text
 	PasswordHash string
@@ -55,7 +56,12 @@ type GetUserByEmailRow struct {
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error) {
 	row := q.db.QueryRow(ctx, getUserByEmail, email)
 	var i GetUserByEmailRow
-	err := row.Scan(&i.Email, &i.Name, &i.PasswordHash)
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Name,
+		&i.PasswordHash,
+	)
 	return i, err
 }
 

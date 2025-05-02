@@ -46,7 +46,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
-	user, err := h.Service.Login(c.Request.Context(), req)
+	token, err := h.Service.Login(c.Request.Context(), req)
 	if err != nil {
 		switch err {
 		case services.ErrEmailNotFound:
@@ -59,5 +59,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"user": user})
+	c.SetCookie("accessToken", token, 3600*24, "/", "", false, true)
+
+	c.JSON(http.StatusOK, gin.H{"message": "login successful"})
 }

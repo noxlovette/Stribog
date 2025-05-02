@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"stribog/internal/auth"
 	sqlc "stribog/internal/db/sqlc"
 	"stribog/internal/db/sqlc/mock"
 	"stribog/internal/types"
@@ -19,7 +20,13 @@ func TestUserService_RegisterUser(t *testing.T) {
 	defer ctrl.Finish()
 
 	mockQuerier := mock.NewMockQuerier(ctrl)
-	service := NewUserService(mockQuerier)
+
+	mockTokenSvc := &auth.MockTokenService{
+		TokenToReturn: "dummy-token",
+		ErrToReturn:   nil,
+		ParsedUserID:  "123",
+	}
+	service := NewUserService(mockQuerier, mockTokenSvc)
 	ctx := context.Background()
 
 	tests := []struct {
@@ -83,7 +90,12 @@ func TestUserService_Login(t *testing.T) {
 	defer ctrl.Finish()
 
 	mockQuerier := mock.NewMockQuerier(ctrl)
-	service := NewUserService(mockQuerier)
+	mockTokenSvc := &auth.MockTokenService{
+		TokenToReturn: "dummy-token",
+		ErrToReturn:   nil,
+		ParsedUserID:  "123",
+	}
+	service := NewUserService(mockQuerier, mockTokenSvc)
 	ctx := context.Background()
 
 	hash, _ := bcrypt.GenerateFromPassword([]byte("correctpassword"), bcrypt.DefaultCost)

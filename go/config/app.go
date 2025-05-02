@@ -12,8 +12,7 @@ import (
 type App struct {
 	DB           *db.Pool
 	Logger       *zap.Logger
-	JWTValidator *auth.JWTValidator
-	JWTGenerator *auth.JWTGenerator
+	TokenService auth.TokenService
 	Env          *Env
 }
 
@@ -34,14 +33,12 @@ func InitAppState(ctx context.Context) (*App, error) {
 		return nil, err
 	}
 
-	jwtValidator := auth.NewJWTValidator(env.JWTKey)
-	jwtGenerator := auth.NewJWTGenerator(env.JWTKey)
+	jwtAuth := auth.NewJWTAuth(env.JWTKey)
 
 	return &App{
 		DB:           dbPool,
 		Logger:       logger,
-		JWTValidator: jwtValidator,
-		JWTGenerator: jwtGenerator,
+		TokenService: jwtAuth,
 		Env:          env,
 	}, nil
 }
