@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"stribog/internal/auth"
 	db "stribog/internal/db/sqlc"
+	"stribog/internal/middleware"
 	types "stribog/internal/types"
 	"strings"
 	"time"
@@ -20,6 +21,9 @@ var (
 	ErrAuthenticationFailed = errors.New("authentication failed")
 	ErrEmailNotFound        = errors.New("email not found")
 	ErrInvalidRefreshToken  = errors.New("invalid refresh token")
+	ErrInvalidUserId        = errors.New("invalid user id")
+	ErrHashError            = errors.New("error when generating hash")
+	ErrOperationFailed      = errors.New("operation failed")
 )
 
 type UserService struct {
@@ -54,16 +58,16 @@ func (s *UserService) RegisterUser(ctx context.Context, req types.SignupRequest)
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return uuid.Nil, fmt.Errorf("hashing password: %w", err)
+		return uuid.Nil, ErrHashError
 	}
 
 	id, err := s.querier.CreateUser(ctx, db.CreateUserParams{
-		Name:         types.ToPgText(req.Name),
+		Name:         &req.Name,
 		Email:        req.Email,
 		PasswordHash: string(hash),
 	})
 	if err != nil {
-		return uuid.Nil, fmt.Errorf("creating user: %w", err)
+		return uuid.Nil, ErrOperationFailed
 	}
 
 	return id, nil
@@ -110,4 +114,77 @@ func (s *UserService) Refresh(ctx context.Context, refreshToken string) (string,
 	}
 
 	return accessToken, nil
+}
+
+func (s *UserService) GetUser(ctx context.Context) (*types.WebUser, error) {
+	userIDStr, ok := ctx.Value(middleware.UserIDKey).(string)
+	if !ok {
+		return nil, fmt.Errorf("%w: user ID missing or not a string", ErrInvalidUserId)
+	}
+
+	parsedUserID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		return nil, fmt.Errorf("%w: %v", ErrInvalidUserId, err)
+	}
+
+	user, err := s.querier.GetUserByID(ctx, parsedUserID)
+	if err != nil {
+		return nil, ErrInvalidUserId
+	}
+
+	return &types.WebUser{
+		Email: user.Email,
+		Name:  user.Name,
+	}, nil
+}
+
+func (s *UserService) DeleteUser(ctx context.Context) error {
+	userIDStr, ok := ctx.Value(middleware.UserIDKey).(string)
+	if !ok {
+		return fmt.Errorf("%w: user ID missing or not a string", ErrInvalidUserId)
+	}
+
+	parsedUserID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		return fmt.Errorf("%w: %v", ErrInvalidUserId, err)
+	}
+	s.querier.DeleteUser(ctx, parsedUserID)
+
+	return nil
+}
+
+func (s *UserService) UpdateUser(ctx context.Context, update types.UpdateRequest) error {
+	userIDStr, ok := ctx.Value(middleware.UserIDKey).(string)
+	if !ok {
+		return fmt.Errorf("%w: user ID missing or not a string", ErrInvalidUserId)
+	}
+
+	parsedUserID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		return fmt.Errorf("%w: %v", ErrInvalidUserId, err)
+	}
+
+	var passwordHash *string
+	if update.Password != nil && *update.Password != "" {
+		hash, err := bcrypt.GenerateFromPassword([]byte(*update.Password), bcrypt.DefaultCost)
+		if err != nil {
+			return fmt.Errorf("%w: %v", ErrHashError, err)
+		}
+		hashed := string(hash)
+		passwordHash = &hashed
+	}
+
+	arg := db.UpdateUserParams{
+		ID:           parsedUserID,
+		Name:         update.Name,
+		Email:        update.Email,
+		PasswordHash: passwordHash,
+	}
+
+	err = s.querier.UpdateUser(ctx, arg)
+	if err != nil {
+		return ErrOperationFailed
+	}
+
+	return nil
 }

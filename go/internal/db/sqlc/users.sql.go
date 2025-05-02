@@ -9,7 +9,6 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const checkEmailExists = `-- name: CheckEmailExists :one
@@ -32,7 +31,7 @@ RETURNING id
 type CreateUserParams struct {
 	Email        string
 	PasswordHash string
-	Name         pgtype.Text
+	Name         *string
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (uuid.UUID, error) {
@@ -42,6 +41,15 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (uuid.UU
 	return id, err
 }
 
+const deleteUser = `-- name: DeleteUser :exec
+DELETE FROM users WHERE id = $1
+`
+
+func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteUser, id)
+	return err
+}
+
 const getUserByEmail = `-- name: GetUserByEmail :one
 SELECT id, email, name, password_hash FROM users WHERE email = $1
 `
@@ -49,7 +57,7 @@ SELECT id, email, name, password_hash FROM users WHERE email = $1
 type GetUserByEmailRow struct {
 	ID           uuid.UUID
 	Email        string
-	Name         pgtype.Text
+	Name         *string
 	PasswordHash string
 }
 
@@ -71,7 +79,7 @@ SELECT email, name FROM users WHERE id = $1
 
 type GetUserByIDRow struct {
 	Email string
-	Name  pgtype.Text
+	Name  *string
 }
 
 func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error) {
@@ -81,37 +89,28 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow
 	return i, err
 }
 
-const listUsers = `-- name: ListUsers :many
-SELECT email, name FROM users ORDER BY created_at DESC
-LIMIT $1 OFFSET $2
+const updateUser = `-- name: UpdateUser :exec
+UPDATE users
+SET
+    name = COALESCE($1, name),
+    email = COALESCE($2, email),
+    password_hash = COALESCE($3, password_hash)
+WHERE id = $4
 `
 
-type ListUsersParams struct {
-	Limit  int32
-	Offset int32
+type UpdateUserParams struct {
+	Name         *string
+	Email        *string
+	PasswordHash *string
+	ID           uuid.UUID
 }
 
-type ListUsersRow struct {
-	Email string
-	Name  pgtype.Text
-}
-
-func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUsersRow, error) {
-	rows, err := q.db.Query(ctx, listUsers, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []ListUsersRow
-	for rows.Next() {
-		var i ListUsersRow
-		if err := rows.Scan(&i.Email, &i.Name); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
+	_, err := q.db.Exec(ctx, updateUser,
+		arg.Name,
+		arg.Email,
+		arg.PasswordHash,
+		arg.ID,
+	)
+	return err
 }

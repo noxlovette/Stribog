@@ -26,15 +26,16 @@ func main() {
 
 	r := gin.Default()
 
-	// Public auth routes
 	r.POST("/signup", userHandler.Signup)
 	r.POST("/login", userHandler.Login)
 	r.POST("/refresh", userHandler.Refresh)
 
-	// Protected routes
-	authRoutes := r.Group("/auth")
-	authRoutes.Use(middleware.AuthMiddleware(state.TokenService))
-	authRoutes.GET("/me", userHandler.Me)
+	apiRoutes := r.Group("/api")
+	apiRoutes.Use(middleware.AuthMiddleware(state.TokenService))
+	apiRoutes.GET("/me", userHandler.Me)
+
+	userRoutes := apiRoutes.Group("/user")
+	userRoutes.GET("/", userHandler.Fetch).DELETE("/", userHandler.Delete).PATCH("/", userHandler.Update)
 
 	r.Run(":8080")
 }

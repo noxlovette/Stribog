@@ -7,6 +7,7 @@ import (
 	"stribog/internal/auth"
 	sqlc "stribog/internal/db/sqlc"
 	"stribog/internal/db/sqlc/mock"
+	"stribog/internal/middleware"
 	"stribog/internal/types"
 
 	"github.com/google/uuid"
@@ -88,6 +89,7 @@ func TestUserService_RegisterUser(t *testing.T) {
 func TestUserService_Login(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
+	name := "User Name"
 
 	mockQuerier := mock.NewMockQuerier(ctrl)
 	mockTokenSvc := &auth.MockTokenService{
@@ -116,7 +118,7 @@ func TestUserService_Login(t *testing.T) {
 				mockQuerier.EXPECT().GetUserByEmail(ctx, "user@example.com").Return(sqlc.GetUserByEmailRow{
 					Email:        "user@example.com",
 					PasswordHash: string(hash),
-					Name:         types.ToPgText("User Name"),
+					Name:         &name,
 				}, nil)
 			},
 			expectErr: nil,
@@ -131,7 +133,7 @@ func TestUserService_Login(t *testing.T) {
 				mockQuerier.EXPECT().GetUserByEmail(ctx, "user@example.com").Return(sqlc.GetUserByEmailRow{
 					Email:        "user@example.com",
 					PasswordHash: string(hash),
-					Name:         types.ToPgText("User Name"),
+					Name:         &name,
 				}, nil)
 			},
 			expectErr: ErrAuthenticationFailed,
@@ -160,4 +162,168 @@ func TestUserService_Login(t *testing.T) {
 			}
 		})
 	}
+}
+func TestUserService_GetUser(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockQuerier := mock.NewMockQuerier(ctrl)
+	mockTokenSvc := &auth.MockTokenService{ParsedUserID: uuid.New().String()}
+	service := NewUserService(mockQuerier, mockTokenSvc)
+	name := "Test"
+
+	tests := []struct {
+		name       string
+		ctx        context.Context
+		setupMocks func(uuid.UUID)
+		expectErr  error
+	}{
+		{
+			name: "successful get",
+			ctx:  context.WithValue(context.Background(), middleware.UserIDKey, mockTokenSvc.ParsedUserID),
+			setupMocks: func(id uuid.UUID) {
+				mockQuerier.EXPECT().
+					GetUserByID(gomock.Any(), id).
+					Return(sqlc.GetUserByIDRow{Name: &name, Email: "test@example.com"}, nil)
+			},
+			expectErr: nil,
+		},
+		{
+			name:       "invalid uuid",
+			ctx:        context.WithValue(context.Background(), middleware.UserIDKey, "not-a-uuid"),
+			setupMocks: func(_ uuid.UUID) {}, // Not called
+			expectErr:  ErrInvalidUserId,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			parsed, _ := uuid.Parse(mockTokenSvc.ParsedUserID)
+			tc.setupMocks(parsed)
+			_, err := service.GetUser(tc.ctx)
+			if tc.expectErr != nil {
+				require.ErrorIs(t, err, tc.expectErr)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestUserService_DeleteUser(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockQuerier := mock.NewMockQuerier(ctrl)
+	mockTokenSvc := &auth.MockTokenService{ParsedUserID: uuid.New().String()}
+	service := NewUserService(mockQuerier, mockTokenSvc)
+
+	tests := []struct {
+		name       string
+		ctx        context.Context
+		setupMocks func(uuid.UUID)
+		expectErr  error
+	}{
+		{
+			name: "successful delete",
+			ctx:  context.WithValue(context.Background(), middleware.UserIDKey, mockTokenSvc.ParsedUserID),
+			setupMocks: func(id uuid.UUID) {
+				mockQuerier.EXPECT().
+					DeleteUser(gomock.Any(), id).
+					Return(nil)
+			},
+			expectErr: nil,
+		},
+		{
+			name:       "bad uuid",
+			ctx:        context.WithValue(context.Background(), middleware.UserIDKey, "not-a-uuid"),
+			setupMocks: func(_ uuid.UUID) {},
+			expectErr:  ErrInvalidUserId,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			parsed, _ := uuid.Parse(mockTokenSvc.ParsedUserID)
+			tc.setupMocks(parsed)
+			err := service.DeleteUser(tc.ctx)
+			if tc.expectErr != nil {
+				require.ErrorIs(t, err, tc.expectErr)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestUserService_UpdateUser(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockQuerier := mock.NewMockQuerier(ctrl)
+	mockTokenSvc := &auth.MockTokenService{ParsedUserID: uuid.New().String()}
+	service := NewUserService(mockQuerier, mockTokenSvc)
+
+	name := "Updated"
+	email := "new@example.com"
+
+	validPassword := "validpass"
+	tests := []struct {
+		name       string
+		req        types.UpdateRequest
+		setupMocks func(uuid.UUID, *string)
+		expectErr  error
+	}{
+		{
+			name: "update with password",
+			req: types.UpdateRequest{
+				Name:     &name,
+				Email:    &email,
+				Password: &validPassword,
+			},
+			setupMocks: func(id uuid.UUID, hash *string) {
+				mockQuerier.EXPECT().
+					UpdateUser(gomock.Any(), gomock.Any()).
+					Return(nil)
+
+			},
+			expectErr: nil,
+		},
+		{
+			name: "bcrypt error",
+			req: types.UpdateRequest{
+				Password: func() *string {
+					s := string(make([]byte, 1000)) // Too long for bcrypt
+					return &s
+				}(),
+			},
+			setupMocks: func(uuid.UUID, *string) {},
+			expectErr:  ErrHashError,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			ctx := context.WithValue(context.Background(), middleware.UserIDKey, mockTokenSvc.ParsedUserID)
+			parsed, _ := uuid.Parse(mockTokenSvc.ParsedUserID)
+
+			var hashPtr *string
+			if tc.expectErr != ErrHashError && tc.req.Password != nil && *tc.req.Password != "" {
+				h, err := bcrypt.GenerateFromPassword([]byte(*tc.req.Password), bcrypt.DefaultCost)
+				require.NoError(t, err)
+				s := string(h)
+				hashPtr = &s
+			}
+
+			tc.setupMocks(parsed, hashPtr)
+
+			err := service.UpdateUser(ctx, tc.req)
+			if tc.expectErr != nil {
+				require.ErrorIs(t, err, tc.expectErr)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+
 }

@@ -12,7 +12,7 @@ package mock
 import (
 	context "context"
 	reflect "reflect"
-	sqlc "stribog/internal/db/sqlc"
+	db "stribog/internal/db/sqlc"
 
 	uuid "github.com/google/uuid"
 	gomock "go.uber.org/mock/gomock"
@@ -58,7 +58,7 @@ func (mr *MockQuerierMockRecorder) CheckEmailExists(ctx, email any) *gomock.Call
 }
 
 // CreateUser mocks base method.
-func (m *MockQuerier) CreateUser(ctx context.Context, arg sqlc.CreateUserParams) (uuid.UUID, error) {
+func (m *MockQuerier) CreateUser(ctx context.Context, arg db.CreateUserParams) (uuid.UUID, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", ctx, arg)
 	ret0, _ := ret[0].(uuid.UUID)
@@ -72,11 +72,25 @@ func (mr *MockQuerierMockRecorder) CreateUser(ctx, arg any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockQuerier)(nil).CreateUser), ctx, arg)
 }
 
+// DeleteUser mocks base method.
+func (m *MockQuerier) DeleteUser(ctx context.Context, id uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteUser", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteUser indicates an expected call of DeleteUser.
+func (mr *MockQuerierMockRecorder) DeleteUser(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockQuerier)(nil).DeleteUser), ctx, id)
+}
+
 // GetUserByEmail mocks base method.
-func (m *MockQuerier) GetUserByEmail(ctx context.Context, email string) (sqlc.GetUserByEmailRow, error) {
+func (m *MockQuerier) GetUserByEmail(ctx context.Context, email string) (db.GetUserByEmailRow, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserByEmail", ctx, email)
-	ret0, _ := ret[0].(sqlc.GetUserByEmailRow)
+	ret0, _ := ret[0].(db.GetUserByEmailRow)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -88,10 +102,10 @@ func (mr *MockQuerierMockRecorder) GetUserByEmail(ctx, email any) *gomock.Call {
 }
 
 // GetUserByID mocks base method.
-func (m *MockQuerier) GetUserByID(ctx context.Context, id uuid.UUID) (sqlc.GetUserByIDRow, error) {
+func (m *MockQuerier) GetUserByID(ctx context.Context, id uuid.UUID) (db.GetUserByIDRow, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserByID", ctx, id)
-	ret0, _ := ret[0].(sqlc.GetUserByIDRow)
+	ret0, _ := ret[0].(db.GetUserByIDRow)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -102,17 +116,16 @@ func (mr *MockQuerierMockRecorder) GetUserByID(ctx, id any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByID", reflect.TypeOf((*MockQuerier)(nil).GetUserByID), ctx, id)
 }
 
-// ListUsers mocks base method.
-func (m *MockQuerier) ListUsers(ctx context.Context, arg sqlc.ListUsersParams) ([]sqlc.ListUsersRow, error) {
+// UpdateUser mocks base method.
+func (m *MockQuerier) UpdateUser(ctx context.Context, arg db.UpdateUserParams) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListUsers", ctx, arg)
-	ret0, _ := ret[0].([]sqlc.ListUsersRow)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret := m.ctrl.Call(m, "UpdateUser", ctx, arg)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-// ListUsers indicates an expected call of ListUsers.
-func (mr *MockQuerierMockRecorder) ListUsers(ctx, arg any) *gomock.Call {
+// UpdateUser indicates an expected call of UpdateUser.
+func (mr *MockQuerierMockRecorder) UpdateUser(ctx, arg any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUsers", reflect.TypeOf((*MockQuerier)(nil).ListUsers), ctx, arg)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockQuerier)(nil).UpdateUser), ctx, arg)
 }

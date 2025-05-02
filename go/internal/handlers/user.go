@@ -19,7 +19,7 @@ func NewUserHandler(service *services.UserService) *UserHandler {
 func (h *UserHandler) Signup(c *gin.Context) {
 	var req types.SignupRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body"})
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": "invalid request body"})
 		return
 	}
 
@@ -86,4 +86,39 @@ func (h *UserHandler) Refresh(c *gin.Context) {
 func (h *UserHandler) Me(c *gin.Context) {
 	userID, _ := c.Get("userID")
 	c.JSON(http.StatusOK, gin.H{"user_id": userID})
+}
+
+func (h *UserHandler) Fetch(c *gin.Context) {
+	ctx := c.Request.Context()
+	user, err := h.Service.GetUser(ctx)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, user)
+}
+
+func (h *UserHandler) Delete(c *gin.Context) {
+	ctx := c.Request.Context()
+	err := h.Service.DeleteUser(ctx)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.Status(http.StatusNoContent)
+}
+
+func (h *UserHandler) Update(c *gin.Context) {
+	var req types.UpdateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": "Invalid request body"})
+		return
+	}
+	ctx := c.Request.Context()
+	err := h.Service.UpdateUser(ctx, req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.Status(http.StatusNoContent)
 }

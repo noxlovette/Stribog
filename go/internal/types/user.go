@@ -1,8 +1,14 @@
 package types
 
 type WebUser struct {
-	Email string `json:"email"`
-	Name  string `json:"name"`
+	Email string  `json:"email"`
+	Name  *string `json:"name"`
+}
+
+type UpdateRequest struct {
+	Name     *string `json:"name"`
+	Email    *string `json:"email"`
+	Password *string `json:"password"`
 }
 
 type SignupRequest struct {

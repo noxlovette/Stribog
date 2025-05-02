@@ -67,7 +67,7 @@ type ApiKey struct {
 type Forge struct {
 	ID          string
 	Title       string
-	Description pgtype.Text
+	Description *string
 	OwnerID     uuid.UUID
 	CreatedAt   pgtype.Timestamptz
 	UpdatedAt   pgtype.Timestamptz
@@ -98,7 +98,7 @@ type User struct {
 	ID           uuid.UUID
 	Email        string
 	PasswordHash string
-	Name         pgtype.Text
+	Name         *string
 	CreatedAt    pgtype.Timestamptz
 	UpdatedAt    pgtype.Timestamptz
 	IsActive     bool
