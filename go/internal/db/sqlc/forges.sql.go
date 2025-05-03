@@ -74,16 +74,17 @@ func (q *Queries) DeleteForge(ctx context.Context, arg DeleteForgeParams) error 
 
 const deleteForgeAccess = `-- name: DeleteForgeAccess :exec
 DELETE FROM forge_access
-WHERE forge_id = $2 AND user_id = $1
+WHERE user_id = $1 AND forge_id = $2 AND added_by = $3
 `
 
 type DeleteForgeAccessParams struct {
 	UserID  uuid.UUID
 	ForgeID string
+	AddedBy uuid.UUID
 }
 
 func (q *Queries) DeleteForgeAccess(ctx context.Context, arg DeleteForgeAccessParams) error {
-	_, err := q.db.Exec(ctx, deleteForgeAccess, arg.UserID, arg.ForgeID)
+	_, err := q.db.Exec(ctx, deleteForgeAccess, arg.UserID, arg.ForgeID, arg.AddedBy)
 	return err
 }
 
@@ -259,14 +260,13 @@ func (q *Queries) UpdateForgeAndCheckWriteAccess(ctx context.Context, arg Update
 }
 
 const upsertForgeAccess = `-- name: UpsertForgeAccess :exec
-INSERT INTO forge_access (id, forge_id, user_id, access_role, added_by)
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO forge_access (forge_id, user_id, access_role, added_by)
+VALUES ($1, $2, $3, $4)
 ON CONFLICT (forge_id, user_id) DO UPDATE
-SET access_role = $4, added_by = $5, updated_at = NOW()
+SET access_role = $3, added_by = $4, updated_at = NOW()
 `
 
 type UpsertForgeAccessParams struct {
-	ID         uuid.UUID
 	ForgeID    string
 	UserID     uuid.UUID
 	AccessRole AccessRole
@@ -275,7 +275,6 @@ type UpsertForgeAccessParams struct {
 
 func (q *Queries) UpsertForgeAccess(ctx context.Context, arg UpsertForgeAccessParams) error {
 	_, err := q.db.Exec(ctx, upsertForgeAccess,
-		arg.ID,
 		arg.ForgeID,
 		arg.UserID,
 		arg.AccessRole,

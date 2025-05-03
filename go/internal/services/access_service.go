@@ -7,8 +7,6 @@ import (
 	appError "stribog/internal/errors"
 	"stribog/internal/middleware"
 	"stribog/internal/types"
-
-	"github.com/google/uuid"
 )
 
 type AccessService struct {
@@ -29,19 +27,14 @@ var (
 	ErrRemoveForgeAccess = fmt.Errorf("error removing forge access")
 )
 
-func (s *AccessService) ListForgeAccess(ctx context.Context, userID string, forgeID string) ([]*types.WebAccess, error) {
-	userIDStr, ok := ctx.Value(middleware.UserIDKey).(string)
+func (s *AccessService) ListForgeAccess(ctx context.Context, forgeID string) ([]*types.WebAccess, error) {
+	userID, ok := middleware.GetUserID(ctx)
 	if !ok {
-		return nil, fmt.Errorf("%w: user ID missing or not a string", appError.ErrInvalidUserId)
-	}
-
-	parsedUserID, err := uuid.Parse(userIDStr)
-	if err != nil {
-		return nil, fmt.Errorf("%w: %v", appError.ErrInvalidUserId, err)
+		return nil, fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
 
 	hasAccess, err := s.querier.CheckReadAccess(ctx, db.CheckReadAccessParams{
-		OwnerID: parsedUserID,
+		OwnerID: userID,
 		ID:      forgeID,
 	})
 	if err != nil {
@@ -72,22 +65,11 @@ func (s *AccessService) ListForgeAccess(ctx context.Context, userID string, forg
 	return webAccessList, nil
 }
 
-func (s *AccessService) AddForgeAccess(ctx context.Context, userID string, forgeID string, accessRole db.AccessRole) error {
-	userIDStr, ok := ctx.Value(middleware.UserIDKey).(string)
+func (s *AccessService) CreateForgeAccess(ctx context.Context, forgeID string, create types.AccessCreateRequest) error {
+	adderUserID, ok := middleware.GetUserID(ctx)
 	if !ok {
-		return fmt.Errorf("%w: user ID missing or not a string", appError.ErrInvalidUserId)
+		return fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
-
-	adderUserID, err := uuid.Parse(userIDStr)
-	if err != nil {
-		return fmt.Errorf("%w: %v", appError.ErrInvalidUserId, err)
-	}
-
-	addedUserID, err := uuid.Parse(userID)
-	if err != nil {
-		return fmt.Errorf("%w: %v", appError.ErrInvalidUserId, err)
-	}
-
 	hasAccess, err := s.querier.CheckWriteAccess(ctx, db.CheckWriteAccessParams{
 		OwnerID: adderUserID,
 		ID:      forgeID,
@@ -102,8 +84,8 @@ func (s *AccessService) AddForgeAccess(ctx context.Context, userID string, forge
 
 	err = s.querier.UpsertForgeAccess(ctx, db.UpsertForgeAccessParams{
 		ForgeID:    forgeID,
-		UserID:     addedUserID,
-		AccessRole: accessRole,
+		UserID:     create.UserID,
+		AccessRole: create.AccessRole,
 		AddedBy:    adderUserID,
 	})
 	if err != nil {
@@ -113,19 +95,14 @@ func (s *AccessService) AddForgeAccess(ctx context.Context, userID string, forge
 	return nil
 }
 
-func (s *AccessService) RemoveForgeAccess(ctx context.Context, userID string, forgeID string) error {
-	userIDStr, ok := ctx.Value(middleware.UserIDKey).(string)
+func (s *AccessService) DeleteForgeAccess(ctx context.Context, forgeID string, delete types.AccessDeleteRequest) error {
+	userID, ok := middleware.GetUserID(ctx)
 	if !ok {
-		return fmt.Errorf("%w: user ID missing or not a string", appError.ErrInvalidUserId)
-	}
-
-	userIDUUID, err := uuid.Parse(userIDStr)
-	if err != nil {
-		return fmt.Errorf("%w: %v", appError.ErrInvalidUserId, err)
+		return fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
 
 	hasAccess, err := s.querier.CheckWriteAccess(ctx, db.CheckWriteAccessParams{
-		OwnerID: userIDUUID,
+		OwnerID: userID,
 		ID:      forgeID,
 	})
 	if err != nil {
@@ -138,7 +115,8 @@ func (s *AccessService) RemoveForgeAccess(ctx context.Context, userID string, fo
 
 	err = s.querier.DeleteForgeAccess(ctx, db.DeleteForgeAccessParams{
 		ForgeID: forgeID,
-		UserID:  userIDUUID,
+		AddedBy: userID,
+		UserID:  delete.UserID,
 	})
 	if err != nil {
 		return fmt.Errorf("%w: %v", ErrRemoveForgeAccess, err)

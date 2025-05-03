@@ -12,7 +12,6 @@ import (
 	"stribog/internal/types"
 
 	"github.com/aidarkhanov/nanoid"
-	"github.com/google/uuid"
 )
 
 type ForgeService struct {
@@ -32,21 +31,16 @@ var (
 )
 
 func (s *ForgeService) CreateForge(ctx context.Context, create types.ForgeCreateRequest) (*string, error) {
-	userIDStr, ok := ctx.Value(middleware.UserIDKey).(string)
+	userID, ok := middleware.GetUserID(ctx)
 	if !ok {
-		return nil, fmt.Errorf("%w: user ID missing or not a string", appError.ErrInvalidUserId)
-	}
-
-	parsedUserID, err := uuid.Parse(userIDStr)
-	if err != nil {
-		return nil, fmt.Errorf("%w: %v", appError.ErrInvalidUserId, err)
+		return nil, fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
 
 	forgeID := nanoid.New()
 
-	err = s.querier.InsertForge(ctx, db.InsertForgeParams{
+	err := s.querier.InsertForge(ctx, db.InsertForgeParams{
 		ID:          forgeID,
-		OwnerID:     parsedUserID,
+		OwnerID:     userID,
 		Title:       create.Title,
 		Description: create.Description,
 	})
@@ -59,17 +53,12 @@ func (s *ForgeService) CreateForge(ctx context.Context, create types.ForgeCreate
 }
 
 func (s *ForgeService) ListForges(ctx context.Context) ([]*types.WebForge, error) {
-	userIDStr, ok := ctx.Value(middleware.UserIDKey).(string)
+	userID, ok := middleware.GetUserID(ctx)
 	if !ok {
-		return nil, fmt.Errorf("%w: user ID missing or not a string", appError.ErrInvalidUserId)
+		return nil, fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
 
-	parsedUserID, err := uuid.Parse(userIDStr)
-	if err != nil {
-		return nil, fmt.Errorf("%w: %v", appError.ErrInvalidUserId, err)
-	}
-
-	forges, err := s.querier.GetForgesAndCheckReadAccess(ctx, parsedUserID)
+	forges, err := s.querier.GetForgesAndCheckReadAccess(ctx, userID)
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", ErrListForgesFailed, err)
 	}
@@ -87,18 +76,13 @@ func (s *ForgeService) ListForges(ctx context.Context) ([]*types.WebForge, error
 }
 
 func (s *ForgeService) GetForge(ctx context.Context, forgeID string) (*types.WebForge, error) {
-	userIDStr, ok := ctx.Value(middleware.UserIDKey).(string)
+	userID, ok := middleware.GetUserID(ctx)
 	if !ok {
-		return nil, fmt.Errorf("%w: user ID missing or not a string", appError.ErrInvalidUserId)
-	}
-
-	parsedUserID, err := uuid.Parse(userIDStr)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse user ID: %w", err)
+		return nil, fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
 
 	forge, err := s.querier.GetForgeAndCheckReadAccess(ctx, db.GetForgeAndCheckReadAccessParams{
-		OwnerID: parsedUserID,
+		OwnerID: userID,
 		ID:      forgeID,
 	})
 	if err != nil {
@@ -116,18 +100,13 @@ func (s *ForgeService) GetForge(ctx context.Context, forgeID string) (*types.Web
 }
 
 func (s *ForgeService) DeleteForge(ctx context.Context, forgeID string) error {
-	userIDStr, ok := ctx.Value(middleware.UserIDKey).(string)
+	userID, ok := middleware.GetUserID(ctx)
 	if !ok {
-		return fmt.Errorf("%w: user ID missing or not a string", appError.ErrInvalidUserId)
+		return fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
 
-	parsedUserID, err := uuid.Parse(userIDStr)
-	if err != nil {
-		return fmt.Errorf("%w: %v", appError.ErrInvalidUserId, err)
-	}
-
-	err = s.querier.DeleteForge(ctx, db.DeleteForgeParams{
-		OwnerID: parsedUserID,
+	err := s.querier.DeleteForge(ctx, db.DeleteForgeParams{
+		OwnerID: userID,
 		ID:      forgeID,
 	})
 	if err != nil {
@@ -138,18 +117,13 @@ func (s *ForgeService) DeleteForge(ctx context.Context, forgeID string) error {
 }
 
 func (s *ForgeService) UpdateForge(ctx context.Context, update types.ForgeUpdateRequest, forgeID string) error {
-	userIDStr, ok := ctx.Value(middleware.UserIDKey).(string)
+	userID, ok := middleware.GetUserID(ctx)
 	if !ok {
-		return fmt.Errorf("%w: user ID missing or not a string", appError.ErrInvalidUserId)
+		return fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
 
-	parsedUserID, err := uuid.Parse(userIDStr)
-	if err != nil {
-		return fmt.Errorf("%w: %v", appError.ErrInvalidUserId, err)
-	}
-
-	err = s.querier.UpdateForgeAndCheckWriteAccess(ctx, db.UpdateForgeAndCheckWriteAccessParams{
-		OwnerID:     parsedUserID,
+	err := s.querier.UpdateForgeAndCheckWriteAccess(ctx, db.UpdateForgeAndCheckWriteAccessParams{
+		OwnerID:     userID,
 		ID:          forgeID,
 		Title:       update.Title,
 		Description: update.Description,

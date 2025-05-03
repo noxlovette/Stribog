@@ -28,3 +28,11 @@ type ForgeCreateRequest struct {
 	Title       string  `json:"title,omitempty"`
 	Description *string `json:"description,omitempty"`
 }
+type AccessCreateRequest struct {
+	UserID     uuid.UUID     `json:"user_id,omitempty"`
+	AccessRole db.AccessRole `json:"access_role,omitempty"`
+}
+
+type AccessDeleteRequest struct {
+	UserID uuid.UUID `json:"user_id,omitempty"`
+}

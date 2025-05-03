@@ -101,11 +101,11 @@ func (s *UserService) Refresh(ctx context.Context, refreshToken string) (string,
 		return "", ErrInvalidRefreshToken
 	}
 
-	if !strings.HasPrefix(userID, "refresh:") {
+	if !strings.HasPrefix(userID.String(), "refresh:") {
 		return "", ErrInvalidRefreshToken
 	}
 
-	realUserID := strings.TrimPrefix(userID, "refresh:")
+	realUserID := strings.TrimPrefix(userID.String(), "refresh:")
 
 	accessToken, err := s.tokens.GenerateToken(realUserID, time.Hour)
 	if err != nil {

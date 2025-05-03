@@ -42,14 +42,14 @@ WHERE f.id = $2 AND (
 
 
 -- name: UpsertForgeAccess :exec
-INSERT INTO forge_access (id, forge_id, user_id, access_role, added_by)
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO forge_access (forge_id, user_id, access_role, added_by)
+VALUES ($1, $2, $3, $4)
 ON CONFLICT (forge_id, user_id) DO UPDATE
-SET access_role = $4, added_by = $5, updated_at = NOW();
+SET access_role = $3, added_by = $4, updated_at = NOW();
 
 -- name: DeleteForgeAccess :exec
 DELETE FROM forge_access
-WHERE forge_id = $2 AND user_id = $1;
+WHERE user_id = $1 AND forge_id = $2 AND added_by = $3;
 
 -- name: ListForgeAccess :many
 SELECT fa.*, u.name as user_name, u.email as user_email

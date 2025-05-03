@@ -22,10 +22,11 @@ func main() {
 	querier := db.New(state.DB.Pool)
 	userService := services.NewUserService(querier, state.TokenService)
 	forgeService := services.NewForgeService(querier)
-	// accessService := services.NewAccessService(querier)
+	accessService := services.NewAccessService(querier)
 
 	userHandler := handlers.NewUserHandler(userService)
 	forgeHandler := handlers.NewForgeHandler(forgeService)
+	accessHandler := handlers.NewAccessHandler(accessService)
 
 	r := gin.Default()
 
@@ -43,6 +44,9 @@ func main() {
 	forgeRoutes := apiRoutes.Group("/forge")
 	forgeRoutes.POST("/", forgeHandler.Create).GET("/all", forgeHandler.List)
 	forgeRoutes.GET("/:id", forgeHandler.Get).DELETE("/:id", forgeHandler.Delete).PATCH("/:id", forgeHandler.Update)
+
+	accessRoutes := forgeRoutes.Group("/:id/access")
+	accessRoutes.POST("/", accessHandler.Create).DELETE("/", accessHandler.Delete).GET("/", accessHandler.List)
 
 	r.Run(":8080")
 }
