@@ -3,9 +3,9 @@ package services
 import (
 	"context"
 	"fmt"
+	"stribog/internal/auth"
 	db "stribog/internal/db/sqlc"
 	appError "stribog/internal/errors"
-	"stribog/internal/middleware"
 	"stribog/internal/types"
 )
 
@@ -28,7 +28,7 @@ var (
 )
 
 func (s *AccessService) ListForgeAccess(ctx context.Context, forgeID string) ([]*types.WebAccess, error) {
-	userID, ok := middleware.GetUserID(ctx)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
 		return nil, fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
@@ -66,7 +66,7 @@ func (s *AccessService) ListForgeAccess(ctx context.Context, forgeID string) ([]
 }
 
 func (s *AccessService) CreateForgeAccess(ctx context.Context, forgeID string, create types.AccessCreateRequest) error {
-	adderUserID, ok := middleware.GetUserID(ctx)
+	adderUserID, ok := auth.GetUserID(ctx)
 	if !ok {
 		return fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
@@ -96,7 +96,7 @@ func (s *AccessService) CreateForgeAccess(ctx context.Context, forgeID string, c
 }
 
 func (s *AccessService) DeleteForgeAccess(ctx context.Context, forgeID string, delete types.AccessDeleteRequest) error {
-	userID, ok := middleware.GetUserID(ctx)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
 		return fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}

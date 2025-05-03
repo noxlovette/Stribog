@@ -7,7 +7,6 @@ import (
 	"stribog/internal/auth"
 	db "stribog/internal/db/sqlc"
 	appError "stribog/internal/errors"
-	"stribog/internal/middleware"
 	types "stribog/internal/types"
 	"strings"
 	"time"
@@ -116,17 +115,12 @@ func (s *UserService) Refresh(ctx context.Context, refreshToken string) (string,
 }
 
 func (s *UserService) GetUser(ctx context.Context) (*types.WebUser, error) {
-	userIDStr, ok := ctx.Value(middleware.UserIDKey).(string)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
-		return nil, fmt.Errorf("%w: user ID missing or not a string", appError.ErrInvalidUserId)
+		return nil, fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
 
-	parsedUserID, err := uuid.Parse(userIDStr)
-	if err != nil {
-		return nil, fmt.Errorf("%w: %v", appError.ErrInvalidUserId, err)
-	}
-
-	user, err := s.querier.GetUserByID(ctx, parsedUserID)
+	user, err := s.querier.GetUserByID(ctx, userID)
 	if err != nil {
 		return nil, appError.ErrInvalidUserId
 	}
@@ -138,29 +132,20 @@ func (s *UserService) GetUser(ctx context.Context) (*types.WebUser, error) {
 }
 
 func (s *UserService) DeleteUser(ctx context.Context) error {
-	userIDStr, ok := ctx.Value(middleware.UserIDKey).(string)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
-		return fmt.Errorf("%w: user ID missing or not a string", appError.ErrInvalidUserId)
+		return fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
 
-	parsedUserID, err := uuid.Parse(userIDStr)
-	if err != nil {
-		return fmt.Errorf("%w: %v", appError.ErrInvalidUserId, err)
-	}
-	s.querier.DeleteUser(ctx, parsedUserID)
+	s.querier.DeleteUser(ctx, userID)
 
 	return nil
 }
 
 func (s *UserService) UpdateUser(ctx context.Context, update types.UserUpdateRequest) error {
-	userIDStr, ok := ctx.Value(middleware.UserIDKey).(string)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
-		return fmt.Errorf("%w: user ID missing or not a string", appError.ErrInvalidUserId)
-	}
-
-	parsedUserID, err := uuid.Parse(userIDStr)
-	if err != nil {
-		return fmt.Errorf("%w: %v", appError.ErrInvalidUserId, err)
+		return fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
 
 	var passwordHash *string
@@ -174,13 +159,13 @@ func (s *UserService) UpdateUser(ctx context.Context, update types.UserUpdateReq
 	}
 
 	arg := db.UpdateUserParams{
-		ID:           parsedUserID,
+		ID:           userID,
 		Name:         update.Name,
 		Email:        update.Email,
 		PasswordHash: passwordHash,
 	}
 
-	err = s.querier.UpdateUser(ctx, arg)
+	err := s.querier.UpdateUser(ctx, arg)
 	if err != nil {
 		return appError.ErrOperationFailed
 	}

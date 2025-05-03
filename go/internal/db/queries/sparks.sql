@@ -36,9 +36,8 @@ ORDER BY s.updated_at DESC;
 
 
 -- name: InsertSpark :exec
-INSERT INTO sparks (id, forge_id, owner_id)
-VALUES ($1, $2, $3)
-ON CONFLICT DO NOTHING;
+INSERT INTO sparks (id, forge_id, owner_id, slug)
+VALUES ($1, $2, $3, $4);
 
 -- name: UpdateSparkAndCheckWriteAccess :exec
 UPDATE sparks s

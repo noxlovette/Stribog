@@ -28,6 +28,7 @@ type Querier interface {
 	GetForgesAndCheckReadAccess(ctx context.Context, ownerID uuid.UUID) ([]GetForgesAndCheckReadAccessRow, error)
 	GetSparkAndCheckReadAccess(ctx context.Context, arg GetSparkAndCheckReadAccessParams) (GetSparkAndCheckReadAccessRow, error)
 	GetSparksByForgeIDAndCheckReadAccess(ctx context.Context, arg GetSparksByForgeIDAndCheckReadAccessParams) ([]GetSparksByForgeIDAndCheckReadAccessRow, error)
+	GetSparksByForgeIDPublic(ctx context.Context, forgeID string) ([]GetSparksByForgeIDPublicRow, error)
 	GetTagsForSpark(ctx context.Context, sparkID string) ([]string, error)
 	GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error)

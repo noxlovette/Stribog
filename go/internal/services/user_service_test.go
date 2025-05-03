@@ -8,7 +8,6 @@ import (
 	sqlc "stribog/internal/db/sqlc"
 	"stribog/internal/db/sqlc/mock"
 	appError "stribog/internal/errors"
-	"stribog/internal/middleware"
 	"stribog/internal/types"
 
 	"github.com/google/uuid"
@@ -183,7 +182,7 @@ func TestUserService_GetUser(t *testing.T) {
 	}{
 		{
 			name: "successful get",
-			ctx:  context.WithValue(context.Background(), middleware.UserIDKey, mockTokenSvc.ParsedUserID),
+			ctx:  context.WithValue(context.Background(), auth.UserIDKey, mockTokenSvc.ParsedUserID),
 			setupMocks: func(id uuid.UUID) {
 				mockQuerier.EXPECT().
 					GetUserByID(gomock.Any(), id).
@@ -193,7 +192,7 @@ func TestUserService_GetUser(t *testing.T) {
 		},
 		{
 			name:       "invalid uuid",
-			ctx:        context.WithValue(context.Background(), middleware.UserIDKey, "not-a-uuid"),
+			ctx:        context.WithValue(context.Background(), auth.UserIDKey, "not-a-uuid"),
 			setupMocks: func(_ uuid.UUID) {}, // Not called
 			expectErr:  appError.ErrInvalidUserId,
 		},
@@ -228,7 +227,7 @@ func TestUserService_DeleteUser(t *testing.T) {
 	}{
 		{
 			name: "successful delete",
-			ctx:  context.WithValue(context.Background(), middleware.UserIDKey, mockTokenSvc.ParsedUserID),
+			ctx:  context.WithValue(context.Background(), auth.UserIDKey, mockTokenSvc.ParsedUserID),
 			setupMocks: func(id uuid.UUID) {
 				mockQuerier.EXPECT().
 					DeleteUser(gomock.Any(), id).
@@ -238,7 +237,7 @@ func TestUserService_DeleteUser(t *testing.T) {
 		},
 		{
 			name:       "bad uuid",
-			ctx:        context.WithValue(context.Background(), middleware.UserIDKey, "not-a-uuid"),
+			ctx:        context.WithValue(context.Background(), auth.UserIDKey, "not-a-uuid"),
 			setupMocks: func(_ uuid.UUID) {},
 			expectErr:  appError.ErrInvalidUserId,
 		},
@@ -306,7 +305,7 @@ func TestUserService_UpdateUser(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			ctx := context.WithValue(context.Background(), middleware.UserIDKey, mockTokenSvc.ParsedUserID)
+			ctx := context.WithValue(context.Background(), auth.UserIDKey, mockTokenSvc.ParsedUserID)
 
 			var hashPtr *string
 			if tc.expectErr != ErrHashError && tc.req.Password != nil && *tc.req.Password != "" {

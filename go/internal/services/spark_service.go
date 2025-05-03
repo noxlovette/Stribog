@@ -5,10 +5,10 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"stribog/internal/auth"
 	db "stribog/internal/db/sqlc"
 	appError "stribog/internal/errors"
 
-	"stribog/internal/middleware"
 	"stribog/internal/types"
 
 	"github.com/aidarkhanov/nanoid"
@@ -31,7 +31,7 @@ var (
 )
 
 func (s *SparkService) CreateSpark(ctx context.Context, forgeID string) (*string, error) {
-	userID, ok := middleware.GetUserID(ctx)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
 		return nil, fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
@@ -53,6 +53,7 @@ func (s *SparkService) CreateSpark(ctx context.Context, forgeID string) (*string
 		ID:      sparkID,
 		OwnerID: userID,
 		ForgeID: forgeID,
+		Slug:    sparkID,
 	})
 
 	if err != nil {
@@ -63,7 +64,7 @@ func (s *SparkService) CreateSpark(ctx context.Context, forgeID string) (*string
 }
 
 func (s *SparkService) ListSparksByForgeID(ctx context.Context, forgeID string) ([]*types.WebSpark, error) {
-	userID, ok := middleware.GetUserID(ctx)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
 		return nil, fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
@@ -83,6 +84,7 @@ func (s *SparkService) ListSparksByForgeID(ctx context.Context, forgeID string) 
 			Title:    spark.Title,
 			Markdown: spark.Markdown,
 			Tags:     spark.Tags,
+			Slug:     spark.Slug,
 		}
 
 	}
@@ -91,7 +93,7 @@ func (s *SparkService) ListSparksByForgeID(ctx context.Context, forgeID string) 
 }
 
 func (s *SparkService) GetSpark(ctx context.Context, sparkID string) (*types.WebSpark, error) {
-	userID, ok := middleware.GetUserID(ctx)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
 		return nil, fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
@@ -125,7 +127,7 @@ func (s *SparkService) GetSpark(ctx context.Context, sparkID string) (*types.Web
 }
 
 func (s *SparkService) DeleteSpark(ctx context.Context, sparkID string) error {
-	userID, ok := middleware.GetUserID(ctx)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
 		return fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
@@ -142,7 +144,7 @@ func (s *SparkService) DeleteSpark(ctx context.Context, sparkID string) error {
 }
 
 func (s *SparkService) UpdateSpark(ctx context.Context, update types.SparkUpdateRequest, sparkID string) error {
-	userID, ok := middleware.GetUserID(ctx)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
 		return fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}

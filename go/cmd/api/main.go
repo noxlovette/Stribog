@@ -25,12 +25,14 @@ func main() {
 	accessService := services.NewAccessService(querier)
 	sparkService := services.NewSparkService(querier)
 	apiKeyService := services.NewAPIKeyService(querier)
+	publicService := services.NewPublicService(querier)
 
 	userHandler := handlers.NewUserHandler(userService)
 	forgeHandler := handlers.NewForgeHandler(forgeService)
 	accessHandler := handlers.NewAccessHandler(accessService)
 	sparkHandler := handlers.NewSparkHandler(sparkService)
 	apiKeyHandler := handlers.NewAPIKeyHandler(apiKeyService)
+	publicHandler := handlers.NewPublicHandler(publicService)
 
 	r := gin.Default()
 
@@ -38,6 +40,11 @@ func main() {
 	authRoutes.POST("/signup", userHandler.Signup)
 	authRoutes.POST("/login", userHandler.Login)
 	authRoutes.POST("/refresh", userHandler.Refresh)
+
+	publicRoutes := r.Group("public")
+	publicRoutes.Use(middleware.APIKeyAuthMiddleware(apiKeyService))
+
+	publicRoutes.GET("/:forgeID", publicHandler.List)
 
 	apiRoutes := r.Group("/api")
 	apiRoutes.Use(middleware.AuthMiddleware(state.TokenService))

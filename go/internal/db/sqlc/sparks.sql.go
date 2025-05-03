@@ -174,19 +174,24 @@ func (q *Queries) GetTagsForSpark(ctx context.Context, sparkID string) ([]string
 }
 
 const insertSpark = `-- name: InsertSpark :exec
-INSERT INTO sparks (id, forge_id, owner_id)
-VALUES ($1, $2, $3)
-ON CONFLICT DO NOTHING
+INSERT INTO sparks (id, forge_id, owner_id, slug)
+VALUES ($1, $2, $3, $4)
 `
 
 type InsertSparkParams struct {
 	ID      string
 	ForgeID string
 	OwnerID uuid.UUID
+	Slug    string
 }
 
 func (q *Queries) InsertSpark(ctx context.Context, arg InsertSparkParams) error {
-	_, err := q.db.Exec(ctx, insertSpark, arg.ID, arg.ForgeID, arg.OwnerID)
+	_, err := q.db.Exec(ctx, insertSpark,
+		arg.ID,
+		arg.ForgeID,
+		arg.OwnerID,
+		arg.Slug,
+	)
 	return err
 }
 

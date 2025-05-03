@@ -6,17 +6,7 @@ import (
 	"stribog/internal/auth"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
-
-type ctxKey string
-
-const UserIDKey ctxKey = "userID"
-
-func GetUserID(ctx context.Context) (uuid.UUID, bool) {
-	userID, ok := ctx.Value(UserIDKey).(uuid.UUID)
-	return userID, ok
-}
 
 func AuthMiddleware(tokenSvc auth.TokenService) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -32,7 +22,7 @@ func AuthMiddleware(tokenSvc auth.TokenService) gin.HandlerFunc {
 			return
 		}
 
-		ctx := context.WithValue(c.Request.Context(), UserIDKey, userID)
+		ctx := context.WithValue(c.Request.Context(), auth.UserIDKey, userID)
 		c.Request = c.Request.WithContext(ctx)
 
 		c.Next()

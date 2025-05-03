@@ -6,7 +6,6 @@ import (
 	"stribog/internal/auth"
 	db "stribog/internal/db/sqlc"
 	appError "stribog/internal/errors"
-	"stribog/internal/middleware"
 	"stribog/internal/types"
 )
 
@@ -27,7 +26,7 @@ var (
 )
 
 func (s *APIKeyService) ListAPIKeys(ctx context.Context, forgeID string) ([]*types.WebAPIKey, error) {
-	userID, ok := middleware.GetUserID(ctx)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
 		return nil, fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
@@ -62,7 +61,7 @@ func (s *APIKeyService) ListAPIKeys(ctx context.Context, forgeID string) ([]*typ
 }
 
 func (s *APIKeyService) CreateAPIKey(ctx context.Context, forgeID string, create types.CreateAPIKey) (*string, error) {
-	userID, ok := middleware.GetUserID(ctx)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
 		return nil, fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
@@ -93,7 +92,7 @@ func (s *APIKeyService) CreateAPIKey(ctx context.Context, forgeID string, create
 }
 
 func (s *APIKeyService) DeleteAPIKey(ctx context.Context, forgeID string, delete types.APIKeyID) error {
-	userID, ok := middleware.GetUserID(ctx)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
 		return fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
@@ -116,4 +115,13 @@ func (s *APIKeyService) DeleteAPIKey(ctx context.Context, forgeID string, delete
 	}
 
 	return nil
+}
+func (s *APIKeyService) ValidateKey(ctx context.Context, keyHash string) (string, error) {
+	id, err := s.querier.GetAPIKeyIDByHash(ctx, keyHash)
+	if err != nil {
+		return "", fmt.Errorf("%w: user does not have access to the forge", ErrAccessDenied)
+	}
+
+	return id.String(), nil
+
 }

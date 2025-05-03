@@ -291,6 +291,21 @@ func (mr *MockQuerierMockRecorder) GetSparksByForgeIDAndCheckReadAccess(ctx, arg
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSparksByForgeIDAndCheckReadAccess", reflect.TypeOf((*MockQuerier)(nil).GetSparksByForgeIDAndCheckReadAccess), ctx, arg)
 }
 
+// GetSparksByForgeIDPublic mocks base method.
+func (m *MockQuerier) GetSparksByForgeIDPublic(ctx context.Context, forgeID string) ([]db.GetSparksByForgeIDPublicRow, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSparksByForgeIDPublic", ctx, forgeID)
+	ret0, _ := ret[0].([]db.GetSparksByForgeIDPublicRow)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetSparksByForgeIDPublic indicates an expected call of GetSparksByForgeIDPublic.
+func (mr *MockQuerierMockRecorder) GetSparksByForgeIDPublic(ctx, forgeID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSparksByForgeIDPublic", reflect.TypeOf((*MockQuerier)(nil).GetSparksByForgeIDPublic), ctx, forgeID)
+}
+
 // GetTagsForSpark mocks base method.
 func (m *MockQuerier) GetTagsForSpark(ctx context.Context, sparkID string) ([]string, error) {
 	m.ctrl.T.Helper()

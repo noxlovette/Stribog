@@ -5,10 +5,10 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"stribog/internal/auth"
 	db "stribog/internal/db/sqlc"
 	appError "stribog/internal/errors"
 
-	"stribog/internal/middleware"
 	"stribog/internal/types"
 
 	"github.com/aidarkhanov/nanoid"
@@ -31,7 +31,7 @@ var (
 )
 
 func (s *ForgeService) CreateForge(ctx context.Context, create types.ForgeCreateRequest) (*string, error) {
-	userID, ok := middleware.GetUserID(ctx)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
 		return nil, fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
@@ -53,7 +53,7 @@ func (s *ForgeService) CreateForge(ctx context.Context, create types.ForgeCreate
 }
 
 func (s *ForgeService) ListForges(ctx context.Context) ([]*types.WebForge, error) {
-	userID, ok := middleware.GetUserID(ctx)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
 		return nil, fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
@@ -76,7 +76,7 @@ func (s *ForgeService) ListForges(ctx context.Context) ([]*types.WebForge, error
 }
 
 func (s *ForgeService) GetForge(ctx context.Context, forgeID string) (*types.WebForge, error) {
-	userID, ok := middleware.GetUserID(ctx)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
 		return nil, fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
@@ -100,7 +100,7 @@ func (s *ForgeService) GetForge(ctx context.Context, forgeID string) (*types.Web
 }
 
 func (s *ForgeService) DeleteForge(ctx context.Context, forgeID string) error {
-	userID, ok := middleware.GetUserID(ctx)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
 		return fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
@@ -117,7 +117,7 @@ func (s *ForgeService) DeleteForge(ctx context.Context, forgeID string) error {
 }
 
 func (s *ForgeService) UpdateForge(ctx context.Context, update types.ForgeUpdateRequest, forgeID string) error {
-	userID, ok := middleware.GetUserID(ctx)
+	userID, ok := auth.GetUserID(ctx)
 	if !ok {
 		return fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
