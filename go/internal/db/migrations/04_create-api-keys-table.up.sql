@@ -4,5 +4,6 @@ CREATE TABLE api_keys (
     title TEXT NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW (),
-    last_used_at TIMESTAMPTZ
+    last_used_at TIMESTAMPTZ,
+    key_hash TEXT NOT NULL
 );

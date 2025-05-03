@@ -70,7 +70,7 @@ func (s *AccessService) CreateForgeAccess(ctx context.Context, forgeID string, c
 	if !ok {
 		return fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
-	hasAccess, err := s.querier.CheckWriteAccess(ctx, db.CheckWriteAccessParams{
+	hasAccess, err := s.querier.CheckAdminAccess(ctx, db.CheckAdminAccessParams{
 		OwnerID: adderUserID,
 		ID:      forgeID,
 	})
@@ -101,7 +101,7 @@ func (s *AccessService) DeleteForgeAccess(ctx context.Context, forgeID string, d
 		return fmt.Errorf("%w: user ID missing or not a UUID", appError.ErrInvalidUserId)
 	}
 
-	hasAccess, err := s.querier.CheckWriteAccess(ctx, db.CheckWriteAccessParams{
+	hasAccess, err := s.querier.CheckAdminAccess(ctx, db.CheckAdminAccessParams{
 		OwnerID: userID,
 		ID:      forgeID,
 	})

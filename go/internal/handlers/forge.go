@@ -19,7 +19,7 @@ func NewForgeHandler(service *services.ForgeService) *ForgeHandler {
 }
 
 func (h *ForgeHandler) Get(c *gin.Context) {
-	var forgeID = c.Param("id")
+	var forgeID = c.Param("forgeID")
 
 	ctx := c.Request.Context()
 	user, err := h.Service.GetForge(ctx, forgeID)
@@ -39,7 +39,7 @@ func (h *ForgeHandler) Get(c *gin.Context) {
 }
 
 func (h *ForgeHandler) Delete(c *gin.Context) {
-	var forgeID = c.Param("id")
+	var forgeID = c.Param("forgeID")
 
 	ctx := c.Request.Context()
 	err := h.Service.DeleteForge(ctx, forgeID)
@@ -59,7 +59,7 @@ func (h *ForgeHandler) Delete(c *gin.Context) {
 }
 
 func (h *ForgeHandler) Update(c *gin.Context) {
-	var forgeID = c.Param("id")
+	var forgeID = c.Param("forgeID")
 
 	var req types.ForgeUpdateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

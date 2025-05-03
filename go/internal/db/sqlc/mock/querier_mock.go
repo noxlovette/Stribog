@@ -117,18 +117,18 @@ func (mr *MockQuerierMockRecorder) CreateUser(ctx, arg any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockQuerier)(nil).CreateUser), ctx, arg)
 }
 
-// DeleteAndInsertTags mocks base method.
-func (m *MockQuerier) DeleteAndInsertTags(ctx context.Context, sparkID string) error {
+// DeleteAPIKey mocks base method.
+func (m *MockQuerier) DeleteAPIKey(ctx context.Context, id uuid.UUID) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteAndInsertTags", ctx, sparkID)
+	ret := m.ctrl.Call(m, "DeleteAPIKey", ctx, id)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// DeleteAndInsertTags indicates an expected call of DeleteAndInsertTags.
-func (mr *MockQuerierMockRecorder) DeleteAndInsertTags(ctx, sparkID any) *gomock.Call {
+// DeleteAPIKey indicates an expected call of DeleteAPIKey.
+func (mr *MockQuerierMockRecorder) DeleteAPIKey(ctx, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAndInsertTags", reflect.TypeOf((*MockQuerier)(nil).DeleteAndInsertTags), ctx, sparkID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAPIKey", reflect.TypeOf((*MockQuerier)(nil).DeleteAPIKey), ctx, id)
 }
 
 // DeleteForge mocks base method.
@@ -173,18 +173,18 @@ func (mr *MockQuerierMockRecorder) DeleteSparkAndCheckAdminAccess(ctx, arg any) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteSparkAndCheckAdminAccess", reflect.TypeOf((*MockQuerier)(nil).DeleteSparkAndCheckAdminAccess), ctx, arg)
 }
 
-// DeleteTags mocks base method.
-func (m *MockQuerier) DeleteTags(ctx context.Context, sparkID string) error {
+// DeleteSparkTags mocks base method.
+func (m *MockQuerier) DeleteSparkTags(ctx context.Context, sparkID string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteTags", ctx, sparkID)
+	ret := m.ctrl.Call(m, "DeleteSparkTags", ctx, sparkID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// DeleteTags indicates an expected call of DeleteTags.
-func (mr *MockQuerierMockRecorder) DeleteTags(ctx, sparkID any) *gomock.Call {
+// DeleteSparkTags indicates an expected call of DeleteSparkTags.
+func (mr *MockQuerierMockRecorder) DeleteSparkTags(ctx, sparkID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTags", reflect.TypeOf((*MockQuerier)(nil).DeleteTags), ctx, sparkID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteSparkTags", reflect.TypeOf((*MockQuerier)(nil).DeleteSparkTags), ctx, sparkID)
 }
 
 // DeleteUser mocks base method.
@@ -199,6 +199,36 @@ func (m *MockQuerier) DeleteUser(ctx context.Context, id uuid.UUID) error {
 func (mr *MockQuerierMockRecorder) DeleteUser(ctx, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockQuerier)(nil).DeleteUser), ctx, id)
+}
+
+// GetAPIKeyIDByHash mocks base method.
+func (m *MockQuerier) GetAPIKeyIDByHash(ctx context.Context, keyHash string) (uuid.UUID, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAPIKeyIDByHash", ctx, keyHash)
+	ret0, _ := ret[0].(uuid.UUID)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAPIKeyIDByHash indicates an expected call of GetAPIKeyIDByHash.
+func (mr *MockQuerierMockRecorder) GetAPIKeyIDByHash(ctx, keyHash any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAPIKeyIDByHash", reflect.TypeOf((*MockQuerier)(nil).GetAPIKeyIDByHash), ctx, keyHash)
+}
+
+// GetAPIKeysByForgeID mocks base method.
+func (m *MockQuerier) GetAPIKeysByForgeID(ctx context.Context, forgeID string) ([]db.GetAPIKeysByForgeIDRow, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAPIKeysByForgeID", ctx, forgeID)
+	ret0, _ := ret[0].([]db.GetAPIKeysByForgeIDRow)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAPIKeysByForgeID indicates an expected call of GetAPIKeysByForgeID.
+func (mr *MockQuerierMockRecorder) GetAPIKeysByForgeID(ctx, forgeID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAPIKeysByForgeID", reflect.TypeOf((*MockQuerier)(nil).GetAPIKeysByForgeID), ctx, forgeID)
 }
 
 // GetForgeAndCheckReadAccess mocks base method.
@@ -261,49 +291,19 @@ func (mr *MockQuerierMockRecorder) GetSparksByForgeIDAndCheckReadAccess(ctx, arg
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSparksByForgeIDAndCheckReadAccess", reflect.TypeOf((*MockQuerier)(nil).GetSparksByForgeIDAndCheckReadAccess), ctx, arg)
 }
 
-// GetSparksByOwnerIDAndCheckReadAccess mocks base method.
-func (m *MockQuerier) GetSparksByOwnerIDAndCheckReadAccess(ctx context.Context, ownerID uuid.UUID) ([]db.GetSparksByOwnerIDAndCheckReadAccessRow, error) {
+// GetTagsForSpark mocks base method.
+func (m *MockQuerier) GetTagsForSpark(ctx context.Context, sparkID string) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetSparksByOwnerIDAndCheckReadAccess", ctx, ownerID)
-	ret0, _ := ret[0].([]db.GetSparksByOwnerIDAndCheckReadAccessRow)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetSparksByOwnerIDAndCheckReadAccess indicates an expected call of GetSparksByOwnerIDAndCheckReadAccess.
-func (mr *MockQuerierMockRecorder) GetSparksByOwnerIDAndCheckReadAccess(ctx, ownerID any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSparksByOwnerIDAndCheckReadAccess", reflect.TypeOf((*MockQuerier)(nil).GetSparksByOwnerIDAndCheckReadAccess), ctx, ownerID)
-}
-
-// GetTags mocks base method.
-func (m *MockQuerier) GetTags(ctx context.Context, sparkID string) ([]string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetTags", ctx, sparkID)
+	ret := m.ctrl.Call(m, "GetTagsForSpark", ctx, sparkID)
 	ret0, _ := ret[0].([]string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetTags indicates an expected call of GetTags.
-func (mr *MockQuerierMockRecorder) GetTags(ctx, sparkID any) *gomock.Call {
+// GetTagsForSpark indicates an expected call of GetTagsForSpark.
+func (mr *MockQuerierMockRecorder) GetTagsForSpark(ctx, sparkID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTags", reflect.TypeOf((*MockQuerier)(nil).GetTags), ctx, sparkID)
-}
-
-// GetTagsForSparks mocks base method.
-func (m *MockQuerier) GetTagsForSparks(ctx context.Context, dollar_1 []string) ([]db.SparkTag, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetTagsForSparks", ctx, dollar_1)
-	ret0, _ := ret[0].([]db.SparkTag)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetTagsForSparks indicates an expected call of GetTagsForSparks.
-func (mr *MockQuerierMockRecorder) GetTagsForSparks(ctx, dollar_1 any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTagsForSparks", reflect.TypeOf((*MockQuerier)(nil).GetTagsForSparks), ctx, dollar_1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTagsForSpark", reflect.TypeOf((*MockQuerier)(nil).GetTagsForSpark), ctx, sparkID)
 }
 
 // GetUserByEmail mocks base method.
@@ -336,6 +336,20 @@ func (mr *MockQuerierMockRecorder) GetUserByID(ctx, id any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByID", reflect.TypeOf((*MockQuerier)(nil).GetUserByID), ctx, id)
 }
 
+// InsertAPIKey mocks base method.
+func (m *MockQuerier) InsertAPIKey(ctx context.Context, arg db.InsertAPIKeyParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InsertAPIKey", ctx, arg)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// InsertAPIKey indicates an expected call of InsertAPIKey.
+func (mr *MockQuerierMockRecorder) InsertAPIKey(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertAPIKey", reflect.TypeOf((*MockQuerier)(nil).InsertAPIKey), ctx, arg)
+}
+
 // InsertForge mocks base method.
 func (m *MockQuerier) InsertForge(ctx context.Context, arg db.InsertForgeParams) error {
 	m.ctrl.T.Helper()
@@ -364,6 +378,20 @@ func (mr *MockQuerierMockRecorder) InsertSpark(ctx, arg any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertSpark", reflect.TypeOf((*MockQuerier)(nil).InsertSpark), ctx, arg)
 }
 
+// InsertSparkTag mocks base method.
+func (m *MockQuerier) InsertSparkTag(ctx context.Context, arg db.InsertSparkTagParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InsertSparkTag", ctx, arg)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// InsertSparkTag indicates an expected call of InsertSparkTag.
+func (mr *MockQuerierMockRecorder) InsertSparkTag(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertSparkTag", reflect.TypeOf((*MockQuerier)(nil).InsertSparkTag), ctx, arg)
+}
+
 // ListForgeAccess mocks base method.
 func (m *MockQuerier) ListForgeAccess(ctx context.Context, forgeID string) ([]db.ListForgeAccessRow, error) {
 	m.ctrl.T.Helper()
@@ -377,6 +405,20 @@ func (m *MockQuerier) ListForgeAccess(ctx context.Context, forgeID string) ([]db
 func (mr *MockQuerierMockRecorder) ListForgeAccess(ctx, forgeID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListForgeAccess", reflect.TypeOf((*MockQuerier)(nil).ListForgeAccess), ctx, forgeID)
+}
+
+// ToggleAPIKeyStatus mocks base method.
+func (m *MockQuerier) ToggleAPIKeyStatus(ctx context.Context, id uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ToggleAPIKeyStatus", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ToggleAPIKeyStatus indicates an expected call of ToggleAPIKeyStatus.
+func (mr *MockQuerierMockRecorder) ToggleAPIKeyStatus(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ToggleAPIKeyStatus", reflect.TypeOf((*MockQuerier)(nil).ToggleAPIKeyStatus), ctx, id)
 }
 
 // UpdateForgeAndCheckWriteAccess mocks base method.

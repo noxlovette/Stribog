@@ -19,7 +19,7 @@ func NewSparkHandler(service *services.SparkService) *SparkHandler {
 }
 
 func (h *SparkHandler) Get(c *gin.Context) {
-	var SparkID = c.Param("id")
+	var SparkID = c.Param("sparkID")
 
 	ctx := c.Request.Context()
 	spark, err := h.Service.GetSpark(ctx, SparkID)
@@ -39,7 +39,7 @@ func (h *SparkHandler) Get(c *gin.Context) {
 }
 
 func (h *SparkHandler) Delete(c *gin.Context) {
-	var SparkID = c.Param("id")
+	var SparkID = c.Param("sparkID")
 
 	ctx := c.Request.Context()
 	err := h.Service.DeleteSpark(ctx, SparkID)
@@ -59,7 +59,7 @@ func (h *SparkHandler) Delete(c *gin.Context) {
 }
 
 func (h *SparkHandler) Update(c *gin.Context) {
-	var SparkID = c.Param("id")
+	var SparkID = c.Param("sparkID")
 
 	var req types.SparkUpdateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

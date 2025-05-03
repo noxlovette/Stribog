@@ -16,11 +16,14 @@ type Querier interface {
 	CheckReadAccess(ctx context.Context, arg CheckReadAccessParams) (bool, error)
 	CheckWriteAccess(ctx context.Context, arg CheckWriteAccessParams) (bool, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (uuid.UUID, error)
+	DeleteAPIKey(ctx context.Context, id uuid.UUID) error
 	DeleteForge(ctx context.Context, arg DeleteForgeParams) error
 	DeleteForgeAccess(ctx context.Context, arg DeleteForgeAccessParams) error
 	DeleteSparkAndCheckAdminAccess(ctx context.Context, arg DeleteSparkAndCheckAdminAccessParams) error
 	DeleteSparkTags(ctx context.Context, sparkID string) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
+	GetAPIKeyIDByHash(ctx context.Context, keyHash string) (uuid.UUID, error)
+	GetAPIKeysByForgeID(ctx context.Context, forgeID string) ([]GetAPIKeysByForgeIDRow, error)
 	GetForgeAndCheckReadAccess(ctx context.Context, arg GetForgeAndCheckReadAccessParams) (GetForgeAndCheckReadAccessRow, error)
 	GetForgesAndCheckReadAccess(ctx context.Context, ownerID uuid.UUID) ([]GetForgesAndCheckReadAccessRow, error)
 	GetSparkAndCheckReadAccess(ctx context.Context, arg GetSparkAndCheckReadAccessParams) (GetSparkAndCheckReadAccessRow, error)
@@ -28,10 +31,12 @@ type Querier interface {
 	GetTagsForSpark(ctx context.Context, sparkID string) ([]string, error)
 	GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error)
+	InsertAPIKey(ctx context.Context, arg InsertAPIKeyParams) error
 	InsertForge(ctx context.Context, arg InsertForgeParams) error
 	InsertSpark(ctx context.Context, arg InsertSparkParams) error
 	InsertSparkTag(ctx context.Context, arg InsertSparkTagParams) error
 	ListForgeAccess(ctx context.Context, forgeID string) ([]ListForgeAccessRow, error)
+	ToggleAPIKeyStatus(ctx context.Context, id uuid.UUID) error
 	UpdateForgeAndCheckWriteAccess(ctx context.Context, arg UpdateForgeAndCheckWriteAccessParams) error
 	UpdateSparkAndCheckWriteAccess(ctx context.Context, arg UpdateSparkAndCheckWriteAccessParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) error

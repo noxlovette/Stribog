@@ -62,6 +62,7 @@ type ApiKey struct {
 	IsActive   bool
 	CreatedAt  pgtype.Timestamptz
 	LastUsedAt pgtype.Timestamptz
+	KeyHash    string
 }
 
 type Forge struct {

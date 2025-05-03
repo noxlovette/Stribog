@@ -24,35 +24,45 @@ func main() {
 	forgeService := services.NewForgeService(querier)
 	accessService := services.NewAccessService(querier)
 	sparkService := services.NewSparkService(querier)
+	apiKeyService := services.NewAPIKeyService(querier)
 
 	userHandler := handlers.NewUserHandler(userService)
 	forgeHandler := handlers.NewForgeHandler(forgeService)
 	accessHandler := handlers.NewAccessHandler(accessService)
 	sparkHandler := handlers.NewSparkHandler(sparkService)
+	apiKeyHandler := handlers.NewAPIKeyHandler(apiKeyService)
 
 	r := gin.Default()
 
-	r.POST("/signup", userHandler.Signup)
-	r.POST("/login", userHandler.Login)
-	r.POST("/refresh", userHandler.Refresh)
+	authRoutes := r.Group("/auth")
+	authRoutes.POST("/signup", userHandler.Signup)
+	authRoutes.POST("/login", userHandler.Login)
+	authRoutes.POST("/refresh", userHandler.Refresh)
 
 	apiRoutes := r.Group("/api")
 	apiRoutes.Use(middleware.AuthMiddleware(state.TokenService))
-	apiRoutes.GET("/me", userHandler.Me)
 
-	userRoutes := apiRoutes.Group("/user")
+	userRoutes := apiRoutes.Group("/me")
 	userRoutes.GET("/", userHandler.Get).DELETE("/", userHandler.Delete).PATCH("/", userHandler.Update)
 
-	sparkRoutes := apiRoutes.Group("/spark")
-	sparkRoutes.POST("/new/:forgeID", sparkHandler.Create).GET("/list/:forgeID", sparkHandler.ListByForgeID)
-	sparkRoutes.GET("/:id", sparkHandler.Get).DELETE("/:id", sparkHandler.Delete).PATCH("/:id", sparkHandler.Update)
-
 	forgeRoutes := apiRoutes.Group("/forge")
-	forgeRoutes.POST("/", forgeHandler.Create).GET("/all", forgeHandler.List)
-	forgeRoutes.GET("/:id", forgeHandler.Get).DELETE("/:id", forgeHandler.Delete).PATCH("/:id", forgeHandler.Update)
+	forgeRoutes.POST("/", forgeHandler.Create).GET("/", forgeHandler.List)
+	forgeRoutes.GET("/:forgeID", forgeHandler.Get).DELETE("/:forgeID", forgeHandler.Delete).PATCH("/:forgeID", forgeHandler.Update)
 
-	accessRoutes := forgeRoutes.Group("/:id/access")
+	forgeSparks := forgeRoutes.Group("/:forgeID/sparks")
+	forgeSparks.POST("/", sparkHandler.Create)
+	forgeSparks.GET("/", sparkHandler.ListByForgeID)
+
+	sparkRoutes := apiRoutes.Group("/sparks")
+	sparkRoutes.GET("/:sparkID", sparkHandler.Get)
+	sparkRoutes.PATCH("/:sparkID", sparkHandler.Update)
+	sparkRoutes.DELETE("/:sparkID", sparkHandler.Delete)
+
+	accessRoutes := forgeRoutes.Group("/:forgeID/access")
 	accessRoutes.POST("/", accessHandler.Create).DELETE("/", accessHandler.Delete).GET("/", accessHandler.List)
+
+	apiKeyRoutes := forgeRoutes.Group("/:forgeID/api-keys")
+	apiKeyRoutes.POST("/", apiKeyHandler.Create).GET("/", apiKeyHandler.List).DELETE("/", apiKeyHandler.Delete)
 
 	r.Run(":8080")
 }
