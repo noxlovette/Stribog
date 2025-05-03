@@ -7,5 +7,6 @@ CREATE TABLE users (
     name TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now (),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now (),
+    deleted_at TIMESTAMPTZ,
     is_active BOOLEAN NOT NULL DEFAULT TRUE
 );

@@ -1,0 +1,132 @@
+DROP TABLE users;
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+    email TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    name TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now (),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now (),
+    deleted_at TIMESTAMPTZ,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE
+);
+DROP TABLE forges;
+CREATE TABLE forges (
+    id VARCHAR(21) PRIMARY KEY, -- NanoID from app
+    title TEXT NOT NULL,
+    description TEXT,
+    owner_id UUID NOT NULL REFERENCES users (id) ON DELETE RESTRICT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW (),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW ()
+);
+DROP TABLE sparks;
+
+DROP TABLE spark_tags;
+CREATE TABLE sparks (
+    id VARCHAR(21) PRIMARY KEY, -- NanoID from app
+    forge_id VARCHAR(21) NOT NULL REFERENCES forges (id) ON DELETE CASCADE,
+    title TEXT NOT NULL DEFAULT 'New Spark',
+    markdown TEXT NOT NULL DEFAULT 'markdown',
+    owner_id UUID NOT NULL REFERENCES users (id) ON DELETE RESTRICT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW (),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW (),
+    slug TEXT NOT NULL DEFAULT '',
+    tags TEXT[] DEFAULT ARRAY[]::TEXT[]
+);
+CREATE TABLE spark_tags (
+    spark_id VARCHAR(21) NOT NULL REFERENCES sparks(id) ON DELETE CASCADE,
+    tag TEXT NOT NULL,
+    PRIMARY KEY (spark_id, tag)
+);
+DROP TABLE api_keys;
+CREATE TABLE api_keys (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+    forge_id VARCHAR(21) NOT NULL REFERENCES forges (id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW (),
+    last_used_at TIMESTAMPTZ
+);
+DROP TABLE IF EXISTS forge_access;
+
+DROP TYPE IF EXISTS access_role;
+-- ACCESS ROLE ENUM
+CREATE TYPE access_role AS ENUM ('viewer', 'editor', 'admin');
+
+-- FORGE ACCESS TABLE
+CREATE TABLE forge_access (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+    forge_id VARCHAR(21) NOT NULL REFERENCES forges (id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    access_role access_role NOT NULL DEFAULT 'viewer',
+    added_by UUID NOT NULL REFERENCES users (id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW (),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW (),
+    revoked_at TIMESTAMPTZ,
+    CONSTRAINT unique_forge_user UNIQUE (forge_id, user_id)
+);
+-- DROP INDEXES
+DROP INDEX IF EXISTS idx_sparks_forge_slug;
+
+DROP INDEX IF EXISTS idx_spark_tags_tag;
+
+DROP INDEX IF EXISTS idx_sparks_slug;
+
+DROP INDEX IF EXISTS idx_forge_access_active;
+
+DROP INDEX IF EXISTS idx_api_keys_forge;
+
+DROP INDEX IF EXISTS idx_forge_access_user;
+
+DROP INDEX IF EXISTS idx_forge_access_forge;
+
+DROP INDEX IF EXISTS idx_sparks_forge;
+
+DROP INDEX IF EXISTS idx_forges_owner;
+
+-- DROP TRIGGERS
+DROP TRIGGER IF EXISTS trg_update_forge_access_modtime ON forge_access;
+
+DROP TRIGGER IF EXISTS trg_update_sparks_modtime ON sparks;
+
+DROP TRIGGER IF EXISTS trg_update_forges_modtime ON forges;
+
+-- DROP TRIGGER FUNCTION
+DROP FUNCTION IF EXISTS set_updated_at_timestamp;
+-- FUNCTIONS
+CREATE OR REPLACE FUNCTION set_updated_at_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+   NEW.updated_at = NOW();
+   RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- TRIGGERS
+DROP TRIGGER IF EXISTS trg_update_forges_modtime ON forges;
+CREATE TRIGGER trg_update_forges_modtime
+BEFORE UPDATE ON forges
+FOR EACH ROW EXECUTE FUNCTION set_updated_at_timestamp();
+
+DROP TRIGGER IF EXISTS trg_update_sparks_modtime ON sparks;
+CREATE TRIGGER trg_update_sparks_modtime
+BEFORE UPDATE ON sparks
+FOR EACH ROW EXECUTE FUNCTION set_updated_at_timestamp();
+
+DROP TRIGGER IF EXISTS trg_update_forge_access_modtime ON forge_access;
+CREATE TRIGGER trg_update_forge_access_modtime
+BEFORE UPDATE ON forge_access
+FOR EACH ROW EXECUTE FUNCTION set_updated_at_timestamp();
+
+
+-- INDEXES
+CREATE INDEX idx_forges_owner ON forges(owner_id);
+CREATE INDEX idx_sparks_forge ON sparks(forge_id);
+CREATE INDEX idx_forge_access_forge ON forge_access(forge_id);
+CREATE INDEX idx_forge_access_user ON forge_access(user_id);
+CREATE INDEX idx_api_keys_forge ON api_keys(forge_id);
+CREATE INDEX idx_forge_access_active ON forge_access(forge_id, user_id) WHERE revoked_at IS NULL;
+CREATE INDEX idx_sparks_slug ON sparks(slug);
+CREATE INDEX idx_spark_tags_tag ON spark_tags(tag);
+CREATE UNIQUE INDEX idx_sparks_forge_slug ON sparks(forge_id, slug);

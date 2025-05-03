@@ -19,16 +19,18 @@ type Querier interface {
 	DeleteForge(ctx context.Context, arg DeleteForgeParams) error
 	DeleteForgeAccess(ctx context.Context, arg DeleteForgeAccessParams) error
 	DeleteSparkAndCheckAdminAccess(ctx context.Context, arg DeleteSparkAndCheckAdminAccessParams) error
+	DeleteSparkTags(ctx context.Context, sparkID string) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	GetForgeAndCheckReadAccess(ctx context.Context, arg GetForgeAndCheckReadAccessParams) (GetForgeAndCheckReadAccessRow, error)
 	GetForgesAndCheckReadAccess(ctx context.Context, ownerID uuid.UUID) ([]GetForgesAndCheckReadAccessRow, error)
 	GetSparkAndCheckReadAccess(ctx context.Context, arg GetSparkAndCheckReadAccessParams) (GetSparkAndCheckReadAccessRow, error)
-	GetSparksAndCheckReadAccess(ctx context.Context, ownerID uuid.UUID) ([]GetSparksAndCheckReadAccessRow, error)
 	GetSparksByForgeIDAndCheckReadAccess(ctx context.Context, arg GetSparksByForgeIDAndCheckReadAccessParams) ([]GetSparksByForgeIDAndCheckReadAccessRow, error)
+	GetTagsForSpark(ctx context.Context, sparkID string) ([]string, error)
 	GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error)
 	InsertForge(ctx context.Context, arg InsertForgeParams) error
 	InsertSpark(ctx context.Context, arg InsertSparkParams) error
+	InsertSparkTag(ctx context.Context, arg InsertSparkTagParams) error
 	ListForgeAccess(ctx context.Context, forgeID string) ([]ListForgeAccessRow, error)
 	UpdateForgeAndCheckWriteAccess(ctx context.Context, arg UpdateForgeAndCheckWriteAccessParams) error
 	UpdateSparkAndCheckWriteAccess(ctx context.Context, arg UpdateSparkAndCheckWriteAccessParams) error

@@ -92,6 +92,13 @@ type Spark struct {
 	OwnerID   uuid.UUID
 	CreatedAt pgtype.Timestamptz
 	UpdatedAt pgtype.Timestamptz
+	Slug      string
+	Tags      []string
+}
+
+type SparkTag struct {
+	SparkID string
+	Tag     string
 }
 
 type User struct {
@@ -101,5 +108,6 @@ type User struct {
 	Name         *string
 	CreatedAt    pgtype.Timestamptz
 	UpdatedAt    pgtype.Timestamptz
+	DeletedAt    pgtype.Timestamptz
 	IsActive     bool
 }

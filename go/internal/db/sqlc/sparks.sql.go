@@ -38,17 +38,31 @@ func (q *Queries) DeleteSparkAndCheckAdminAccess(ctx context.Context, arg Delete
 	return err
 }
 
+const deleteSparkTags = `-- name: DeleteSparkTags :exec
+DELETE FROM spark_tags WHERE spark_id = $1
+`
+
+func (q *Queries) DeleteSparkTags(ctx context.Context, sparkID string) error {
+	_, err := q.db.Exec(ctx, deleteSparkTags, sparkID)
+	return err
+}
+
 const getSparkAndCheckReadAccess = `-- name: GetSparkAndCheckReadAccess :one
-SELECT s.id, s.title, s.markdown FROM sparks s
+SELECT
+  s.id, s.title, s.markdown, s.slug,
+  COALESCE(ARRAY_AGG(st.tag) FILTER (WHERE st.tag IS NOT NULL), '{}')::TEXT[] AS tags
+FROM sparks s
 JOIN forges f ON s.forge_id = f.id
+LEFT JOIN spark_tags st ON st.spark_id = s.id
 WHERE s.id = $2 AND (
-    s.owner_id = $1
-    OR f.owner_id = $1
-    OR EXISTS (
-        SELECT 1 FROM forge_access fa
-        WHERE fa.forge_id = s.forge_id AND fa.user_id = $1
-    )
+  s.owner_id = $1
+  OR f.owner_id = $1
+  OR EXISTS (
+    SELECT 1 FROM forge_access fa
+    WHERE fa.forge_id = s.forge_id AND fa.user_id = $1
+  )
 )
+GROUP BY s.id, s.title, s.markdown, s.slug
 `
 
 type GetSparkAndCheckReadAccessParams struct {
@@ -60,67 +74,40 @@ type GetSparkAndCheckReadAccessRow struct {
 	ID       string
 	Title    string
 	Markdown string
+	Slug     string
+	Tags     []string
 }
 
 func (q *Queries) GetSparkAndCheckReadAccess(ctx context.Context, arg GetSparkAndCheckReadAccessParams) (GetSparkAndCheckReadAccessRow, error) {
 	row := q.db.QueryRow(ctx, getSparkAndCheckReadAccess, arg.OwnerID, arg.ID)
 	var i GetSparkAndCheckReadAccessRow
-	err := row.Scan(&i.ID, &i.Title, &i.Markdown)
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.Markdown,
+		&i.Slug,
+		&i.Tags,
+	)
 	return i, err
 }
 
-const getSparksAndCheckReadAccess = `-- name: GetSparksAndCheckReadAccess :many
-SELECT s.id, s.title, s.markdown FROM sparks s
-JOIN forges f ON s.forge_id = f.id
-WHERE
-    s.owner_id = $1
-    OR f.owner_id = $1
-    OR EXISTS (
-        SELECT 1 FROM forge_access fa
-        WHERE fa.forge_id = s.forge_id AND fa.user_id = $1
-        )
-ORDER BY f.updated_at DESC
-`
-
-type GetSparksAndCheckReadAccessRow struct {
-	ID       string
-	Title    string
-	Markdown string
-}
-
-func (q *Queries) GetSparksAndCheckReadAccess(ctx context.Context, ownerID uuid.UUID) ([]GetSparksAndCheckReadAccessRow, error) {
-	rows, err := q.db.Query(ctx, getSparksAndCheckReadAccess, ownerID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []GetSparksAndCheckReadAccessRow
-	for rows.Next() {
-		var i GetSparksAndCheckReadAccessRow
-		if err := rows.Scan(&i.ID, &i.Title, &i.Markdown); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const getSparksByForgeIDAndCheckReadAccess = `-- name: GetSparksByForgeIDAndCheckReadAccess :many
-SELECT s.id, s.title, s.markdown FROM sparks s
+SELECT
+  s.id, s.title, s.markdown, s.slug,
+  COALESCE(ARRAY_AGG(st.tag) FILTER (WHERE st.tag IS NOT NULL), '{}')::TEXT[] AS tags
+FROM sparks s
 JOIN forges f ON s.forge_id = f.id
-WHERE
-    s.forge_id = $2 AND (
-    s.owner_id = $1
-    OR f.owner_id = $1
-    OR EXISTS (
-        SELECT 1 FROM forge_access fa
-        WHERE fa.forge_id = s.forge_id AND fa.user_id = $1
-        )
-        )
-ORDER BY f.updated_at DESC
+LEFT JOIN spark_tags st ON st.spark_id = s.id
+WHERE s.forge_id = $2 AND (
+  s.owner_id = $1
+  OR f.owner_id = $1
+  OR EXISTS (
+    SELECT 1 FROM forge_access fa
+    WHERE fa.forge_id = s.forge_id AND fa.user_id = $1
+  )
+)
+GROUP BY s.id, s.title, s.markdown, s.slug
+ORDER BY s.updated_at DESC
 `
 
 type GetSparksByForgeIDAndCheckReadAccessParams struct {
@@ -132,6 +119,8 @@ type GetSparksByForgeIDAndCheckReadAccessRow struct {
 	ID       string
 	Title    string
 	Markdown string
+	Slug     string
+	Tags     []string
 }
 
 func (q *Queries) GetSparksByForgeIDAndCheckReadAccess(ctx context.Context, arg GetSparksByForgeIDAndCheckReadAccessParams) ([]GetSparksByForgeIDAndCheckReadAccessRow, error) {
@@ -143,7 +132,13 @@ func (q *Queries) GetSparksByForgeIDAndCheckReadAccess(ctx context.Context, arg 
 	var items []GetSparksByForgeIDAndCheckReadAccessRow
 	for rows.Next() {
 		var i GetSparksByForgeIDAndCheckReadAccessRow
-		if err := rows.Scan(&i.ID, &i.Title, &i.Markdown); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.Markdown,
+			&i.Slug,
+			&i.Tags,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -154,28 +149,58 @@ func (q *Queries) GetSparksByForgeIDAndCheckReadAccess(ctx context.Context, arg 
 	return items, nil
 }
 
+const getTagsForSpark = `-- name: GetTagsForSpark :many
+SELECT tag FROM spark_tags WHERE spark_id = $1
+`
+
+func (q *Queries) GetTagsForSpark(ctx context.Context, sparkID string) ([]string, error) {
+	rows, err := q.db.Query(ctx, getTagsForSpark, sparkID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var tag string
+		if err := rows.Scan(&tag); err != nil {
+			return nil, err
+		}
+		items = append(items, tag)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const insertSpark = `-- name: InsertSpark :exec
-INSERT INTO sparks (id, title, markdown, forge_id, owner_id)
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO sparks (id, forge_id, owner_id)
+VALUES ($1, $2, $3)
 ON CONFLICT DO NOTHING
 `
 
 type InsertSparkParams struct {
-	ID       string
-	Title    string
-	Markdown string
-	ForgeID  string
-	OwnerID  uuid.UUID
+	ID      string
+	ForgeID string
+	OwnerID uuid.UUID
 }
 
 func (q *Queries) InsertSpark(ctx context.Context, arg InsertSparkParams) error {
-	_, err := q.db.Exec(ctx, insertSpark,
-		arg.ID,
-		arg.Title,
-		arg.Markdown,
-		arg.ForgeID,
-		arg.OwnerID,
-	)
+	_, err := q.db.Exec(ctx, insertSpark, arg.ID, arg.ForgeID, arg.OwnerID)
+	return err
+}
+
+const insertSparkTag = `-- name: InsertSparkTag :exec
+INSERT INTO spark_tags (spark_id, tag) VALUES ($1, $2)
+`
+
+type InsertSparkTagParams struct {
+	SparkID string
+	Tag     string
+}
+
+func (q *Queries) InsertSparkTag(ctx context.Context, arg InsertSparkTagParams) error {
+	_, err := q.db.Exec(ctx, insertSparkTag, arg.SparkID, arg.Tag)
 	return err
 }
 
@@ -183,7 +208,8 @@ const updateSparkAndCheckWriteAccess = `-- name: UpdateSparkAndCheckWriteAccess 
 UPDATE sparks s
 SET
     title = COALESCE($3, s.title),
-    markdown = COALESCE($4, s.markdown)
+    markdown = COALESCE($4, s.markdown),
+    slug = COALESCE($5, s.slug)
 WHERE s.id = $2 AND (
     s.owner_id = $1
     OR EXISTS (
@@ -204,6 +230,7 @@ type UpdateSparkAndCheckWriteAccessParams struct {
 	ID       string
 	Title    *string
 	Markdown *string
+	Slug     *string
 }
 
 func (q *Queries) UpdateSparkAndCheckWriteAccess(ctx context.Context, arg UpdateSparkAndCheckWriteAccessParams) error {
@@ -212,6 +239,7 @@ func (q *Queries) UpdateSparkAndCheckWriteAccess(ctx context.Context, arg Update
 		arg.ID,
 		arg.Title,
 		arg.Markdown,
+		arg.Slug,
 	)
 	return err
 }
