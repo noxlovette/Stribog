@@ -23,10 +23,12 @@ func main() {
 	userService := services.NewUserService(querier, state.TokenService)
 	forgeService := services.NewForgeService(querier)
 	accessService := services.NewAccessService(querier)
+	sparkService := services.NewSparkService(querier)
 
 	userHandler := handlers.NewUserHandler(userService)
 	forgeHandler := handlers.NewForgeHandler(forgeService)
 	accessHandler := handlers.NewAccessHandler(accessService)
+	sparkHandler := handlers.NewSparkHandler(sparkService)
 
 	r := gin.Default()
 
@@ -40,6 +42,10 @@ func main() {
 
 	userRoutes := apiRoutes.Group("/user")
 	userRoutes.GET("/", userHandler.Get).DELETE("/", userHandler.Delete).PATCH("/", userHandler.Update)
+
+	sparkRoutes := apiRoutes.Group("/spark")
+	sparkRoutes.POST("/new/:forgeID", sparkHandler.Create).GET("/list/:forgeID", sparkHandler.ListByForgeID)
+	sparkRoutes.GET("/:id", sparkHandler.Get).DELETE("/:id", sparkHandler.Delete).PATCH("/:id", sparkHandler.Update)
 
 	forgeRoutes := apiRoutes.Group("/forge")
 	forgeRoutes.POST("/", forgeHandler.Create).GET("/all", forgeHandler.List)

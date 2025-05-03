@@ -26,8 +26,9 @@ func TestUserService_RegisterUser(t *testing.T) {
 	mockTokenSvc := &auth.MockTokenService{
 		TokenToReturn: "dummy-token",
 		ErrToReturn:   nil,
-		ParsedUserID:  "123",
+		ParsedUserID:  uuid.MustParse("11111111-1111-1111-1111-111111111111"),
 	}
+
 	service := NewUserService(mockQuerier, mockTokenSvc)
 	ctx := context.Background()
 
@@ -96,8 +97,9 @@ func TestUserService_Login(t *testing.T) {
 	mockTokenSvc := &auth.MockTokenService{
 		TokenToReturn: "dummy-token",
 		ErrToReturn:   nil,
-		ParsedUserID:  "123",
+		ParsedUserID:  uuid.MustParse("11111111-1111-1111-1111-111111111111"),
 	}
+
 	service := NewUserService(mockQuerier, mockTokenSvc)
 	ctx := context.Background()
 
@@ -169,7 +171,7 @@ func TestUserService_GetUser(t *testing.T) {
 	defer ctrl.Finish()
 
 	mockQuerier := mock.NewMockQuerier(ctrl)
-	mockTokenSvc := &auth.MockTokenService{ParsedUserID: uuid.New().String()}
+	mockTokenSvc := &auth.MockTokenService{ParsedUserID: uuid.New()}
 	service := NewUserService(mockQuerier, mockTokenSvc)
 	name := "Test"
 
@@ -199,8 +201,7 @@ func TestUserService_GetUser(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			parsed, _ := uuid.Parse(mockTokenSvc.ParsedUserID)
-			tc.setupMocks(parsed)
+			tc.setupMocks(mockTokenSvc.ParsedUserID)
 			_, err := service.GetUser(tc.ctx)
 			if tc.expectErr != nil {
 				require.ErrorIs(t, err, tc.expectErr)
@@ -216,7 +217,7 @@ func TestUserService_DeleteUser(t *testing.T) {
 	defer ctrl.Finish()
 
 	mockQuerier := mock.NewMockQuerier(ctrl)
-	mockTokenSvc := &auth.MockTokenService{ParsedUserID: uuid.New().String()}
+	mockTokenSvc := &auth.MockTokenService{ParsedUserID: uuid.New()}
 	service := NewUserService(mockQuerier, mockTokenSvc)
 
 	tests := []struct {
@@ -245,8 +246,8 @@ func TestUserService_DeleteUser(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			parsed, _ := uuid.Parse(mockTokenSvc.ParsedUserID)
-			tc.setupMocks(parsed)
+
+			tc.setupMocks(mockTokenSvc.ParsedUserID)
 			err := service.DeleteUser(tc.ctx)
 			if tc.expectErr != nil {
 				require.ErrorIs(t, err, tc.expectErr)
@@ -262,7 +263,7 @@ func TestUserService_UpdateUser(t *testing.T) {
 	defer ctrl.Finish()
 
 	mockQuerier := mock.NewMockQuerier(ctrl)
-	mockTokenSvc := &auth.MockTokenService{ParsedUserID: uuid.New().String()}
+	mockTokenSvc := &auth.MockTokenService{ParsedUserID: uuid.New()}
 	service := NewUserService(mockQuerier, mockTokenSvc)
 
 	name := "Updated"
@@ -306,7 +307,6 @@ func TestUserService_UpdateUser(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			ctx := context.WithValue(context.Background(), middleware.UserIDKey, mockTokenSvc.ParsedUserID)
-			parsed, _ := uuid.Parse(mockTokenSvc.ParsedUserID)
 
 			var hashPtr *string
 			if tc.expectErr != ErrHashError && tc.req.Password != nil && *tc.req.Password != "" {
@@ -316,7 +316,7 @@ func TestUserService_UpdateUser(t *testing.T) {
 				hashPtr = &s
 			}
 
-			tc.setupMocks(parsed, hashPtr)
+			tc.setupMocks(mockTokenSvc.ParsedUserID, hashPtr)
 
 			err := service.UpdateUser(ctx, tc.req)
 			if tc.expectErr != nil {

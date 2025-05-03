@@ -42,6 +42,21 @@ func (m *MockQuerier) EXPECT() *MockQuerierMockRecorder {
 	return m.recorder
 }
 
+// CheckAdminAccess mocks base method.
+func (m *MockQuerier) CheckAdminAccess(ctx context.Context, arg db.CheckAdminAccessParams) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CheckAdminAccess", ctx, arg)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CheckAdminAccess indicates an expected call of CheckAdminAccess.
+func (mr *MockQuerierMockRecorder) CheckAdminAccess(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckAdminAccess", reflect.TypeOf((*MockQuerier)(nil).CheckAdminAccess), ctx, arg)
+}
+
 // CheckEmailExists mocks base method.
 func (m *MockQuerier) CheckEmailExists(ctx context.Context, email string) (bool, error) {
 	m.ctrl.T.Helper()
@@ -130,6 +145,20 @@ func (mr *MockQuerierMockRecorder) DeleteForgeAccess(ctx, arg any) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteForgeAccess", reflect.TypeOf((*MockQuerier)(nil).DeleteForgeAccess), ctx, arg)
 }
 
+// DeleteSparkAndCheckAdminAccess mocks base method.
+func (m *MockQuerier) DeleteSparkAndCheckAdminAccess(ctx context.Context, arg db.DeleteSparkAndCheckAdminAccessParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteSparkAndCheckAdminAccess", ctx, arg)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteSparkAndCheckAdminAccess indicates an expected call of DeleteSparkAndCheckAdminAccess.
+func (mr *MockQuerierMockRecorder) DeleteSparkAndCheckAdminAccess(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteSparkAndCheckAdminAccess", reflect.TypeOf((*MockQuerier)(nil).DeleteSparkAndCheckAdminAccess), ctx, arg)
+}
+
 // DeleteUser mocks base method.
 func (m *MockQuerier) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	m.ctrl.T.Helper()
@@ -172,6 +201,51 @@ func (m *MockQuerier) GetForgesAndCheckReadAccess(ctx context.Context, ownerID u
 func (mr *MockQuerierMockRecorder) GetForgesAndCheckReadAccess(ctx, ownerID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetForgesAndCheckReadAccess", reflect.TypeOf((*MockQuerier)(nil).GetForgesAndCheckReadAccess), ctx, ownerID)
+}
+
+// GetSparkAndCheckReadAccess mocks base method.
+func (m *MockQuerier) GetSparkAndCheckReadAccess(ctx context.Context, arg db.GetSparkAndCheckReadAccessParams) (db.GetSparkAndCheckReadAccessRow, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSparkAndCheckReadAccess", ctx, arg)
+	ret0, _ := ret[0].(db.GetSparkAndCheckReadAccessRow)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetSparkAndCheckReadAccess indicates an expected call of GetSparkAndCheckReadAccess.
+func (mr *MockQuerierMockRecorder) GetSparkAndCheckReadAccess(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSparkAndCheckReadAccess", reflect.TypeOf((*MockQuerier)(nil).GetSparkAndCheckReadAccess), ctx, arg)
+}
+
+// GetSparksAndCheckReadAccess mocks base method.
+func (m *MockQuerier) GetSparksAndCheckReadAccess(ctx context.Context, ownerID uuid.UUID) ([]db.GetSparksAndCheckReadAccessRow, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSparksAndCheckReadAccess", ctx, ownerID)
+	ret0, _ := ret[0].([]db.GetSparksAndCheckReadAccessRow)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetSparksAndCheckReadAccess indicates an expected call of GetSparksAndCheckReadAccess.
+func (mr *MockQuerierMockRecorder) GetSparksAndCheckReadAccess(ctx, ownerID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSparksAndCheckReadAccess", reflect.TypeOf((*MockQuerier)(nil).GetSparksAndCheckReadAccess), ctx, ownerID)
+}
+
+// GetSparksByForgeIDAndCheckReadAccess mocks base method.
+func (m *MockQuerier) GetSparksByForgeIDAndCheckReadAccess(ctx context.Context, arg db.GetSparksByForgeIDAndCheckReadAccessParams) ([]db.GetSparksByForgeIDAndCheckReadAccessRow, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSparksByForgeIDAndCheckReadAccess", ctx, arg)
+	ret0, _ := ret[0].([]db.GetSparksByForgeIDAndCheckReadAccessRow)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetSparksByForgeIDAndCheckReadAccess indicates an expected call of GetSparksByForgeIDAndCheckReadAccess.
+func (mr *MockQuerierMockRecorder) GetSparksByForgeIDAndCheckReadAccess(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSparksByForgeIDAndCheckReadAccess", reflect.TypeOf((*MockQuerier)(nil).GetSparksByForgeIDAndCheckReadAccess), ctx, arg)
 }
 
 // GetUserByEmail mocks base method.
@@ -218,6 +292,20 @@ func (mr *MockQuerierMockRecorder) InsertForge(ctx, arg any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertForge", reflect.TypeOf((*MockQuerier)(nil).InsertForge), ctx, arg)
 }
 
+// InsertSpark mocks base method.
+func (m *MockQuerier) InsertSpark(ctx context.Context, arg db.InsertSparkParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InsertSpark", ctx, arg)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// InsertSpark indicates an expected call of InsertSpark.
+func (mr *MockQuerierMockRecorder) InsertSpark(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertSpark", reflect.TypeOf((*MockQuerier)(nil).InsertSpark), ctx, arg)
+}
+
 // ListForgeAccess mocks base method.
 func (m *MockQuerier) ListForgeAccess(ctx context.Context, forgeID string) ([]db.ListForgeAccessRow, error) {
 	m.ctrl.T.Helper()
@@ -245,6 +333,20 @@ func (m *MockQuerier) UpdateForgeAndCheckWriteAccess(ctx context.Context, arg db
 func (mr *MockQuerierMockRecorder) UpdateForgeAndCheckWriteAccess(ctx, arg any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateForgeAndCheckWriteAccess", reflect.TypeOf((*MockQuerier)(nil).UpdateForgeAndCheckWriteAccess), ctx, arg)
+}
+
+// UpdateSparkAndCheckWriteAccess mocks base method.
+func (m *MockQuerier) UpdateSparkAndCheckWriteAccess(ctx context.Context, arg db.UpdateSparkAndCheckWriteAccessParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateSparkAndCheckWriteAccess", ctx, arg)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateSparkAndCheckWriteAccess indicates an expected call of UpdateSparkAndCheckWriteAccess.
+func (mr *MockQuerierMockRecorder) UpdateSparkAndCheckWriteAccess(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateSparkAndCheckWriteAccess", reflect.TypeOf((*MockQuerier)(nil).UpdateSparkAndCheckWriteAccess), ctx, arg)
 }
 
 // UpdateUser mocks base method.

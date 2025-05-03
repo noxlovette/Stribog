@@ -12,52 +12,6 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const checkReadAccess = `-- name: CheckReadAccess :one
-SELECT EXISTS (
-    SELECT 1 FROM forges f
-    WHERE (f.id = $2 AND f.owner_id = $1)
-       OR EXISTS (
-            SELECT 1 FROM forge_access
-            WHERE forge_id = $2 AND user_id = $1
-       )
-) AS exists
-`
-
-type CheckReadAccessParams struct {
-	OwnerID uuid.UUID
-	ID      string
-}
-
-func (q *Queries) CheckReadAccess(ctx context.Context, arg CheckReadAccessParams) (bool, error) {
-	row := q.db.QueryRow(ctx, checkReadAccess, arg.OwnerID, arg.ID)
-	var exists bool
-	err := row.Scan(&exists)
-	return exists, err
-}
-
-const checkWriteAccess = `-- name: CheckWriteAccess :one
-SELECT EXISTS (
-    SELECT 1 FROM forges f
-    WHERE (f.id = $2 AND f.owner_id = $1)
-       OR EXISTS (
-            SELECT 1 FROM forge_access
-            WHERE forge_id = $2 AND user_id = $1 AND access_role = 'admin'
-       )
-) AS exists
-`
-
-type CheckWriteAccessParams struct {
-	OwnerID uuid.UUID
-	ID      string
-}
-
-func (q *Queries) CheckWriteAccess(ctx context.Context, arg CheckWriteAccessParams) (bool, error) {
-	row := q.db.QueryRow(ctx, checkWriteAccess, arg.OwnerID, arg.ID)
-	var exists bool
-	err := row.Scan(&exists)
-	return exists, err
-}
-
 const deleteForge = `-- name: DeleteForge :exec
 DELETE FROM forges WHERE id = $2 AND owner_id = $1
 `
