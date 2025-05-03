@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"stribog/internal/auth"
 	db "stribog/internal/db/sqlc"
+	appError "stribog/internal/errors"
 	"stribog/internal/middleware"
 	types "stribog/internal/types"
 	"strings"
@@ -21,9 +22,7 @@ var (
 	ErrAuthenticationFailed = errors.New("authentication failed")
 	ErrEmailNotFound        = errors.New("email not found")
 	ErrInvalidRefreshToken  = errors.New("invalid refresh token")
-	ErrInvalidUserId        = errors.New("invalid user id")
 	ErrHashError            = errors.New("error when generating hash")
-	ErrOperationFailed      = errors.New("operation failed")
 )
 
 type UserService struct {
@@ -67,7 +66,7 @@ func (s *UserService) RegisterUser(ctx context.Context, req types.SignupRequest)
 		PasswordHash: string(hash),
 	})
 	if err != nil {
-		return uuid.Nil, ErrOperationFailed
+		return uuid.Nil, appError.ErrOperationFailed
 	}
 
 	return id, nil
@@ -110,7 +109,7 @@ func (s *UserService) Refresh(ctx context.Context, refreshToken string) (string,
 
 	accessToken, err := s.tokens.GenerateToken(realUserID, time.Hour)
 	if err != nil {
-		return "", err
+		return "", appError.ErrOperationFailed
 	}
 
 	return accessToken, nil
@@ -119,17 +118,17 @@ func (s *UserService) Refresh(ctx context.Context, refreshToken string) (string,
 func (s *UserService) GetUser(ctx context.Context) (*types.WebUser, error) {
 	userIDStr, ok := ctx.Value(middleware.UserIDKey).(string)
 	if !ok {
-		return nil, fmt.Errorf("%w: user ID missing or not a string", ErrInvalidUserId)
+		return nil, fmt.Errorf("%w: user ID missing or not a string", appError.ErrInvalidUserId)
 	}
 
 	parsedUserID, err := uuid.Parse(userIDStr)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %v", ErrInvalidUserId, err)
+		return nil, fmt.Errorf("%w: %v", appError.ErrInvalidUserId, err)
 	}
 
 	user, err := s.querier.GetUserByID(ctx, parsedUserID)
 	if err != nil {
-		return nil, ErrInvalidUserId
+		return nil, appError.ErrInvalidUserId
 	}
 
 	return &types.WebUser{
@@ -141,27 +140,27 @@ func (s *UserService) GetUser(ctx context.Context) (*types.WebUser, error) {
 func (s *UserService) DeleteUser(ctx context.Context) error {
 	userIDStr, ok := ctx.Value(middleware.UserIDKey).(string)
 	if !ok {
-		return fmt.Errorf("%w: user ID missing or not a string", ErrInvalidUserId)
+		return fmt.Errorf("%w: user ID missing or not a string", appError.ErrInvalidUserId)
 	}
 
 	parsedUserID, err := uuid.Parse(userIDStr)
 	if err != nil {
-		return fmt.Errorf("%w: %v", ErrInvalidUserId, err)
+		return fmt.Errorf("%w: %v", appError.ErrInvalidUserId, err)
 	}
 	s.querier.DeleteUser(ctx, parsedUserID)
 
 	return nil
 }
 
-func (s *UserService) UpdateUser(ctx context.Context, update types.UpdateRequest) error {
+func (s *UserService) UpdateUser(ctx context.Context, update types.UserUpdateRequest) error {
 	userIDStr, ok := ctx.Value(middleware.UserIDKey).(string)
 	if !ok {
-		return fmt.Errorf("%w: user ID missing or not a string", ErrInvalidUserId)
+		return fmt.Errorf("%w: user ID missing or not a string", appError.ErrInvalidUserId)
 	}
 
 	parsedUserID, err := uuid.Parse(userIDStr)
 	if err != nil {
-		return fmt.Errorf("%w: %v", ErrInvalidUserId, err)
+		return fmt.Errorf("%w: %v", appError.ErrInvalidUserId, err)
 	}
 
 	var passwordHash *string
@@ -183,7 +182,7 @@ func (s *UserService) UpdateUser(ctx context.Context, update types.UpdateRequest
 
 	err = s.querier.UpdateUser(ctx, arg)
 	if err != nil {
-		return ErrOperationFailed
+		return appError.ErrOperationFailed
 	}
 
 	return nil

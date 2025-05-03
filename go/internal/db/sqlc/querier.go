@@ -12,11 +12,21 @@ import (
 
 type Querier interface {
 	CheckEmailExists(ctx context.Context, email string) (bool, error)
+	CheckReadAccess(ctx context.Context, arg CheckReadAccessParams) (bool, error)
+	CheckWriteAccess(ctx context.Context, arg CheckWriteAccessParams) (bool, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (uuid.UUID, error)
+	DeleteForge(ctx context.Context, arg DeleteForgeParams) error
+	DeleteForgeAccess(ctx context.Context, arg DeleteForgeAccessParams) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
+	GetForgeAndCheckReadAccess(ctx context.Context, arg GetForgeAndCheckReadAccessParams) (GetForgeAndCheckReadAccessRow, error)
+	GetForgesAndCheckReadAccess(ctx context.Context, ownerID uuid.UUID) ([]GetForgesAndCheckReadAccessRow, error)
 	GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error)
+	InsertForge(ctx context.Context, arg InsertForgeParams) error
+	ListForgeAccess(ctx context.Context, forgeID string) ([]ListForgeAccessRow, error)
+	UpdateForgeAndCheckWriteAccess(ctx context.Context, arg UpdateForgeAndCheckWriteAccessParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) error
+	UpsertForgeAccess(ctx context.Context, arg UpsertForgeAccessParams) error
 }
 
 var _ Querier = (*Queries)(nil)

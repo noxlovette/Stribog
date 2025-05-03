@@ -88,7 +88,7 @@ func (h *UserHandler) Me(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"user_id": userID})
 }
 
-func (h *UserHandler) Fetch(c *gin.Context) {
+func (h *UserHandler) Get(c *gin.Context) {
 	ctx := c.Request.Context()
 	user, err := h.Service.GetUser(ctx)
 	if err != nil {
@@ -109,7 +109,7 @@ func (h *UserHandler) Delete(c *gin.Context) {
 }
 
 func (h *UserHandler) Update(c *gin.Context) {
-	var req types.UpdateRequest
+	var req types.UserUpdateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": "Invalid request body"})
 		return

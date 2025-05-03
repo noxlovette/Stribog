@@ -7,6 +7,7 @@ import (
 	"stribog/internal/auth"
 	sqlc "stribog/internal/db/sqlc"
 	"stribog/internal/db/sqlc/mock"
+	appError "stribog/internal/errors"
 	"stribog/internal/middleware"
 	"stribog/internal/types"
 
@@ -192,7 +193,7 @@ func TestUserService_GetUser(t *testing.T) {
 			name:       "invalid uuid",
 			ctx:        context.WithValue(context.Background(), middleware.UserIDKey, "not-a-uuid"),
 			setupMocks: func(_ uuid.UUID) {}, // Not called
-			expectErr:  ErrInvalidUserId,
+			expectErr:  appError.ErrInvalidUserId,
 		},
 	}
 
@@ -238,7 +239,7 @@ func TestUserService_DeleteUser(t *testing.T) {
 			name:       "bad uuid",
 			ctx:        context.WithValue(context.Background(), middleware.UserIDKey, "not-a-uuid"),
 			setupMocks: func(_ uuid.UUID) {},
-			expectErr:  ErrInvalidUserId,
+			expectErr:  appError.ErrInvalidUserId,
 		},
 	}
 
@@ -270,13 +271,13 @@ func TestUserService_UpdateUser(t *testing.T) {
 	validPassword := "validpass"
 	tests := []struct {
 		name       string
-		req        types.UpdateRequest
+		req        types.UserUpdateRequest
 		setupMocks func(uuid.UUID, *string)
 		expectErr  error
 	}{
 		{
 			name: "update with password",
-			req: types.UpdateRequest{
+			req: types.UserUpdateRequest{
 				Name:     &name,
 				Email:    &email,
 				Password: &validPassword,
@@ -291,7 +292,7 @@ func TestUserService_UpdateUser(t *testing.T) {
 		},
 		{
 			name: "bcrypt error",
-			req: types.UpdateRequest{
+			req: types.UserUpdateRequest{
 				Password: func() *string {
 					s := string(make([]byte, 1000)) // Too long for bcrypt
 					return &s

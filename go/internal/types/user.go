@@ -5,7 +5,7 @@ type WebUser struct {
 	Name  *string `json:"name"`
 }
 
-type UpdateRequest struct {
+type UserUpdateRequest struct {
 	Name     *string `json:"name"`
 	Email    *string `json:"email"`
 	Password *string `json:"password"`

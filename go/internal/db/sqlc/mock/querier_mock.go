@@ -57,6 +57,36 @@ func (mr *MockQuerierMockRecorder) CheckEmailExists(ctx, email any) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckEmailExists", reflect.TypeOf((*MockQuerier)(nil).CheckEmailExists), ctx, email)
 }
 
+// CheckReadAccess mocks base method.
+func (m *MockQuerier) CheckReadAccess(ctx context.Context, arg db.CheckReadAccessParams) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CheckReadAccess", ctx, arg)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CheckReadAccess indicates an expected call of CheckReadAccess.
+func (mr *MockQuerierMockRecorder) CheckReadAccess(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckReadAccess", reflect.TypeOf((*MockQuerier)(nil).CheckReadAccess), ctx, arg)
+}
+
+// CheckWriteAccess mocks base method.
+func (m *MockQuerier) CheckWriteAccess(ctx context.Context, arg db.CheckWriteAccessParams) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CheckWriteAccess", ctx, arg)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CheckWriteAccess indicates an expected call of CheckWriteAccess.
+func (mr *MockQuerierMockRecorder) CheckWriteAccess(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckWriteAccess", reflect.TypeOf((*MockQuerier)(nil).CheckWriteAccess), ctx, arg)
+}
+
 // CreateUser mocks base method.
 func (m *MockQuerier) CreateUser(ctx context.Context, arg db.CreateUserParams) (uuid.UUID, error) {
 	m.ctrl.T.Helper()
@@ -72,6 +102,34 @@ func (mr *MockQuerierMockRecorder) CreateUser(ctx, arg any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockQuerier)(nil).CreateUser), ctx, arg)
 }
 
+// DeleteForge mocks base method.
+func (m *MockQuerier) DeleteForge(ctx context.Context, arg db.DeleteForgeParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteForge", ctx, arg)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteForge indicates an expected call of DeleteForge.
+func (mr *MockQuerierMockRecorder) DeleteForge(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteForge", reflect.TypeOf((*MockQuerier)(nil).DeleteForge), ctx, arg)
+}
+
+// DeleteForgeAccess mocks base method.
+func (m *MockQuerier) DeleteForgeAccess(ctx context.Context, arg db.DeleteForgeAccessParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteForgeAccess", ctx, arg)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteForgeAccess indicates an expected call of DeleteForgeAccess.
+func (mr *MockQuerierMockRecorder) DeleteForgeAccess(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteForgeAccess", reflect.TypeOf((*MockQuerier)(nil).DeleteForgeAccess), ctx, arg)
+}
+
 // DeleteUser mocks base method.
 func (m *MockQuerier) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	m.ctrl.T.Helper()
@@ -84,6 +142,36 @@ func (m *MockQuerier) DeleteUser(ctx context.Context, id uuid.UUID) error {
 func (mr *MockQuerierMockRecorder) DeleteUser(ctx, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockQuerier)(nil).DeleteUser), ctx, id)
+}
+
+// GetForgeAndCheckReadAccess mocks base method.
+func (m *MockQuerier) GetForgeAndCheckReadAccess(ctx context.Context, arg db.GetForgeAndCheckReadAccessParams) (db.GetForgeAndCheckReadAccessRow, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetForgeAndCheckReadAccess", ctx, arg)
+	ret0, _ := ret[0].(db.GetForgeAndCheckReadAccessRow)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetForgeAndCheckReadAccess indicates an expected call of GetForgeAndCheckReadAccess.
+func (mr *MockQuerierMockRecorder) GetForgeAndCheckReadAccess(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetForgeAndCheckReadAccess", reflect.TypeOf((*MockQuerier)(nil).GetForgeAndCheckReadAccess), ctx, arg)
+}
+
+// GetForgesAndCheckReadAccess mocks base method.
+func (m *MockQuerier) GetForgesAndCheckReadAccess(ctx context.Context, ownerID uuid.UUID) ([]db.GetForgesAndCheckReadAccessRow, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetForgesAndCheckReadAccess", ctx, ownerID)
+	ret0, _ := ret[0].([]db.GetForgesAndCheckReadAccessRow)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetForgesAndCheckReadAccess indicates an expected call of GetForgesAndCheckReadAccess.
+func (mr *MockQuerierMockRecorder) GetForgesAndCheckReadAccess(ctx, ownerID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetForgesAndCheckReadAccess", reflect.TypeOf((*MockQuerier)(nil).GetForgesAndCheckReadAccess), ctx, ownerID)
 }
 
 // GetUserByEmail mocks base method.
@@ -116,6 +204,49 @@ func (mr *MockQuerierMockRecorder) GetUserByID(ctx, id any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByID", reflect.TypeOf((*MockQuerier)(nil).GetUserByID), ctx, id)
 }
 
+// InsertForge mocks base method.
+func (m *MockQuerier) InsertForge(ctx context.Context, arg db.InsertForgeParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InsertForge", ctx, arg)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// InsertForge indicates an expected call of InsertForge.
+func (mr *MockQuerierMockRecorder) InsertForge(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertForge", reflect.TypeOf((*MockQuerier)(nil).InsertForge), ctx, arg)
+}
+
+// ListForgeAccess mocks base method.
+func (m *MockQuerier) ListForgeAccess(ctx context.Context, forgeID string) ([]db.ListForgeAccessRow, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListForgeAccess", ctx, forgeID)
+	ret0, _ := ret[0].([]db.ListForgeAccessRow)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListForgeAccess indicates an expected call of ListForgeAccess.
+func (mr *MockQuerierMockRecorder) ListForgeAccess(ctx, forgeID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListForgeAccess", reflect.TypeOf((*MockQuerier)(nil).ListForgeAccess), ctx, forgeID)
+}
+
+// UpdateForgeAndCheckWriteAccess mocks base method.
+func (m *MockQuerier) UpdateForgeAndCheckWriteAccess(ctx context.Context, arg db.UpdateForgeAndCheckWriteAccessParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateForgeAndCheckWriteAccess", ctx, arg)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateForgeAndCheckWriteAccess indicates an expected call of UpdateForgeAndCheckWriteAccess.
+func (mr *MockQuerierMockRecorder) UpdateForgeAndCheckWriteAccess(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateForgeAndCheckWriteAccess", reflect.TypeOf((*MockQuerier)(nil).UpdateForgeAndCheckWriteAccess), ctx, arg)
+}
+
 // UpdateUser mocks base method.
 func (m *MockQuerier) UpdateUser(ctx context.Context, arg db.UpdateUserParams) error {
 	m.ctrl.T.Helper()
@@ -128,4 +259,18 @@ func (m *MockQuerier) UpdateUser(ctx context.Context, arg db.UpdateUserParams) e
 func (mr *MockQuerierMockRecorder) UpdateUser(ctx, arg any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockQuerier)(nil).UpdateUser), ctx, arg)
+}
+
+// UpsertForgeAccess mocks base method.
+func (m *MockQuerier) UpsertForgeAccess(ctx context.Context, arg db.UpsertForgeAccessParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpsertForgeAccess", ctx, arg)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpsertForgeAccess indicates an expected call of UpsertForgeAccess.
+func (mr *MockQuerierMockRecorder) UpsertForgeAccess(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertForgeAccess", reflect.TypeOf((*MockQuerier)(nil).UpsertForgeAccess), ctx, arg)
 }
