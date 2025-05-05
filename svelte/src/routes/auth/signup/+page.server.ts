@@ -1,19 +1,18 @@
+import type { SignupResponse } from '$lib/types';
 import {
-	handleApiResponse,
-	isSuccessResponse,
-	turnstileVerify,
 	validateEmail,
 	validatePassword,
 	validatePasswordMatch,
-	validateUsername
+	validateUsername,
+	isSuccessResponse,
+	handleApiResponse,
+	turnstileVerify
 } from '@noxlovette/svarog';
-import type { SignupResponse } from '$lib/types';
+import { env } from '$env/dynamic/private';
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { env } from '$env/dynamic/private';
-
 export const actions: Actions = {
-	default: async ({ request, url, fetch }) => {
+	default: async ({ request, fetch }) => {
 		const data = await request.formData();
 		const username = data.get('username') as string;
 		const pass = data.get('password') as string;
@@ -52,13 +51,14 @@ export const actions: Actions = {
 				message: 'Please complete the CAPTCHA verification'
 			});
 		}
-		const turnstileResponse = await turnstileVerify(turnstileToken, env.CLOUDFLARE_SECRET);
+		const turnstileResponse = await turnstileVerify(turnstileToken, env.TURNSTILE_SECRET);
 		if (!turnstileResponse.ok) {
 			return fail(400, {
 				message: 'Turnstile verification failed'
 			});
 		}
 
+		// Signup API call
 		const response = await fetch('/axum/auth/signup', {
 			method: 'POST',
 			body: JSON.stringify({ username, pass, email, role, name })
@@ -67,7 +67,6 @@ export const actions: Actions = {
 		const result = await handleApiResponse<SignupResponse>(response);
 
 		if (!isSuccessResponse(result)) {
-			console.log(result);
 			return fail(result.status, { message: result.message });
 		}
 

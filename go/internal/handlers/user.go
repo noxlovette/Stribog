@@ -6,14 +6,19 @@ import (
 	"stribog/internal/types"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type UserHandler struct {
 	Service *services.UserService
+	logger  *zap.Logger
 }
 
-func NewUserHandler(service *services.UserService) *UserHandler {
-	return &UserHandler{Service: service}
+func NewUserHandler(service *services.UserService, logger *zap.Logger) *UserHandler {
+	return &UserHandler{
+		Service: service,
+		logger:  logger,
+	}
 }
 
 func (h *UserHandler) Signup(c *gin.Context) {
@@ -59,33 +64,34 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("access_token", tokens.AccessToken, 3600, "/", "", false, true)
-	c.SetCookie("refresh_token", tokens.RefreshToken, 3600*24*7, "/", "", false, true)
+	c.JSON(http.StatusOK, tokens)
+}
 
-	c.JSON(http.StatusOK, gin.H{"message": "login successful"})
+type RefreshRequest struct {
+	RefreshToken string `json:"refreshToken"`
 }
 
 func (h *UserHandler) Refresh(c *gin.Context) {
-	refreshToken, err := c.Cookie("refresh_token")
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "missing refresh token"})
+	h.logger.Info("Handling refresh token request")
+
+	var req RefreshRequest
+	if err := c.ShouldBindJSON(&req); err != nil || req.RefreshToken == "" {
+		h.logger.Warn("Invalid refresh request", zap.Error(err), zap.String("token", req.RefreshToken))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "missing refresh token"})
 		return
 	}
 
-	accessToken, err := h.Service.Refresh(c.Request.Context(), refreshToken)
+	h.logger.Info("Valid refresh token received, processing")
+
+	tokens, err := h.Service.Refresh(c.Request.Context(), req.RefreshToken)
 	if err != nil {
+		h.logger.Warn("Failed to refresh access token", zap.Error(err))
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "refresh failed"})
 		return
 	}
 
-	c.SetCookie("access_token", accessToken, 3600, "/", "", false, true)
-
-	c.JSON(http.StatusOK, gin.H{"message": "refreshed"})
-}
-
-func (h *UserHandler) Me(c *gin.Context) {
-	userID, _ := c.Get("userID")
-	c.JSON(http.StatusOK, gin.H{"user_id": userID})
+	h.logger.Info("Access token refreshed successfully")
+	c.JSON(http.StatusOK, tokens)
 }
 
 func (h *UserHandler) Get(c *gin.Context) {

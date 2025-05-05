@@ -9,7 +9,7 @@ import (
 )
 
 type TokenService interface {
-	GenerateToken(userID string, ttl time.Duration) (string, error)
+	GenerateToken(userID string, ttl time.Duration) (string, time.Time, error)
 	ParseToken(tokenStr string) (uuid.UUID, error)
 }
 
@@ -21,14 +21,19 @@ func NewJWTAuth(secret string) *JWTAuth {
 	return &JWTAuth{secret: []byte(secret)}
 }
 
-func (j *JWTAuth) GenerateToken(userID string, ttl time.Duration) (string, error) {
+func (j *JWTAuth) GenerateToken(userID string, ttl time.Duration) (string, time.Time, error) {
+	expiration := time.Now().Add(ttl)
 	claims := jwt.RegisteredClaims{
 		Subject:   userID,
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(ttl)),
+		ExpiresAt: jwt.NewNumericDate(expiration),
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(j.secret)
+	signedToken, err := token.SignedString(j.secret)
+	if err != nil {
+		return "", time.Time{}, err
+	}
+	return signedToken, expiration, nil
 }
 
 func (j *JWTAuth) ParseToken(tokenStr string) (uuid.UUID, error) {

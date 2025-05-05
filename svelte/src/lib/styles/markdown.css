@@ -1,11 +1,11 @@
 @layer components {
 	.markdown {
-		@apply max-w-prose;
+		@apply mx-auto my-4 w-full rounded-xl px-4 md:my-0;
 
 		> *:first-child {
 			@apply mt-0;
 		}
-		/* Headings with better visual hierarchy and consistent spacing */
+
 		h1,
 		h2,
 		h3 {
@@ -13,80 +13,139 @@
 		}
 
 		h1 {
-			@apply mt-8 mb-4 text-4xl font-bold text-zinc-900 dark:text-zinc-50;
+			@apply mt-8 mb-4 text-4xl font-semibold text-stone-900 dark:text-stone-50;
 		}
-
 		h2 {
-			@apply mt-6 mb-3 text-2xl font-semibold text-zinc-800 dark:text-zinc-100;
+			@apply mt-6 mb-3 text-2xl font-medium text-stone-800 dark:text-stone-100;
 		}
-
 		h3 {
-			@apply mt-4 mb-2 text-xl font-medium text-zinc-700 dark:text-zinc-200;
+			@apply mt-4 mb-2 text-lg font-medium text-stone-700 dark:text-stone-200;
 		}
 
-		/* Improved paragraph spacing and readability */
 		p {
-			@apply mb-4 leading-relaxed text-zinc-700 dark:text-zinc-300;
+			@apply mb-4 text-[17px] leading-relaxed text-stone-800 dark:text-stone-300;
 		}
 
-		/* Enhanced lists with better spacing and bullets */
 		ul,
 		ol {
-			@apply my-2 ml-6 list-decimal space-y-2;
+			@apply my-2 ml-5 list-disc space-y-1.5;
 		}
 
 		li {
-			@apply list-disc text-zinc-700 dark:text-zinc-300;
+			@apply text-stone-700 dark:text-stone-300;
 		}
 
-		/* Modern link styling with hover effects */
 		a {
-			@apply text-teal-600 underline decoration-2 underline-offset-2 transition-colors duration-200 hover:text-teal-700 hover:decoration-teal-700 dark:text-teal-400 dark:hover:text-teal-300 dark:hover:decoration-teal-300;
+			@apply text-stone-600 underline-offset-2 transition-colors duration-200 hover:underline dark:text-stone-400;
 		}
 
-		/* Prettier blockquotes */
 		blockquote {
-			@apply my-4 rounded-r-lg border-l-4 border-teal-400 bg-zinc-50 py-2 pl-4 text-zinc-700 italic dark:border-teal-600 dark:bg-zinc-800/50 dark:text-zinc-300;
+			@apply my-4 rounded-md border-l-4 border-stone-300 bg-stone-50/30 px-4 py-2 text-stone-700 italic dark:border-stone-600 dark:bg-stone-800/50 dark:text-stone-300;
 		}
 
-		/* Code blocks with better contrast and syntax highlighting support */
 		pre {
-			@apply my-6 overflow-x-auto rounded-sm bg-zinc-900 p-4 text-zinc-100 dark:bg-zinc-950 dark:text-zinc-50;
+			@apply my-6 overflow-x-auto rounded-xl bg-stone-900 p-4 text-sm text-stone-100 dark:bg-stone-950 dark:text-stone-50;
 		}
 
 		code {
-			@apply rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-sm text-zinc-900 dark:bg-zinc-800 dark:text-zinc-50;
+			@apply rounded bg-stone-100 px-1.5 py-0.5 font-mono text-sm text-stone-900 dark:bg-stone-800 dark:text-stone-50;
 		}
 
-		/* Thematic break with style */
 		hr {
-			@apply my-8 w-full border-t-2 border-zinc-200 dark:border-zinc-700;
+			@apply my-8 border-t border-stone-300/30 dark:border-stone-700;
 		}
 
-		/* Modern table design */
 		table {
-			@apply my-6 w-full border-collapse;
+			@apply my-6 w-full border-collapse rounded-md;
 		}
 
 		th {
-			@apply border-b-2 border-zinc-300 bg-zinc-100 px-4 py-2 text-left font-medium text-zinc-900 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50;
+			@apply border-b border-stone-300 bg-stone-100 px-3 py-2 text-left text-sm font-medium text-stone-900 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-50;
 		}
 
 		td {
-			@apply border-b border-zinc-200 px-4 py-2 text-zinc-700 dark:border-zinc-700 dark:text-zinc-300;
+			@apply border-b border-stone-300/30 px-3 py-2 text-sm text-stone-700 dark:border-stone-700 dark:text-stone-300;
 		}
 
-		/* Additional useful elements */
 		img {
-			@apply my-6 h-auto max-w-full rounded-sm;
+			@apply my-6 h-auto max-w-full rounded-lg;
 		}
 
-		/* Task lists for GitHub-style markdown */
 		input[type='checkbox'] {
-			@apply mr-2 accent-teal-500 dark:accent-teal-400;
+			@apply mr-2 accent-blue-600 dark:accent-blue-400;
 		}
 
-		/* Smooth transitions for dark mode */
+		* {
+			@apply transition-colors duration-200;
+		}
+	}
+
+	.markdown-mini {
+		@apply max-w-[60ch] px-1 text-[12px] leading-snug;
+
+		h1 {
+			@apply mt-2 mb-1 text-lg font-semibold text-stone-900 dark:text-stone-50;
+		}
+		h2 {
+			@apply mt-2 mb-1 text-base font-medium text-stone-800 dark:text-stone-100;
+		}
+		h3 {
+			@apply mt-1 mb-0.5 text-sm font-medium text-stone-700 dark:text-stone-200;
+		}
+
+		p {
+			@apply mb-2 text-[12px] leading-snug text-stone-700 dark:text-stone-300;
+		}
+
+		ul,
+		ol {
+			@apply my-1 ml-2 list-disc space-y-1;
+		}
+
+		li {
+			@apply text-[12px] text-stone-700 dark:text-stone-300;
+		}
+
+		a {
+			@apply text-[12px] text-stone-600 underline underline-offset-2 dark:text-stone-400;
+		}
+
+		blockquote {
+			@apply my-2 rounded border-l-2 border-stone-300 bg-stone-100 px-2 py-1 text-[12px] text-stone-700 italic dark:border-stone-600 dark:bg-stone-800/40 dark:text-stone-300;
+		}
+
+		pre {
+			@apply my-2 overflow-x-auto rounded-md bg-stone-900 p-2 text-[11px] text-stone-100 dark:bg-stone-950 dark:text-stone-50;
+		}
+
+		code {
+			@apply rounded bg-stone-100 px-1 py-0.5 font-mono text-[11px] text-stone-900 dark:bg-stone-800 dark:text-stone-50;
+		}
+
+		hr {
+			@apply my-1 border-t border-stone-300/30 dark:border-stone-700;
+		}
+
+		table {
+			@apply my-2 w-full border-collapse text-[11px];
+		}
+
+		th {
+			@apply border-b border-stone-300 bg-stone-100 px-2 py-1 text-left font-medium text-stone-900 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-50;
+		}
+
+		td {
+			@apply border-b border-stone-300/30 px-2 py-1 text-stone-700 dark:border-stone-700 dark:text-stone-300;
+		}
+
+		img {
+			@apply my-2 h-auto max-w-full rounded;
+		}
+
+		input[type='checkbox'] {
+			@apply mr-1 accent-blue-600 dark:accent-blue-400;
+		}
+
 		* {
 			@apply transition-colors duration-200;
 		}

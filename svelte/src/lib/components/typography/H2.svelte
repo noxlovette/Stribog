@@ -1,7 +1,9 @@
 <script lang="ts">
-	let { children } = $props();
+	let { children, styling = '' } = $props();
 </script>
 
-<h2 class="text-lg/snug font-semibold font-teko text-balance sm:text-xl/snug lg:text-2xl/snug">
-	{@render children()}
-</h2>
+<h1
+	class="{styling} text-frosted my-1 text-center text-xl font-semibold tracking-tight text-balance md:text-left md:text-3xl"
+>
+	{@render children?.()}
+</h1>

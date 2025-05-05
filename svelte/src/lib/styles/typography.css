@@ -1,0 +1,7 @@
+@theme {
+	--font-sans:
+		ui-sans-serif, -apple-system, system-ui, 'Helvetica Neue', Helvetica, 'Segoe UI', Roboto, Arial,
+		'Noto Sans', sans-serif;
+
+	--font-ponomar: 'Ponomar';
+}

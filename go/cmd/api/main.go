@@ -20,14 +20,14 @@ func main() {
 	}
 
 	querier := db.New(state.DB.Pool)
-	userService := services.NewUserService(querier, state.TokenService)
+	userService := services.NewUserService(querier, state.TokenService, state.Logger)
 	forgeService := services.NewForgeService(querier)
 	accessService := services.NewAccessService(querier)
 	sparkService := services.NewSparkService(querier)
 	apiKeyService := services.NewAPIKeyService(querier)
 	publicService := services.NewPublicService(querier)
 
-	userHandler := handlers.NewUserHandler(userService)
+	userHandler := handlers.NewUserHandler(userService, state.Logger)
 	forgeHandler := handlers.NewForgeHandler(forgeService)
 	accessHandler := handlers.NewAccessHandler(accessService)
 	sparkHandler := handlers.NewSparkHandler(sparkService)
@@ -35,6 +35,9 @@ func main() {
 	publicHandler := handlers.NewPublicHandler(publicService)
 
 	r := gin.Default()
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{"message": "pong"})
+	})
 
 	authRoutes := r.Group("/auth")
 	authRoutes.POST("/signup", userHandler.Signup)
@@ -47,7 +50,7 @@ func main() {
 	publicRoutes.GET("/:forgeID", publicHandler.List)
 
 	apiRoutes := r.Group("/api")
-	apiRoutes.Use(middleware.AuthMiddleware(state.TokenService))
+	apiRoutes.Use(middleware.AuthMiddlewareHeader(state.TokenService))
 
 	userRoutes := apiRoutes.Group("/me")
 	userRoutes.GET("/", userHandler.Get).DELETE("/", userHandler.Delete).PATCH("/", userHandler.Update)
@@ -71,5 +74,5 @@ func main() {
 	apiKeyRoutes := forgeRoutes.Group("/:forgeID/api-keys")
 	apiKeyRoutes.POST("/", apiKeyHandler.Create).GET("/", apiKeyHandler.List).DELETE("/", apiKeyHandler.Delete)
 
-	r.Run(":8080")
+	r.Run(":3000")
 }

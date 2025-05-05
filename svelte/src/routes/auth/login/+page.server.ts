@@ -1,22 +1,14 @@
-import {
-	handleApiResponse,
-	isSuccessResponse,
-	parseCookieOptions,
-	turnstileVerify,
-	ValidateAccess,
-	validateRequired
-} from '@noxlovette/svarog';
-import type { AuthResponse, User } from '$lib/types';
+import { handleApiResponse, isSuccessResponse, validateRequired } from '@noxlovette/svarog';
+import type { AuthResponse } from '$lib/types';
 import { fail, type Actions } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { tokenConfig } from '$lib/server/token';
+import { setTokenCookie } from '$lib/server';
 
 export const actions: Actions = {
 	default: async ({ request, fetch, cookies }) => {
 		try {
 			const data = await request.formData();
 			const username = data.get('username') as string;
-			const pass = data.get('password') as string;
+			const password = data.get('password') as string;
 			const turnstileToken = data.get('cf-turnstile-response') as string;
 
 			// const turnstileTokenError = validateRequired(turnstileToken);
@@ -30,7 +22,7 @@ export const actions: Actions = {
 			const validatePass = validateRequired('password');
 
 			const usernameError = validateUsername(username);
-			const passError = validatePass(pass);
+			const passError = validatePass(password);
 			if (usernameError) {
 				return fail(400, {
 					message: usernameError
@@ -51,10 +43,9 @@ export const actions: Actions = {
 			// 	});
 			// }
 
-			// Login API call with typed response handling
-			const response = await fetch('/axum/auth/signin', {
+			const response = await fetch('/backend/auth/login', {
 				method: 'POST',
-				body: JSON.stringify({ username, pass })
+				body: JSON.stringify({ username, password })
 			});
 
 			const authResult = await handleApiResponse<AuthResponse>(response);
@@ -62,34 +53,13 @@ export const actions: Actions = {
 			if (!isSuccessResponse(authResult)) {
 				return fail(authResult.status, { message: authResult.message });
 			}
-
-			// Handle cookies from response
-			response.headers.getSetCookie().forEach((cookie) => {
-				const [fullCookie, ...opts] = cookie.split(';');
-				const [name, value] = fullCookie.split('=');
-				const cookieOptions = parseCookieOptions(opts);
-				cookies.set(name, value, cookieOptions);
-			});
-
-			// Validate the access token
-			const { accessToken } = authResult.data;
-			const user = (await ValidateAccess(
-				accessToken,
-				tokenConfig.spki,
-				tokenConfig.alg,
-				tokenConfig.issuer
-			)) as User;
-
-			if (!user) {
-				return fail(401, {
-					message: 'Invalid access token'
-				});
-			}
+			const { accessToken, refreshToken } = authResult.data;
+			setTokenCookie(cookies, 'access_token', accessToken);
+			setTokenCookie(cookies, 'refresh_token', refreshToken);
 
 			return {
 				success: true,
-				message: 'Login successful',
-				user
+				message: 'Login successful'
 			};
 		} catch (error) {
 			console.error('Signin error:', error);
