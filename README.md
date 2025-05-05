@@ -1,3 +1,3 @@
 # Stribog
 
-The CDN for the damned
+A very simple Markdown-based CDN

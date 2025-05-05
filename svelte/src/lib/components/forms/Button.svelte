@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { Loader2 } from 'lucide-svelte';
+	import { Component, Loader2 } from 'lucide-svelte';
 	import { isLoading } from '$lib/stores';
-	import type { Snippet } from 'svelte';
+	import type { ComponentType, Snippet } from 'svelte';
 	import type { MouseEventHandler } from 'svelte/elements';
+	import ModalBackground from '../UI/ModalBackground.svelte';
 
 	type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost' | 'link' | 'outline';
 
@@ -17,15 +18,14 @@
 		formaction?: string | undefined;
 		styling?: string;
 		disable?: boolean;
-		Icon: ConstructorOfATypedSvelteComponent | undefined;
+		Icon?: Component;
 		iconPosition?: 'left' | 'right';
 		fullWidth?: boolean;
 		rounded?: boolean;
 		confirmText?: string | undefined;
 		confirmTitle?: string | undefined;
-		customColors?: string | undefined;
 		onclick?: MouseEventHandler<HTMLButtonElement> | undefined;
-		children: Snippet;
+		children?: Snippet;
 	}
 
 	let {
@@ -42,7 +42,6 @@
 		rounded = false,
 		confirmText = undefined,
 		confirmTitle = undefined,
-		customColors = undefined,
 		onclick = undefined,
 		children
 	}: Props = $props();
@@ -51,7 +50,6 @@
 	let disabled = $derived($isLoading || disable);
 	let showConfirmDialog = $state(false);
 
-	// Simple function to handle showing the confirmation dialog for danger buttons
 	function handleClick(event: any) {
 		if (variant === 'danger' && (confirmText || confirmTitle)) {
 			event.preventDefault();
@@ -60,38 +58,29 @@
 	}
 
 	const sizeClasses = {
-		xs: 'px-2 py-1 text-xs',
-		sm: 'px-2.5 py-1.5 text-sm',
-		md: 'px-3 py-2 text-sm md:px-4 md:text-base',
-		lg: 'px-4 py-2.5 text-base md:px-6',
-		xl: 'px-5 py-3 text-lg md:px-8'
+		xs: 'px-2 py-1 text-tiny',
+		sm: 'px-3 py-1.5 text-sm',
+		md: 'px-3.5 py-1.5 text-[15px]',
+		lg: 'px-5 py-2.5 text-base md:px-6',
+		xl: 'px-6 py-3 text-lg md:px-8'
 	};
 
 	const baseClasses =
-		'flex items-center justify-center rounded-sm ring transition-all focus:ring focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50';
+		'flex items-center justify-center rounded-full transition-all duration-150 ease-in-out font-medium select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-orange-400 disabled:cursor-not-allowed disabled:opacity-50 backdrop-blur-md';
 
 	const variantClasses = {
 		primary:
-			customColors ||
-			'from-teal-500 to-teal-600 text-teal-50 dark:from-zinc-800 dark:to-zinc-900 dark:text-teal-100 hover:to-teal-700 focus:ring-teal-500 ring-zinc-200 dark:ring-zinc-800 dark:hover:ring-zinc-700 dark:hover:to-zinc-950 bg-gradient-to-br',
-		secondary:
-			customColors ||
-			'text-zinc-700 from-zinc-50 to-zinc-100 hover:to-zinc-200 ring-zinc-300 bg-gradient-to-bl',
+			'bg-gradient-to-br ring-1 ring-orange-700 transition-colors shadow-sm ring-1 from-orange-900/70 to-orange-800/70 text-orange-50 hover:from-orange-800 hover:to-orange-700',
+		secondary: 'ring-1 shadow-sm bg-stone-900/80 text-stone-200 hover:bg-stone-800 ring-stone-700',
 		danger:
-			customColors ||
-			'from-red-500 to-red-600 text-white hover:from-red-500 hover:to-red-700 dark:from-red-500 dark:to-red-600 dark:hover:from-red-500 dark:hover:to-red-700 focus:ring-red-400 bg-gradient-to-br',
-		ghost:
-			customColors ||
-			'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 ring-transparent',
-		link:
-			customColors ||
-			'text-teal-600 dark:text-teal-400 underline hover:text-teal-700 dark:hover:text-teal-300 p-0 ring-transparent',
+			'bg-gradient-to-br from-red-100/80 transition-colors to-red-200/80 ring-1 shadow-sm dark:from-orange-700/70 to-orange-800/70 text-white hover:from-orange-600 hover:to-orange-700',
+		ghost: 'text-stone-400 hover:bg-stone-800/60',
+		link: 'text-orange-600 underline hover:text-orange-800 p-0 ring-0 dark:text-orange-300 dark:hover:text-orange-100',
 		outline:
-			customColors ||
-			'text-zinc-700 dark:text-zinc-300 ring-1 ring-zinc-300 dark:ring-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800'
+			'bg-transparent text-stone-800 ring-1 ring-stone-300 hover:bg-stone-50 dark:text-stone-200 dark:ring-stone-600/50 dark:hover:bg-stone-800'
 	};
 
-	const shapeClasses = $derived(rounded ? 'rounded-full' : 'rounded-sm');
+	// const shapeClasses = $derived(rounded ? 'rounded-full' : 'rounded-lg');
 	const widthClasses = $derived(fullWidth ? 'w-full' : '');
 
 	const allClasses = $derived(
@@ -99,7 +88,7 @@
 			baseClasses,
 			variantClasses[variant],
 			sizeClasses[size],
-			shapeClasses,
+			// shapeClasses,
 			widthClasses,
 			styling
 		].join(' ')
@@ -116,7 +105,7 @@
 
 		{#if $isLoading}Loading...
 		{:else}
-			{@render children()}
+			{@render children?.()}
 		{/if}
 
 		{#if Icon && iconPosition === 'right'}
@@ -139,7 +128,7 @@
 
 		{#if $isLoading}Loading...
 		{:else}
-			{@render children()}
+			{@render children?.()}
 		{/if}
 
 		{#if Icon && iconPosition === 'right'}
@@ -149,31 +138,28 @@
 {/if}
 
 {#if showConfirmDialog}
-	<div class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4">
-		<div class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl dark:bg-zinc-900">
-			<h3 class="text-xl font-semibold text-zinc-800 dark:text-zinc-200">
-				{confirmTitle || 'Confirm'}
-			</h3>
-			<p class="mt-2 text-zinc-600 dark:text-zinc-400">
-				Are you sure you want to {'delete ' + confirmText || 'continue'}? This action cannot be
-				undone.
-			</p>
-			<div class="mt-6 flex justify-end gap-3">
-				<button
-					type="button"
-					class="rounded-sm bg-gradient-to-bl from-zinc-50 to-zinc-100 px-3 py-2 text-center text-zinc-700 ring ring-zinc-300 transition-colors hover:to-zinc-200"
-					onclick={() => (showConfirmDialog = false)}
-				>
-					Cancel
-				</button>
-				<button
-					type="submit"
-					class="rounded-sm bg-gradient-to-br from-red-500 to-red-600 px-3 py-2 text-center text-white ring transition-colors hover:from-red-500 hover:to-red-700 focus:ring focus:ring-red-400 focus:ring-offset-2 focus:outline-none dark:from-red-500 dark:to-red-600 dark:hover:from-red-500 dark:hover:to-red-700"
-					{formaction}
-				>
-					Confirm
-				</button>
-			</div>
+	<ModalBackground>
+		<h3 class="text-lg font-semibold text-stone-800 dark:text-stone-200">
+			{confirmTitle || 'Are you sure?'}
+		</h3>
+		<p class="mt-2 text-sm text-stone-600 dark:text-stone-400">
+			{confirmText || 'This action cannot be undone.'}
+		</p>
+		<div class="mt-5 flex justify-end gap-2">
+			<button
+				type="button"
+				class="rounded-lg bg-white px-4 py-2 text-stone-700/30 ring-1 ring-stone-300 transition-all hover:bg-stone-50 dark:bg-stone-800/30 dark:text-stone-200 dark:hover:bg-stone-700"
+				onclick={() => (showConfirmDialog = false)}
+			>
+				Cancel
+			</button>
+			<button
+				type="submit"
+				class="rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 px-4 py-2 text-white ring-1 ring-orange-300 transition-all hover:from-orange-500 hover:to-orange-700 focus:ring focus:ring-orange-400 focus:ring-offset-2"
+				{formaction}
+			>
+				Confirm
+			</button>
 		</div>
-	</div>
+	</ModalBackground>
 {/if}

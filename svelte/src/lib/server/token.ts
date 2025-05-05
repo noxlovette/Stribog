@@ -1,19 +1,18 @@
 import { env } from '$env/dynamic/private';
-import { importSPKI, jwtVerify } from 'jose';
+import { jwtVerify } from 'jose';
 import type { TokenValidationConfig } from '@noxlovette/svarog';
 
 export const tokenConfig: TokenValidationConfig = {
-	spki: env.SPKI || '',
-	alg: env.ALG || ''
+	spki: '',
+	alg: 'HS256'
 };
 
 export async function ValidateAccess(jwt: string) {
-	const spki = env.spki || '';
-	const alg = env.alg || 'RS256';
-	const publicKey = await importSPKI(spki, alg);
+	const secret = new TextEncoder().encode(env.JWT_KEY || '');
+	const alg = 'HS256';
 
-	const { payload } = await jwtVerify(jwt, publicKey, {
-		issuer: 'auth:auth'
+	const { payload } = await jwtVerify(jwt, secret, {
+		algorithms: [alg]
 	});
 
 	const EXPIRY_BUFFER = 30;

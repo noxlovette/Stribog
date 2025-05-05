@@ -14,24 +14,35 @@ services:
     env_file:
       - ./svelte/.env
     depends_on:
-      - axum
+      - go
 
-  axum:
+  go:
     build:
-      context: ./axum
+      context: ./go
       dockerfile: Dockerfile.dev
-    container_name: axum-stribog-dev
+    container_name: go-stribog-dev
     ports:
       - "3000:3000"
     volumes:
-      - ./axum:/app
-      - cargo-cache:/usr/local/cargo/registry
-      - cargo-target:/app/target
+      - ./go:/app
     env_file:
-      - ./axum/.env
+      - ./go/.env
     depends_on:
       postgres:
         condition: service_healthy
+
+  redis:
+    image: redis/redis-stack:latest
+    container_name: redis-stribog-dev
+    ports:
+      - "6379:6379"
+      - "8003:8001"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
 
   postgres:
     image: postgres
@@ -40,9 +51,8 @@ services:
     user: postgres
     volumes:
       - db-data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=pg-stribog-dev
-      - POSTGRES_PASSWORD=changeme
+    env_file:
+      - ./.env
     ports:
       - "5432:5432"
     healthcheck:
@@ -52,10 +62,6 @@ services:
       retries: 5
 
 volumes:
-  cargo-cache:
-    name: cargo-cache-stribog-dev
-  cargo-target:
-    name: cargo-target-stribog-dev
   db-data:
     name: db-stribog-dev
   uploads:

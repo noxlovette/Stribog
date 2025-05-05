@@ -45,9 +45,5 @@ export interface Toast {
 
 export interface User {
 	name: string | null;
-	username: string | null;
-	role: string | null;
 	email: string | null;
-	sub: string | null;
-	[key: string]: string | undefined;
 }

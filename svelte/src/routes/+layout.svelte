@@ -2,11 +2,6 @@
 	import '../app.css';
 	import { SEO } from '@noxlovette/svarog';
 	import { Notification, Header, Footer } from '$lib/components';
-	import { keyEscape } from '$lib/actions';
-
-	function goBack() {
-		window.history.back();
-	}
 
 	interface Props {
 		children?: import('svelte').Snippet;
@@ -16,15 +11,12 @@
 
 <SEO title="Stribog" description="CDN" keywords="CDN, stribog" />
 
-<main
-	class="flex flex-col h-screen w-screen items-center justify-center overflow-auto bg-zinc-50 text-zinc-800 antialiased dark:bg-zinc-950 dark:text-zinc-100"
-	use:keyEscape={goBack}
->
+<main class="flex flex-col overflow-auto bg-stone-950 text-stone-50 antialiased">
 	<Header />
 	<div
-		class="flex size-full max-w-7xl flex-col font-medium caret-teal-800 selection:bg-teal-500/20 dark:caret-zinc-200"
+		class="flex min-h-screen flex-col font-medium caret-orange-800 selection:bg-orange-500/20 dark:caret-stone-200"
 	>
-			{@render children?.()}
+		{@render children?.()}
 	</div>
 	<Footer />
 	<Notification />
