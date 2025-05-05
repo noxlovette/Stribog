@@ -12,7 +12,6 @@ export async function ValidateAccess(jwt: string) {
 	const alg = 'HS256';
 
 	const { payload } = await jwtVerify(jwt, secret, {
-		issuer: 'auth:auth',
 		algorithms: [alg]
 	});
 

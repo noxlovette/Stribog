@@ -12,7 +12,7 @@
 <H3>Join Us</H3>
 <form
 	method="post"
-	class="w flex flex-col items-center justify-center space-y-4"
+	class="flex flex-col items-center justify-center space-y-4"
 	use:enhance={enhanceForm({
 		messages: {
 			redirect: 'Welcome on board',
@@ -20,7 +20,7 @@
 		}
 	})}
 >
-	<div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+	<div class="my-8 grid grid-cols-1 gap-3 md:grid-cols-2">
 		<Input name="name" placeholder="Name" value=""></Input>
 		<Input name="email" placeholder="Email" type="email" value=""></Input>
 		<Input name="password" placeholder="Password" type="password" bind:value={password}></Input>

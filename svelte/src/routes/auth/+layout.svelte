@@ -6,7 +6,7 @@
 <div class="flex flex-col items-center justify-center">
 	<div class="size-72 overflow-hidden">
 		<img
-			src="/pictures/auth-logo.png"
+			src="/pictures/auth-logo-grind.png"
 			alt="Forge and Sparkles"
 			class="h-full w-full object-cover"
 		/>

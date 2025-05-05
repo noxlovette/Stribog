@@ -34,11 +34,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 async function handleTokenRefresh(event: RequestEvent) {
 	const refreshToken = event.cookies.get('refresh_token');
 	if (!refreshToken) {
+		console.debug('no refresh token, redirecting to login');
 		throw redirect(302, '/auth/login');
 	}
 
 	const refreshCacheKey = `refresh:${refreshToken}`;
-
+	console.debug('set redis cache key');
 	const inProgress = await redis.get(refreshCacheKey);
 
 	if (inProgress === 'true') {
@@ -56,16 +57,17 @@ async function handleTokenRefresh(event: RequestEvent) {
 	await redis.set(refreshCacheKey, 'true', 'EX', 5);
 
 	try {
+		console.debug('sending request to refresh');
 		const refreshRes = await event.fetch('/auth/refresh', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json'
-			},
-			body: JSON.stringify({ refreshToken })
+			}
 		});
 
 		if (!refreshRes.ok) {
+			console.debug('refresh failed after request');
 			throw new Error('Refresh failed');
 		}
 
@@ -117,15 +119,10 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
 			newUrl.searchParams.set(key, value);
 		});
 
-		request = new Request(newUrl.toString(), {
-			method: request.method,
-			headers: new Headers(request.headers),
-			body: request.body,
-			credentials: request.credentials
-		});
+		request = new Request(newUrl.toString(), request);
 	}
 
-	const accessToken = event.cookies.get('accessToken');
+	const accessToken = event.cookies.get('access_token');
 	if (accessToken) {
 		request.headers.set('Authorization', `Bearer ${accessToken}`);
 	}

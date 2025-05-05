@@ -1,4 +1,9 @@
-import { handleApiResponse, isSuccessResponse, validateRequired } from '@noxlovette/svarog';
+import {
+	handleApiResponse,
+	isSuccessResponse,
+	validateEmail,
+	validateRequired
+} from '@noxlovette/svarog';
 import type { AuthResponse } from '$lib/types';
 import { fail, type Actions } from '@sveltejs/kit';
 import { setTokenCookie } from '$lib/server';
@@ -7,7 +12,7 @@ export const actions: Actions = {
 	default: async ({ request, fetch, cookies }) => {
 		try {
 			const data = await request.formData();
-			const username = data.get('username') as string;
+			const email = data.get('email') as string;
 			const password = data.get('password') as string;
 			const turnstileToken = data.get('cf-turnstile-response') as string;
 
@@ -18,10 +23,10 @@ export const actions: Actions = {
 			// 	});
 			// }
 
-			const validateUsername = validateRequired('username');
+			const validateEmail = validateRequired('email');
 			const validatePass = validateRequired('password');
 
-			const usernameError = validateUsername(username);
+			const usernameError = validateEmail(email);
 			const passError = validatePass(password);
 			if (usernameError) {
 				return fail(400, {
@@ -45,7 +50,7 @@ export const actions: Actions = {
 
 			const response = await fetch('/backend/auth/login', {
 				method: 'POST',
-				body: JSON.stringify({ username, password })
+				body: JSON.stringify({ email, password })
 			});
 
 			const authResult = await handleApiResponse<AuthResponse>(response);
