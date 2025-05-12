@@ -9,7 +9,7 @@ export interface Forge {
 
 export interface Collaborator {
 	id: string;
-	forgeId: string;
+	forgeID: string;
 	userId: string;
 	userName: string;
 	userEmail: string;
@@ -21,16 +21,16 @@ export interface Collaborator {
 
 export interface ApiKey {
 	id: string;
-	forgeId: string;
+	forgeID: string;
 	title: string;
-	isActive: boolean;
+	is_active: boolean;
 	createdAt: string;
 	lastUsedAt: string;
 }
 
 export interface Spark {
 	id: string;
-	forgeId: string;
+	forgeID: string;
 	title: string;
 	markdown: string;
 	ownerId: string;

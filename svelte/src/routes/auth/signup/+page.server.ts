@@ -59,7 +59,7 @@ export const actions: Actions = {
 		}
 
 		// Signup API call
-		const response = await fetch('/axum/auth/signup', {
+		const response = await fetch('/backend/auth/signup', {
 			method: 'POST',
 			body: JSON.stringify({ username, pass, email, role, name })
 		});

@@ -17,7 +17,7 @@
 			success: async (result) => {
 				if (result.data) {
 					notification.set({ message: 'Samovar on the way...', type: 'success' });
-					await goto('/u/dashboard');
+					await goto('/u/forges');
 				}
 			}
 		}

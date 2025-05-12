@@ -3,12 +3,12 @@ import type { Forge, Spark, Collaborator, ApiKey } from '$lib/types';
 
 export const load: LayoutServerLoad = async ({ fetch, params, depends }) => {
 	depends('forge:general');
-	const forgeId = params.forgeId;
+	const forgeID = params.forgeID;
 	const endpoints = {
-		forge: `/axum/forge/${forgeId}`,
-		sparks: `/axum/spark/${forgeId}`,
-		collaborators: `/axum/forge/${forgeId}/access`,
-		apiKeys: `/axum/key/${forgeId}`
+		forge: `/backend/api/forge/${forgeID}`,
+		sparks: `/backend/api/forge/${forgeID}/sparks`,
+		collaborators: `/backend/api/forge/${forgeID}/access`,
+		apiKeys: `/backend/api/forge/${forgeID}/api-keys`
 	};
 
 	const [forge, sparks, collaborators, apiKeys] = await Promise.all([

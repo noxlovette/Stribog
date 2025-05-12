@@ -3,7 +3,7 @@
 	import { page } from '$app/state';
 
 	const { forge }: { forge: Forge } = $props();
-	const chosen = $derived(page.params.forgeId === forge.id);
+	const chosen = $derived(page.params.forgeID === forge.id);
 </script>
 
 <a

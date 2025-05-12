@@ -1,9 +1,17 @@
 <script lang="ts">
-import {ForgeCard} from "$lib/components"
-const {data} = $props();
+	import { ForgeColumn, H1, H3 } from '$lib/components';
+	import AddCard from '$lib/components/cards/AddCard.svelte';
 
+	const { data } = $props();
 </script>
 
-<div>
-Select a forge to begin		
+<div class="flex flex-col items-center justify-center space-y-3">
+	<H1>Forges</H1>
+	<H3>Your Projects</H3>
+	<div class="my-4 grid grid-cols-2 gap-4">
+		{#each data.forges as forge}
+			<ForgeColumn {forge} />
+		{/each}
+		<AddCard href="/u/forges/create" />
+	</div>
 </div>

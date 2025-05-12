@@ -73,11 +73,10 @@
 			'bg-gradient-to-br ring-1 ring-orange-700 transition-colors shadow-sm ring-1 from-orange-900/70 to-orange-800/70 text-orange-50 hover:from-orange-800 hover:to-orange-700',
 		secondary: 'ring-1 shadow-sm bg-stone-900/80 text-stone-200 hover:bg-stone-800 ring-stone-700',
 		danger:
-			'bg-gradient-to-br from-red-100/80 transition-colors to-red-200/80 ring-1 shadow-sm dark:from-orange-700/70 to-orange-800/70 text-white hover:from-orange-600 hover:to-orange-700',
+			'bg-gradient-to-br transition-colors ring-1 ring-red-600/50 shadow-sm from-red-700/70 to-red-800/70 text-white hover:from-orange-600 hover:to-orange-700',
 		ghost: 'text-stone-400 hover:bg-stone-800/60',
 		link: 'text-orange-600 underline hover:text-orange-800 p-0 ring-0 dark:text-orange-300 dark:hover:text-orange-100',
-		outline:
-			'bg-transparent text-stone-800 ring-1 ring-stone-300 hover:bg-stone-50 dark:text-stone-200 dark:ring-stone-600/50 dark:hover:bg-stone-800'
+		outline: 'bg-transparent  ring-1 text-stone-200 ring-stone-600/50 hover:bg-stone-800'
 	};
 
 	// const shapeClasses = $derived(rounded ? 'rounded-full' : 'rounded-lg');

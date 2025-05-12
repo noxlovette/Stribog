@@ -12,8 +12,8 @@
 <header class="flex items-center justify-center bg-stone-900">
 	<div class="flex w-full max-w-md items-center justify-center">
 		<nav class="relative grid w-full grid-cols-3">
-			{#if $user && $user.username}
-				{@render link('/u/dashboard', 'Izba')}
+			{#if $user && $user.email}
+				{@render link('/', 'Home')}
 				{@render link('/u/forges', 'Forges')}
 				{@render link('/u/account', 'Account')}
 			{:else}
