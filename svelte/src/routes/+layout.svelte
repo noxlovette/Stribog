@@ -9,7 +9,7 @@
 	let { children }: Props = $props();
 </script>
 
-<SEO title="Stribog" description="CDN" keywords="CDN, stribog" />
+<SEO title="Stribog" description="CMN" keywords="CMN, stribog" />
 
 <main class="flex flex-col overflow-auto bg-stone-950 text-stone-50 antialiased">
 	<Header />

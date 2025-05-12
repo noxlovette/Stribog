@@ -1,3 +1,3 @@
 # Stribog
 
-A very simple Markdown-based CDN
+A very simple Markdown-based CMN

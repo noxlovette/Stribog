@@ -5,7 +5,7 @@
 <div class="flex flex-col items-center space-y-8 px-28 py-12">
 	<div class="flex flex-col items-center space-y-2">
 		<H1>Stribog</H1>
-		<H3>Simple CDN</H3>
+		<H3>Simple CMN</H3>
 	</div>
 	<div class="grid grid-cols-2 gap-3">
 		<Button variant="secondary">Read the Docs</Button>
