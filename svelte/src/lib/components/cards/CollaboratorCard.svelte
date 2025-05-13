@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { Button } from '$lib/components';
+	import Card from './Card.svelte';
 	import type { Collaborator } from '$lib/types';
 	const { collaborator }: { collaborator: Collaborator } = $props();
 </script>
 
-<div class="flex flex-col rounded-sm bg-stone-900 p-3 ring ring-stone-600/50">
+<Card>
 	<div class="flex items-start justify-between">
 		<div class="flex items-center">
 			<div
@@ -38,4 +39,4 @@
 			confirmTitle="Remove Collaborator">Remove</Button
 		>
 	</div>
-</div>
+</Card>

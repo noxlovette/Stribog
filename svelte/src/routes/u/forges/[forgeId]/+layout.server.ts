@@ -2,6 +2,7 @@ import type { LayoutServerLoad } from './$types';
 import type { Forge, Spark, Collaborator, ApiKey } from '$lib/types';
 
 export const load: LayoutServerLoad = async ({ fetch, params, depends }) => {
+	console.debug("Fetching Forge Layout")
 	depends('forge:general');
 	const forgeID = params.forgeID;
 	const endpoints = {
@@ -10,6 +11,7 @@ export const load: LayoutServerLoad = async ({ fetch, params, depends }) => {
 		collaborators: `/backend/api/forge/${forgeID}/access`,
 		apiKeys: `/backend/api/forge/${forgeID}/api-keys`
 	};
+
 
 	const [forge, sparks, collaborators, apiKeys] = await Promise.all([
 		fetch(endpoints.forge).then((res) => res.json() as Promise<Forge>),

@@ -36,6 +36,7 @@ export interface Spark {
 	ownerId: string;
 	createdAt: string;
 	updatedAt: string;
+	tags: string[];
 }
 
 export interface Toast {

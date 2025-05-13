@@ -1,16 +1,18 @@
 <script lang="ts">
-	import { H2, H3 } from '$lib/components';
+	import { H2, H3, Button, SparkCard, ApiKeys, Collaborators, Tabs } from '$lib/components';
+	import TabElement from '$lib/components/UI/TabElement.svelte';
 	const { data } = $props();
 </script>
 
-<div class="flex flex-col items-center justify-center">
-	<H2>{data.forge.title}</H2>
-	<H3>{data.forge.description}</H3>
-	<div class="size-72 overflow-hidden">
-		<img
-			src="/pictures/spark-logo.png"
-			alt="Forge and Sparkles"
-			class="h-full w-full object-cover"
-		/>
+<grid class="grid grid-cols-3 gap-3">
+	<div class="flex flex-col gap-3">
+		<H2>Sparks</H2>
+		<div class="grid min-w-max grid-cols-1 gap-5">
+			{#each data.sparks.slice(0, 3) as spark}
+				<SparkCard {spark} />
+			{/each}
+		</div>
 	</div>
-</div>
+	<ApiKeys apiKeys={data.apiKeys} />
+	<Collaborators collaborators={data.collaborators} />
+</grid>

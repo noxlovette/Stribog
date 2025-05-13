@@ -7,6 +7,7 @@ package db
 import (
 	"database/sql/driver"
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -60,7 +61,7 @@ type ApiKey struct {
 	ForgeID    string
 	Title      string
 	IsActive   bool
-	CreatedAt  pgtype.Timestamptz
+	CreatedAt  time.Time
 	LastUsedAt pgtype.Timestamptz
 	KeyHash    string
 }
@@ -70,8 +71,8 @@ type Forge struct {
 	Title       string
 	Description *string
 	OwnerID     uuid.UUID
-	CreatedAt   pgtype.Timestamptz
-	UpdatedAt   pgtype.Timestamptz
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 type ForgeAccess struct {
@@ -80,8 +81,8 @@ type ForgeAccess struct {
 	UserID     uuid.UUID
 	AccessRole AccessRole
 	AddedBy    uuid.UUID
-	CreatedAt  pgtype.Timestamptz
-	UpdatedAt  pgtype.Timestamptz
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 	RevokedAt  pgtype.Timestamptz
 }
 
@@ -91,8 +92,8 @@ type Spark struct {
 	Title     string
 	Markdown  string
 	OwnerID   uuid.UUID
-	CreatedAt pgtype.Timestamptz
-	UpdatedAt pgtype.Timestamptz
+	CreatedAt time.Time
+	UpdatedAt time.Time
 	Slug      string
 	Tags      []string
 }
@@ -107,8 +108,8 @@ type User struct {
 	Email        string
 	PasswordHash string
 	Name         *string
-	CreatedAt    pgtype.Timestamptz
-	UpdatedAt    pgtype.Timestamptz
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 	DeletedAt    pgtype.Timestamptz
 	IsActive     bool
 }

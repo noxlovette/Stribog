@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ForgeColumn, H1, H3 } from '$lib/components';
+	import { ForgeCard, H1, H3 } from '$lib/components';
 	import AddCard from '$lib/components/cards/AddCard.svelte';
 
 	const { data } = $props();
@@ -10,7 +10,7 @@
 	<H3>Your Projects</H3>
 	<div class="my-4 grid grid-cols-2 gap-4">
 		{#each data.forges as forge}
-			<ForgeColumn {forge} />
+			<ForgeCard {forge} />
 		{/each}
 		<AddCard href="/u/forges/create" />
 	</div>

@@ -1,0 +1,1 @@
+export {default as SparkLogo} from "./SparkLogo.svelte";

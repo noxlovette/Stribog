@@ -1,6 +1,6 @@
 -- name: GetSparkAndCheckReadAccess :one
 SELECT
-  s.id, s.title, s.markdown, s.slug,
+  s.id, s.title, s.markdown, s.slug, s.updated_at,
   COALESCE(ARRAY_AGG(st.tag) FILTER (WHERE st.tag IS NOT NULL), '{}')::TEXT[] AS tags
 FROM sparks s
 JOIN forges f ON s.forge_id = f.id
@@ -18,7 +18,7 @@ GROUP BY s.id, s.title, s.markdown, s.slug;
 
 -- name: GetSparksByForgeIDAndCheckReadAccess :many
 SELECT
-  s.id, s.title, s.markdown, s.slug,
+  s.id, s.title, s.markdown, s.slug, s.updated_at,
   COALESCE(ARRAY_AGG(st.tag) FILTER (WHERE st.tag IS NOT NULL), '{}')::TEXT[] AS tags
 FROM sparks s
 JOIN forges f ON s.forge_id = f.id

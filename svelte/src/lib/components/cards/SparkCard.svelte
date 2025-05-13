@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button } from '$lib/components';
+	import { Button, H3 } from '$lib/components';
 	import { formatDate } from '@noxlovette/svarog';
 	import type { Spark } from '$lib/types';
 	import { page } from '$app/state';
@@ -11,14 +11,20 @@
 	);
 </script>
 
-<div class="flex flex-col rounded-sm border border-stone-600/40 bg-stone-900 p-5 shadow-sm">
+<div class="flex flex-col rounded-md bg-stone-900/60 p-5">
 	<div class="flex items-start justify-between">
-		<h3 class="text-xl font-medium">{spark.title}</h3>
+		<H3>
+			{spark.title}
+		</H3>
 		<div class="flex space-x-2">
-			<Button variant="ghost" size="sm" href="/u/forges/{page.params.forgeID}/{spark.id}/edit">
+			<Button
+				variant="ghost"
+				size="sm"
+				href="/u/forges/{page.params.forgeID}/sparks/{spark.id}/edit"
+			>
 				Edit
 			</Button>
-			<Button href="/u/forges/{page.params.forgeID}/{spark.id}" variant="outline" size="sm">
+			<Button href="/u/forges/{page.params.forgeID}/sparks/{spark.id}" variant="outline" size="sm">
 				View
 			</Button>
 		</div>

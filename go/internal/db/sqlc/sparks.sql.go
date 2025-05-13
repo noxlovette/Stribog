@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -49,7 +50,7 @@ func (q *Queries) DeleteSparkTags(ctx context.Context, sparkID string) error {
 
 const getSparkAndCheckReadAccess = `-- name: GetSparkAndCheckReadAccess :one
 SELECT
-  s.id, s.title, s.markdown, s.slug,
+  s.id, s.title, s.markdown, s.slug, s.updated_at,
   COALESCE(ARRAY_AGG(st.tag) FILTER (WHERE st.tag IS NOT NULL), '{}')::TEXT[] AS tags
 FROM sparks s
 JOIN forges f ON s.forge_id = f.id
@@ -71,11 +72,12 @@ type GetSparkAndCheckReadAccessParams struct {
 }
 
 type GetSparkAndCheckReadAccessRow struct {
-	ID       string
-	Title    string
-	Markdown string
-	Slug     string
-	Tags     []string
+	ID        string
+	Title     string
+	Markdown  string
+	Slug      string
+	UpdatedAt time.Time
+	Tags      []string
 }
 
 func (q *Queries) GetSparkAndCheckReadAccess(ctx context.Context, arg GetSparkAndCheckReadAccessParams) (GetSparkAndCheckReadAccessRow, error) {
@@ -86,6 +88,7 @@ func (q *Queries) GetSparkAndCheckReadAccess(ctx context.Context, arg GetSparkAn
 		&i.Title,
 		&i.Markdown,
 		&i.Slug,
+		&i.UpdatedAt,
 		&i.Tags,
 	)
 	return i, err
@@ -93,7 +96,7 @@ func (q *Queries) GetSparkAndCheckReadAccess(ctx context.Context, arg GetSparkAn
 
 const getSparksByForgeIDAndCheckReadAccess = `-- name: GetSparksByForgeIDAndCheckReadAccess :many
 SELECT
-  s.id, s.title, s.markdown, s.slug,
+  s.id, s.title, s.markdown, s.slug, s.updated_at,
   COALESCE(ARRAY_AGG(st.tag) FILTER (WHERE st.tag IS NOT NULL), '{}')::TEXT[] AS tags
 FROM sparks s
 JOIN forges f ON s.forge_id = f.id
@@ -116,11 +119,12 @@ type GetSparksByForgeIDAndCheckReadAccessParams struct {
 }
 
 type GetSparksByForgeIDAndCheckReadAccessRow struct {
-	ID       string
-	Title    string
-	Markdown string
-	Slug     string
-	Tags     []string
+	ID        string
+	Title     string
+	Markdown  string
+	Slug      string
+	UpdatedAt time.Time
+	Tags      []string
 }
 
 func (q *Queries) GetSparksByForgeIDAndCheckReadAccess(ctx context.Context, arg GetSparksByForgeIDAndCheckReadAccessParams) ([]GetSparksByForgeIDAndCheckReadAccessRow, error) {
@@ -137,6 +141,7 @@ func (q *Queries) GetSparksByForgeIDAndCheckReadAccess(ctx context.Context, arg 
 			&i.Title,
 			&i.Markdown,
 			&i.Slug,
+			&i.UpdatedAt,
 			&i.Tags,
 		); err != nil {
 			return nil, err

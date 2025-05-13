@@ -84,6 +84,7 @@ func (s *SparkService) ListSparksByForgeID(ctx context.Context, forgeID string) 
 			Title:    spark.Title,
 			Markdown: spark.Markdown,
 			Tags:     spark.Tags,
+			UpdatedAt:spark.UpdatedAt,
 			Slug:     spark.Slug,
 		}
 

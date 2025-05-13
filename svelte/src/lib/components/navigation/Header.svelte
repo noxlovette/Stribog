@@ -9,7 +9,7 @@
 		>{name}</a
 	>
 {/snippet}
-<header class="flex items-center justify-center bg-stone-900">
+<header class="flex w-full items-center justify-center bg-stone-900/60">
 	<div class="flex w-full max-w-md items-center justify-center">
 		<nav class="relative grid w-full grid-cols-3">
 			{#if $user && $user.email}
