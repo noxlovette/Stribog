@@ -14,16 +14,16 @@
 
 	<div class="mt-2 flex items-center">
 		<span
-			class={`inline-block h-2 w-2 rounded-full ${apiKey.is_active ? 'bg-green-500' : 'bg-red-500'} mr-2`}
+			class={`inline-block h-2 w-2 rounded-full ${apiKey.isActive ? 'bg-green-500' : 'bg-red-500'} mr-2`}
 		></span>
 		<span class="text-sm text-stone-600 dark:text-stone-300"
-			>{apiKey.is_active ? 'Active' : 'Inactive'}</span
+			>{apiKey.isActive ? 'Active' : 'Inactive'}</span
 		>
 	</div>
 	<div class="mt-2 text-xs text-stone-500 dark:text-stone-400">
 		<div>Created: {formatDate(apiKey.createdAt)}</div>
-		{#if apiKey.lastUsedAt}
-			<div>Last used: {formatDate(apiKey.lastUsedAt)}</div>
+		{#if apiKey.lastUsed}
+			<div>Last used: {formatDate(apiKey.lastUsed)}</div>
 		{:else}
 			<div>Never used</div>
 		{/if}

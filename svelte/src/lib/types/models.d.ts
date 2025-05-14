@@ -23,9 +23,9 @@ export interface ApiKey {
 	id: string;
 	forgeID: string;
 	title: string;
-	is_active: boolean;
+	isActive: boolean;
 	createdAt: string;
-	lastUsedAt: string;
+	lastUsed: string;
 }
 
 export interface Spark {

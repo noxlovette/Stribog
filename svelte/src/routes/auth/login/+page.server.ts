@@ -48,7 +48,7 @@ export const actions: Actions = {
 			// 	});
 			// }
 
-			const response = await fetch('/backend/auth/login', {
+			const response = await fetch('/backend/auth/login/', {
 				method: 'POST',
 				body: JSON.stringify({ email, password })
 			});

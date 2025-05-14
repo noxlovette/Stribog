@@ -13,7 +13,25 @@
 		messages: {
 			redirect: 'New Entity Created'
 		},
-		navigate: true
+		navigate: true,
+		handlers: {
+			success: async (result) => {
+				const id = String(result.data);
+				console.log(id);
+				try {
+					await navigator.clipboard.writeText(id);
+					notification.set({
+						message: 'API Key Copied! YOU WILL NOT SEE IT AGAIN',
+						type: 'success'
+					});
+				} catch {
+					notification.set({
+						message: 'Copy failed',
+						type: 'error'
+					});
+				}
+			}
+		}
 	})}
 >
 	<button type="submit" class="flex size-full items-center justify-center">
