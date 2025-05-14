@@ -2,6 +2,6 @@
 	const { children } = $props();
 </script>
 
-<nav class="grid grid-cols-4 items-start gap-3">
+<nav class="col-span-2 grid grid-cols-4 items-start gap-3">
 	{@render children?.()}
 </nav>

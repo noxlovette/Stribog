@@ -7,8 +7,10 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const deleteAPIKey = `-- name: DeleteAPIKey :exec
@@ -32,13 +34,15 @@ func (q *Queries) GetAPIKeyIDByHash(ctx context.Context, keyHash string) (uuid.U
 }
 
 const getAPIKeysByForgeID = `-- name: GetAPIKeysByForgeID :many
-SELECT id, title, is_active FROM api_keys WHERE forge_id = $1 AND is_active = TRUE
+SELECT id, title, is_active, created_at, last_used_at FROM api_keys WHERE forge_id = $1 AND is_active = TRUE
 `
 
 type GetAPIKeysByForgeIDRow struct {
-	ID       uuid.UUID
-	Title    string
-	IsActive bool
+	ID         uuid.UUID
+	Title      string
+	IsActive   bool
+	CreatedAt  time.Time
+	LastUsedAt pgtype.Timestamptz
 }
 
 func (q *Queries) GetAPIKeysByForgeID(ctx context.Context, forgeID string) ([]GetAPIKeysByForgeIDRow, error) {
@@ -50,7 +54,13 @@ func (q *Queries) GetAPIKeysByForgeID(ctx context.Context, forgeID string) ([]Ge
 	var items []GetAPIKeysByForgeIDRow
 	for rows.Next() {
 		var i GetAPIKeysByForgeIDRow
-		if err := rows.Scan(&i.ID, &i.Title, &i.IsActive); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.IsActive,
+			&i.CreatedAt,
+			&i.LastUsedAt,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

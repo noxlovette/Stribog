@@ -3,6 +3,7 @@
 	import Card from './Card.svelte';
 	import type { Collaborator } from '$lib/types';
 	const { collaborator }: { collaborator: Collaborator } = $props();
+	$inspect(collaborator);
 </script>
 
 <Card>
@@ -29,14 +30,5 @@
 	</div>
 	<div class="mt-2 text-sm text-stone-300">
 		<p>{collaborator?.userEmail}</p>
-	</div>
-	<div class="mt-4 flex justify-between">
-		<Button variant="outline" size="sm">Change Role</Button>
-		<Button
-			variant="danger"
-			size="sm"
-			confirmText={collaborator?.userName}
-			confirmTitle="Remove Collaborator">Remove</Button
-		>
 	</div>
 </Card>

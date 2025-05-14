@@ -10,8 +10,8 @@
 
 <a
 	href={element?.href}
-	class="flex items-center justify-center rounded-b-md
-	bg-stone-900/60 px-5 py-3 text-center transition-all hover:text-orange-300 {chosen
+	class="flex items-center justify-center rounded-md bg-stone-900/60
+	px-5 py-3 text-center text-sm transition-all hover:text-orange-300 {chosen
 		? ' text-orange-200'
 		: ''}"
 >

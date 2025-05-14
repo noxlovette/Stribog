@@ -54,6 +54,9 @@ func (s *APIKeyService) ListAPIKeys(ctx context.Context, forgeID string) ([]*typ
 			ID:       key.ID,
 			Title:    key.Title,
 			IsActive: key.IsActive,
+			LastUsed: key.LastUsedAt.Time,
+			CreatedAt: key.CreatedAt,
+
 		}
 
 	}

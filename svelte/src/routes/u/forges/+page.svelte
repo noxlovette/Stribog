@@ -5,7 +5,7 @@
 	const { data } = $props();
 </script>
 
-<div class="flex flex-col items-center justify-center space-y-3">
+<div class="flex flex-col items-center justify-center py-3">
 	<H1>Forges</H1>
 	<H3>Your Projects</H3>
 	<div class="my-4 grid grid-cols-2 gap-4">

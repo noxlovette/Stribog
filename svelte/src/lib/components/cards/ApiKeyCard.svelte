@@ -28,10 +28,4 @@
 			<div>Never used</div>
 		{/if}
 	</div>
-	<div class="mt-4 flex justify-between">
-		<Button variant="outline" size="sm">
-			{apiKey.is_active ? 'Deactivate' : 'Activate'}
-		</Button>
-		<Button variant="danger" size="sm">Delete</Button>
-	</div>
 </Card>

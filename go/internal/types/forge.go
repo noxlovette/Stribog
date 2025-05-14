@@ -14,11 +14,11 @@ type WebForge struct {
 
 type WebAccess struct {
 	ID         uuid.UUID     `json:"id,omitempty"`
-	ForgeID    string        `json:"forge_id,omitempty"`
-	UserID     uuid.UUID     `json:"user_id,omitempty"`
-	AccessRole db.AccessRole `json:"access_role,omitempty"`
-	UserName   string        `json:"user_name,omitempty"`
-	UserEmail  string        `json:"user_email,omitempty"`
+	ForgeID    string        `json:"forgeID,omitempty"`
+	UserID     uuid.UUID     `json:"userID,omitempty"`
+	AccessRole db.AccessRole `json:"accessRole,omitempty"`
+	UserName   string        `json:"userName,omitempty"`
+	UserEmail  string        `json:"userEmail,omitempty"`
 }
 type ForgeUpdateRequest struct {
 	Title       *string `json:"title,omitempty"`
@@ -29,10 +29,10 @@ type ForgeCreateRequest struct {
 	Description *string `json:"description,omitempty"`
 }
 type AccessCreateRequest struct {
-	UserID     uuid.UUID     `json:"user_id,omitempty"`
-	AccessRole db.AccessRole `json:"access_role,omitempty"`
+	UserID     uuid.UUID     `json:"userID,omitempty"`
+	AccessRole db.AccessRole `json:"accessRole,omitempty"`
 }
 
 type AccessDeleteRequest struct {
-	UserID uuid.UUID `json:"user_id,omitempty"`
+	UserID uuid.UUID `json:"userID,omitempty"`
 }
