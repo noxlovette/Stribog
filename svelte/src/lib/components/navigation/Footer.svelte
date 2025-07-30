@@ -1,4 +1,4 @@
-<footer class="flex w-full flex-col items-center justify-between bg-stone-900 pt-3">
+<footer class="mt-5 flex w-full flex-col items-center justify-between bg-stone-900 pt-3">
 	<div class="flex gap-3 text-stone-500">
 		<a href="/paperwork/privacy" class="hover:text-cocoa-500 transition-colors">Privacy</a>
 		<a href="/paperwork/terms" class="hover:text-cocoa-500 transition-colors">Terms</a>
